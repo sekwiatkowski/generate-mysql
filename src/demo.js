@@ -22,8 +22,15 @@ const table = new Table(
         title: 'title'
     })
 
-const [ sql, parameters ] = table
+const filtered = table
     .filter(b => b.id.equals('8ea8dea3-f584-4367-b86e-b45774c2d624'))
     .select()
 
-console.log(sql)
+console.log(filtered)
+
+const firstPost = { id: '1ea8dea3-f584-4367-b86e-b45774c2d624', title: 'First title' }
+const secondPost = { id: '2ea8dea3-f584-4367-b86e-b45774c2d624', title: 'Second title' }
+
+//console.log(table.insert(firstPost))
+console.log(table.insert(firstPost))
+console.log(table.insertBatch([firstPost, secondPost]))

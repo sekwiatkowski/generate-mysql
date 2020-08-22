@@ -1,4 +1,6 @@
-const {generateSql} = require('./generation')
+const {arrayOf} = require('compose-functions')
+const {generateInsert} = require('./generation/generate_insert')
+const {generateQuery} = require('./generation/generate_query')
 const {mapValues} = require('compose-functions')
 
 function createColumn(table) {
@@ -38,10 +40,13 @@ function createColumnPredicate(table, firstParameterIndex) {
 class Table {
     name
     columns
+    generateInsertForTable
 
-    constructor(name, columns) {
+    constructor(name, keysToColumns) {
         this.name = name
-        this.columns = columns
+        this.columns = keysToColumns
+
+        this.generateInsertForTable = generateInsert(name) (keysToColumns)
     }
 
     filter(f) {
@@ -51,7 +56,15 @@ class Table {
     }
 
     select() {
-        return generateSql({ select: '*', from: this.name })
+        return generateQuery({ select: '*', from: this.name })
+    }
+
+    insert(obj) {
+        return this.generateInsertForTable(arrayOf(obj))
+    }
+
+    insertBatch(objs) {
+        return this.generateInsertForTable(objs)
     }
 }
 
@@ -65,7 +78,7 @@ class FilteredTable {
     }
 
     select() {
-        return generateSql({ select: '*', from: this.name, where: this.where })
+        return generateQuery({ select: '*', from: this.name, where: this.where })
     }
 }
 

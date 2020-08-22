@@ -1,17 +1,15 @@
+const {safePropertyOf} = require('compose-functions')
+const {concatOptions} = require('compose-functions')
 const {last} = require('compose-functions')
 const {concat} = require('compose-functions')
 const {first} = require('compose-functions')
 const {pair} = require('compose-functions')
-const {safeGetFrom} = require('compose-functions')
-const {foldOption} = require('compose-functions')
 const {joinWithNewline} = require('compose-functions')
 const {mapOption} = require('compose-functions')
 const {foldPair} = require('compose-functions')
 const {mapSecond} = require('compose-functions')
 const {map} = require('compose-functions')
 const {fold} = require('compose-functions')
-const {constant} = require('compose-functions')
-const {appendTo} = require('compose-functions')
 
 function generateColumn(side) {
     return pair('t' + (side.table + 1) + '.' + side.column)([])
@@ -53,17 +51,17 @@ function generateFrom(from) {
     return pair(`FROM ${from} t1`)([])
 }
 
-const keywordGenerators = [
+const queryGenerators = [
     [generateSelect, 'select'],
     [generateFrom, 'from'],
     [generateWhere, 'where']
 ]
 
-function generateSql(query) {
+function generateQuery(query) {
     /* [ [ generateSelect, some(select) ],
          [ generateFrom, some(from) ],
          [ generateWhere, maybe(where ]  */
-    const withInput = map(mapSecond(safeGetFrom(query))) (keywordGenerators)
+    const withInput = map(mapSecond(safePropertyOf(query))) (queryGenerators)
 
     /* [ some('SELECT ...')
          some('FROM ...')
@@ -81,6 +79,5 @@ function generateSql(query) {
     return [ joinWithNewline(sqlFragments), parameters ]
 }
 
-module.exports = {
-    generateSql
-}
+
+module.exports = { generateQuery }
