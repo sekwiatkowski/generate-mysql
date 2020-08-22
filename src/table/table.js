@@ -1,3 +1,4 @@
+const {generateTruncate} = require('../generation/generate_truncate')
 const {SortedTable} = require('./sorted_table')
 const {generateQuery} = require('../generation/generate_query')
 const {generateInsert} = require('../generation/generate_insert')
@@ -16,6 +17,7 @@ class Table {
     #filterExpressions
     #ascendingExpressions
     #descendingExpressions
+    #truncateSql
 
     constructor(name, keysToColumns) {
         this.#name = name
@@ -25,6 +27,7 @@ class Table {
         this.#filterExpressions = mapValues(createFilterExpressions(0) (0))(this.#mapping)
         this.#ascendingExpressions = mapValues(createAscendingExpression(0))(this.#mapping)
         this.#descendingExpressions = mapValues(createDescendingExpression(0))(this.#mapping)
+        this.#truncateSql = generateTruncate(name)
 
     }
 
@@ -50,6 +53,13 @@ class Table {
 
     insertBatch(objs) {
         return this.#generateInsertForTable(objs)
+    }
+
+    /* TRUNCATE quickly removes all rows from a set of tables.
+       It has the same effect as an unqualified DELETE on each table, but since it does not actually scan the tables it is faster.
+       Furthermore, it reclaims disk space immediately, rather than requiring a subsequent VACUUM operation. This is most useful on large tables. */
+    truncate() {
+        return this.#truncateSql
     }
 }
 

@@ -33,6 +33,8 @@ const firstPost = { id: '1ea8dea3-f584-4367-b86e-b45774c2d624', title: 'First ti
 const secondPost = { id: '2ea8dea3-f584-4367-b86e-b45774c2d624', title: 'Second title', published: new Date() }
 
 //console.log(table.insert(firstPost))
+console.log(BlogTable.truncate())
+
 console.log(BlogTable.insert(firstPost))
 console.log(BlogTable.insertBatch([firstPost, secondPost]))
 
