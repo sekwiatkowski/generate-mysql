@@ -1,6 +1,6 @@
 {
     "name": "generate-sql",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "dependencies": {
         "compose-functions": "sekwiatkowski/compose-functions#v0.5.2"
     },
