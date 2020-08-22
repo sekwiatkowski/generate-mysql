@@ -1,4 +1,4 @@
-const {generateQuery} = require('../generation/generate_query')
+const {generateParameterlessQuery} = require('../generation/generate_query')
 
 class SortedTable {
     #name
@@ -10,7 +10,7 @@ class SortedTable {
     }
 
     select() {
-        return generateQuery({ select: '*', from: this.#name, orderBy: this.#orderBy })
+        return generateParameterlessQuery({ select: '*', from: this.#name, orderBy: this.#orderBy })
     }
 }
 

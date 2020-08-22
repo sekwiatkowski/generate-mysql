@@ -1,3 +1,4 @@
+const {generateParameterlessQuery} = require('../generation/generate_query')
 const {generateTruncate} = require('../generation/generate_truncate')
 const {SortedTable} = require('./sorted_table')
 const {generateQuery} = require('../generation/generate_query')
@@ -44,7 +45,7 @@ class Table {
     }
 
     select() {
-        return generateQuery({ select: '*', from: this.#name })
+        return generateParameterlessQuery({ select: '*', from: this.#name })
     }
 
     insert(obj) {

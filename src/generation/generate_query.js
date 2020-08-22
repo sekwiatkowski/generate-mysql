@@ -1,15 +1,18 @@
+const {fromUndefinable} = require('compose-functions')
+const {some} = require('compose-functions')
+const {when} = require('compose-functions')
+const {pairWith} = require('compose-functions')
+const {isString} = require('compose-functions')
+const {flatten} = require('compose-functions')
+const {invertPairs} = require('compose-functions')
 const {safePropertyOf} = require('compose-functions')
 const {concatOptions} = require('compose-functions')
-const {last} = require('compose-functions')
-const {concat} = require('compose-functions')
-const {first} = require('compose-functions')
 const {pair} = require('compose-functions')
 const {joinWithNewline} = require('compose-functions')
 const {mapOption} = require('compose-functions')
 const {foldPair} = require('compose-functions')
 const {mapSecond} = require('compose-functions')
 const {map} = require('compose-functions')
-const {fold} = require('compose-functions')
 
 function generateColumn({tableIndex, column}) {
     return `t${tableIndex + 1}.${column}`
@@ -38,11 +41,11 @@ function generatePredicate({kind, left, right}) {
 }
 
 function generateSelect(select) {
-    return pair(`SELECT ${select}`)([])
+    return `SELECT ${select}`
 }
 
 function generateFrom(from) {
-    return pair(`FROM ${from} t1`)([])
+    return `FROM ${from} t1`
 }
 
 function generateWhere(predicate) {
@@ -56,7 +59,7 @@ function generateSortExpression(expr) {
 }
 
 function generateOrderBy(expr) {
-    return pair(`ORDER BY ${generateSortExpression(expr)}`)([])
+    return `ORDER BY ${generateSortExpression(expr)}`
 }
 
 const queryGenerators = [
@@ -66,27 +69,50 @@ const queryGenerators = [
     [generateOrderBy, 'orderBy']
 ]
 
-function generateQuery(query) {
+function generateQueryFragments(query) {
     /* [ [ generateSelect, some(select) ],
          [ generateFrom, some(from) ],
-         [ generateWhere, maybe(where ]  */
+         [ generateWhere, maybe([where, parameters]) ]  */
     const withInput = map(mapSecond(safePropertyOf(query))) (queryGenerators)
 
-    /* [ some('SELECT ...')
-         some('FROM ...')
-         maybe('WHERE ...') ] */
+    /* [ some('SELECT ...'])
+         some('FROM ...'])
+         maybe([['WHERE ...', parameters]) ] */
     const generated = map(foldPair(mapOption)) (withInput)
 
     /* [ 'SELECT ...',
          'FROM ...',
-         ('WHERE ...') ] */
+         ['WHERE ...', parameters] ] */
     const fragments = concatOptions(generated)
 
-    const sqlFragments = map(first)(fragments)
-    const parameters = fold(concat)([])(map(last)(fragments))
+    return fragments
+}
 
-    return [ joinWithNewline(sqlFragments), parameters ]
+const ensurePair = when(isString) (pairWith([]))
+
+function generateParameterlessQuery({ select, from, orderBy }) {
+    const selectSql = some(generateSelect(select))
+    const fromSql = some(generateFrom(from))
+    const orderBySql = mapOption(generateOrderBy)(fromUndefinable(orderBy))
+
+    return joinWithNewline(concatOptions([selectSql, fromSql, orderBySql]))
+}
+
+function generateQuery(query) {
+    const fragments = generateQueryFragments(query)
+
+    const ensuredPairs = map(ensurePair)(fragments)
+
+    const [sqlFragments, parameterFragments] = invertPairs(ensuredPairs)
+
+    const sql = joinWithNewline(sqlFragments)
+    const parameters = flatten(parameterFragments)
+
+    return [sql, parameters]
 }
 
 
-module.exports = { generateQuery }
+module.exports = {
+    generateQuery,
+    generateParameterlessQuery
+}
