@@ -11,36 +11,30 @@ const {mapSecond} = require('compose-functions')
 const {map} = require('compose-functions')
 const {fold} = require('compose-functions')
 
-function generateColumn(side) {
-    return pair('t' + (side.table + 1) + '.' + side.column)([])
+function generateColumn({tableIndex, column}) {
+    return `t${tableIndex + 1}.${column}`
 }
 
-function generateValue(side) {
-    return pair(`$${side.index+1}`)([ side.value ])
+function generateValue({index, value}) {
+    return pair(`$${index+1}`)([ value ])
 }
 
 function generateSide(side) {
     switch (side.kind) {
         case 'column':
-            return generateColumn(side)
+            return pair(generateColumn(side))([])
         case 'value':
             return generateValue(side)
     }
 }
 
-function generatePredicate(predicate) {
-    switch (predicate.kind) {
+function generatePredicate({kind, left, right}) {
+    switch (kind) {
         case 'equals':
-            const {left, right} = predicate
             const [leftSql, leftParameters] = generateSide(left)
             const [rightSql, rightParameters] = generateSide(right)
             return [`${leftSql} = ${rightSql}`, leftParameters.concat(rightParameters) ]
     }
-}
-
-function generateWhere(predicate) {
-    const [sql, parameters] = generatePredicate(predicate)
-    return [`WHERE ${sql}`, parameters]
 }
 
 function generateSelect(select) {
@@ -51,10 +45,25 @@ function generateFrom(from) {
     return pair(`FROM ${from} t1`)([])
 }
 
+function generateWhere(predicate) {
+    const [sql, parameters] = generatePredicate(predicate)
+    return [`WHERE ${sql}`, parameters]
+}
+
+function generateSortExpression(expr) {
+    const column = generateColumn(expr)
+    return `${column} ${expr.direction}`
+}
+
+function generateOrderBy(expr) {
+    return pair(`ORDER BY ${generateSortExpression(expr)}`)([])
+}
+
 const queryGenerators = [
     [generateSelect, 'select'],
     [generateFrom, 'from'],
-    [generateWhere, 'where']
+    [generateWhere, 'where'],
+    [generateOrderBy, 'orderBy']
 ]
 
 function generateQuery(query) {
