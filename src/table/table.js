@@ -14,34 +14,28 @@ const {mapValues} = require('compose-functions')
 class Table {
     #name
     #mapping
-    #generateInsertForTable
-    #filterExpressions
-    #ascendingExpressions
-    #descendingExpressions
-    #truncateSql
 
-    constructor(name, keysToColumns) {
+    constructor(name, mapping) {
         this.#name = name
-        this.#mapping = keysToColumns
-
-        this.#generateInsertForTable = generateInsert(name) (keysToColumns)
-        this.#filterExpressions = mapValues(createFilterExpressions(0) (0))(this.#mapping)
-        this.#ascendingExpressions = mapValues(createAscendingExpression(0))(this.#mapping)
-        this.#descendingExpressions = mapValues(createDescendingExpression(0))(this.#mapping)
-        this.#truncateSql = generateTruncate(name)
-
+        this.#mapping = mapping
     }
 
     filter(f) {
-        return new FilteredTable(this.#name, f(this.#filterExpressions))
+        const filterExpressions = mapValues(createFilterExpressions(0) (0))(this.#mapping)
+
+        return new FilteredTable(this.#name, f(filterExpressions))
     }
 
     sortBy(f) {
-        return new SortedTable(this.#name, f(this.#ascendingExpressions))
+        const ascendingExpressions = mapValues(createAscendingExpression(0))(this.#mapping)
+
+        return new SortedTable(this.#name, f(ascendingExpressions))
     }
 
     sortDescendinglyBy(f) {
-        return new SortedTable(this.#name, f(this.#descendingExpressions))
+        const descendingExpressions = mapValues(createDescendingExpression(0))(this.#mapping)
+
+        return new SortedTable(this.#name, f(descendingExpressions))
     }
 
     select() {
@@ -49,18 +43,18 @@ class Table {
     }
 
     insert(obj) {
-        return this.#generateInsertForTable(arrayOf(obj))
+        return generateInsert(this.name) (this.#mapping) (arrayOf(obj))
     }
 
     insertBatch(objs) {
-        return this.#generateInsertForTable(objs)
+        return generateInsert(this.name) (this.#mapping) (objs)
     }
 
     /* TRUNCATE quickly removes all rows from a set of tables.
        It has the same effect as an unqualified DELETE on each table, but since it does not actually scan the tables it is faster.
        Furthermore, it reclaims disk space immediately, rather than requiring a subsequent VACUUM operation. This is most useful on large tables. */
     truncate() {
-        return this.#truncateSql
+        return generateTruncate(this.name)
     }
 }
 
