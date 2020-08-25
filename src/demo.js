@@ -23,6 +23,20 @@ const BlogTable = new Table(
         published: 'published'
     })
 
+const JobTable = new Table(
+    'jobs',
+    {
+        id: 'id',
+        title: 'title',
+        requirements: 'requirements',
+        compensation: 'compensation',
+        amount: 'amount',
+        proposals: 'proposals',
+        posted: 'posted'
+    }
+)
+
+
 const firstPost = { id: '1ea8dea3-f584-4367-b86e-b45774c2d624', title: 'First title', published: new Date() }
 const secondPost = { id: '2ea8dea3-f584-4367-b86e-b45774c2d624', title: 'Second title', published: new Date() }
 
@@ -37,3 +51,5 @@ console.log(BlogTable.filter(b => b.id.equals('8ea8dea3-f584-4367-b86e-b45774c2d
 
 console.log(BlogTable.sortBy(b => b.published).select())
 console.log(BlogTable.sortDescendinglyBy(b => b.published).select())
+
+console.log(JobTable.filter(j => j.id.equals('9e22965c-d8a7-4064-b95b-2a1853e1adaf')).select())

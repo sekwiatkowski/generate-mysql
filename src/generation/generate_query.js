@@ -18,8 +18,8 @@ function generateColumn({tableIndex, column}) {
     return `t${tableIndex + 1}.${column}`
 }
 
-function generateValue({index, value}) {
-    return pair(`$${index+1}`)([ value ])
+function generateValue({parameterIndex, value}) {
+    return pair(`$${parameterIndex + 1}`)([ value ])
 }
 
 function generateSide(side) {
