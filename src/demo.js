@@ -1,20 +1,6 @@
 const {Table} = require('./index')
 const { Client } = require('pg')
 
-function createQuery(configuration) {
-    const client = new Client(configuration)
-
-    return async (sql, values) => {
-        await client.connect()
-
-        const res = await client.query(sql, values)
-
-        await client.end()
-
-        return res
-    }
-}
-
 const BlogTable = new Table(
     'blog',
     {

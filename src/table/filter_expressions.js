@@ -1,12 +1,5 @@
+const {createColumn} = require('./column')
 const {compose} = require('compose-functions')
-
-function createColumn(tableIndex) {
-    return column => ({
-        tableIndex,
-        column,
-        kind: 'column'
-    })
-}
 
 function createValue(parameterIndex) {
     return value => ({

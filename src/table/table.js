@@ -1,3 +1,4 @@
+const {createMapExpression} = require('./map_expressions')
 const {generateParameterlessQuery} = require('../generation/generate_query')
 const {generateTruncate} = require('../generation/generate_truncate')
 const {SortedTable} = require('./sorted_table')
@@ -40,6 +41,12 @@ class Table {
 
     select() {
         return generateParameterlessQuery({ select: '*', from: this.#name })
+    }
+
+    map(f) {
+        const mapExpressions = mapValues(createMapExpression(0))(this.#mapping)
+
+        return generateParameterlessQuery({ select: f(mapExpressions), from: this.#name })
     }
 
     insert(obj) {

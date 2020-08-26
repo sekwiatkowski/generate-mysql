@@ -1,6 +1,12 @@
-const {fromUndefinable} = require('compose-functions')
+const {betweenPair} = require('compose-functions')
+const {maybeUndefined} = require('compose-functions')
+const {onlyIf} = require('compose-functions')
+const {joinWithSpace} = require('compose-functions')
+const {mapFirst} = require('compose-functions')
+const {flipPair} = require('compose-functions')
+const {compose} = require('compose-functions')
+const {mapEntries} = require('compose-functions')
 const {some} = require('compose-functions')
-const {when} = require('compose-functions')
 const {pairWith} = require('compose-functions')
 const {isString} = require('compose-functions')
 const {flatten} = require('compose-functions')
@@ -40,8 +46,25 @@ function generatePredicate({kind, left, right}) {
     }
 }
 
+/*
+    someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
+
+    [ 'someProperty', { tableIndex: 0, column: 'some_column', kind: 'column' } ]
+
+    [ { tableIndex: 0, column: 'some_column', kind: 'column' }, 'someProperty' ]
+
+    [ 't1.some_column', 'someProperty' ]
+
+    [ 't1.some_column', 'AS', 'someProperty' ]
+ */
+const generateEntry = compose(flipPair, mapFirst(generateColumn), betweenPair('AS'), joinWithSpace)
+
+function generateMap(obj) {
+    return mapEntries(generateEntry)(obj)
+}
+
 function generateSelect(select) {
-    return `SELECT ${select}`
+    return `SELECT ${select === '*' ? '*' : generateMap(select)}`
 }
 
 function generateFrom(from) {
@@ -88,12 +111,12 @@ function generateQueryFragments(query) {
     return fragments
 }
 
-const ensurePair = when(isString) (pairWith([]))
+const ensurePair = onlyIf(isString) (pairWith([]))
 
 function generateParameterlessQuery({ select, from, orderBy }) {
     const selectSql = some(generateSelect(select))
     const fromSql = some(generateFrom(from))
-    const orderBySql = mapOption(generateOrderBy)(fromUndefinable(orderBy))
+    const orderBySql = mapOption(generateOrderBy)(maybeUndefined(orderBy))
 
     return joinWithNewline(concatOptions([selectSql, fromSql, orderBySql]))
 }
