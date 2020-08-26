@@ -1,3 +1,4 @@
+const {fold} = require('compose-functions')
 const {betweenPair} = require('compose-functions')
 const {maybeUndefined} = require('compose-functions')
 const {onlyIf} = require('compose-functions')
@@ -20,8 +21,12 @@ const {foldPair} = require('compose-functions')
 const {mapSecond} = require('compose-functions')
 const {map} = require('compose-functions')
 
+function generateTableAlias(index) {
+    return `t${index + 1}`
+}
+
 function generateColumn({tableIndex, column}) {
-    return `t${tableIndex + 1}.${column}`
+    return `${generateTableAlias(tableIndex)}.${column}`
 }
 
 function generateValue({parameterIndex, value}) {
@@ -37,7 +42,7 @@ function generateSide(side) {
     }
 }
 
-function generatePredicate({kind, left, right}) {
+function generateComparison({kind, left, right}) {
     switch (kind) {
         case 'equals':
             const [leftSql, leftParameters] = generateSide(left)
@@ -68,11 +73,11 @@ function generateSelect(select) {
 }
 
 function generateFrom(from) {
-    return `FROM ${from} t1`
+    return `FROM ${from} ${generateTableAlias(0)}`
 }
 
-function generateWhere(predicate) {
-    const [sql, parameters] = generatePredicate(predicate)
+function generateWhere(comparison) {
+    const [sql, parameters] = generateComparison(comparison)
     return [`WHERE ${sql}`, parameters]
 }
 
@@ -88,9 +93,35 @@ function generateOrderBy(expr) {
 const queryGenerators = [
     [generateSelect, 'select'],
     [generateFrom, 'from'],
+    [generateJoins, 'joins'],
     [generateWhere, 'where'],
     [generateOrderBy, 'orderBy']
 ]
+
+function generateJoin({ otherTable, comparison }) {
+    const [comparisonSql, parameters] = generateComparison(comparison)
+
+    const sqlFragments = [
+        'INNER JOIN',
+        otherTable.name,
+        generateTableAlias(otherTable.index),
+        'ON',
+        comparisonSql
+    ]
+
+    const sql = joinWithSpace(sqlFragments)
+
+    return [sql, parameters]
+}
+
+function generateJoins(joins) {
+    const items = map(generateJoin)(joins)
+
+    return fold
+        (([accSql, accParameters], [joinSql, joinParameters]) => [accSql + joinSql, accParameters.concat(joinParameters)])
+        (['', []])
+        (items)
+}
 
 function generateQueryFragments(query) {
     /* [ [ generateSelect, some(select) ],
