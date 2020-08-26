@@ -1,3 +1,9 @@
+const {surroundWithDoubleQuotes} = require('compose-functions')
+const {mapValues} = require('compose-functions')
+const {flattenObject} = require('compose-functions')
+const {applyPairTo} = require('compose-functions')
+const {applyPair} = require('compose-functions')
+const {joinWithCommaSpace} = require('compose-functions')
 const {fold} = require('compose-functions')
 const {betweenPair} = require('compose-functions')
 const {maybeUndefined} = require('compose-functions')
@@ -62,10 +68,19 @@ function generateComparison({kind, left, right}) {
 
     [ 't1.some_column', 'AS', 'someProperty' ]
  */
-const generateEntry = compose(flipPair, mapFirst(generateColumn), betweenPair('AS'), joinWithSpace)
+function generateColumnAlias(column) {
+    return alias => joinWithSpace([
+        generateColumn(column),
+        'AS',
+        surroundWithDoubleQuotes(alias)
+    ])
+}
 
 function generateMap(obj) {
-    return mapEntries(generateEntry)(obj)
+    const flattened = flattenObject(obj)
+    const createdColumns = mapValues(f => f()) (flattened)
+
+    return joinWithCommaSpace(mapEntries(compose(flipPair, applyPairTo(generateColumnAlias)))(createdColumns))
 }
 
 function generateSelect(select) {

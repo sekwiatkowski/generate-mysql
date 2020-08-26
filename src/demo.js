@@ -12,13 +12,15 @@ const BlogTable = new Table(
 const AuthorTable = new Table(
     'authors',
     {
-        id: 'id'
+        id: 'id',
+        firstName: 'first_name',
+        lastName: 'last_name'
     })
 
 const firstPost = { id: '1ea8dea3-f584-4367-b86e-b45774c2d624', title: 'First title', published: new Date() }
 const secondPost = { id: '2ea8dea3-f584-4367-b86e-b45774c2d624', title: 'Second title', published: new Date() }
 
-console.log(BlogTable.insert(firstPost))
+/* console.log(BlogTable.insert(firstPost))
 console.log(BlogTable.insertBatch([firstPost, secondPost]))
 
 console.log(BlogTable.truncate())
@@ -33,4 +35,15 @@ console.log(BlogTable.filter(j => j.id.equals('1ea8dea3-f584-4367-b86e-b45774c2d
 
 console.log(BlogTable.map(b => ({authorId: b.authorId})))
 
-console.log(BlogTable.innerJoin(AuthorTable, (b, a) => b.authorId.equals(a.id)).select())
+console.log(BlogTable.innerJoin(AuthorTable, (b, a) => b.authorId.equals(a.id)).select()) */
+
+console.log(
+    BlogTable
+        .innerJoin(AuthorTable, (b, a) => b.authorId.equals(a.id))
+        .map((b, a) => ({
+            author: {
+                firstName: a.firstName,
+                lastName: a.lastName
+            }
+        }))
+)

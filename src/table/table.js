@@ -1,3 +1,4 @@
+const {generateQuery} = require('../generation/generate_query')
 const {createJoin} = require('../expressions/join')
 const {TwoTables} = require('./two_tables')
 const {createMapExpression} = require('../expressions/map_expressions')
@@ -23,12 +24,10 @@ class Table {
 
     innerJoin(otherTable, f) {
         const theseFilterExpressions = mapValues(createComparisonExpressions(0) (0))(this.mapping)
-        const otherFilterExpressions = mapValues(createComparisonExpressions(1) (0))(this.mapping)
+        const otherFilterExpressions = mapValues(createComparisonExpressions(1) (0))(otherTable.mapping)
 
         const comparison = f(theseFilterExpressions, otherFilterExpressions)
         const join = createJoin(1, otherTable.name, comparison)
-
-        console.log(join)
 
         return new TwoTables(this.name, this.mapping, otherTable.name, otherTable.mapping, join)
     }
@@ -58,7 +57,7 @@ class Table {
     map(f) {
         const mapExpressions = mapValues(createMapExpression(0))(this.mapping)
 
-        return generateParameterlessQuery({ select: f(mapExpressions), from: this.name })
+        return generateQuery({ select: f(mapExpressions), from: this.name })
     }
 
     insert(obj) {
