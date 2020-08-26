@@ -6,7 +6,14 @@ const BlogTable = new Table(
     {
         id: 'id',
         title: 'title',
-        published: 'published'
+        published: 'published',
+        authorId: 'authorId'
+    })
+
+const AuthorTable = new Table(
+    'author',
+    {
+        id: 'id'
     })
 
 const JobTable = new Table(
@@ -39,3 +46,5 @@ console.log(BlogTable.sortBy(b => b.published).select())
 console.log(BlogTable.sortDescendinglyBy(b => b.published).select())
 
 console.log(JobTable.filter(j => j.id.equals('9e22965c-d8a7-4064-b95b-2a1853e1adaf')).select())
+
+console.log(BlogTable.map(b => ({authorId: b.authorId})))

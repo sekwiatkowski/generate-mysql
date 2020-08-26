@@ -1,13 +1,13 @@
-const {createMapExpression} = require('./map_expressions')
+const {createMapExpression} = require('../expressions/map_expressions')
 const {generateParameterlessQuery} = require('../generation/generate_query')
 const {generateTruncate} = require('../generation/generate_truncate')
 const {SortedTable} = require('./sorted_table')
 const {generateQuery} = require('../generation/generate_query')
 const {generateInsert} = require('../generation/generate_insert')
-const {createDescendingExpression} = require('./sort_expressions')
-const {createAscendingExpression} = require('./sort_expressions')
-const {createFilterExpressions} = require('./filter_expressions')
-const {createSortCriterion} = require('./sort_expressions')
+const {createDescendingExpression} = require('../expressions/sort_expressions')
+const {createAscendingExpression} = require('../expressions/sort_expressions')
+const {createFilterExpressions} = require('../expressions/filter_expressions')
+const {createSortCriterion} = require('../expressions/sort_expressions')
 const {FilteredTable} = require('./filtered_table')
 const {arrayOf} = require('compose-functions')
 const {mapValues} = require('compose-functions')
@@ -24,7 +24,7 @@ class Table {
     filter(f) {
         const filterExpressions = mapValues(createFilterExpressions(0) (0))(this.#mapping)
 
-        return new FilteredTable(this.#name, f(filterExpressions))
+        return new FilteredTable(this.#name, this.#mapping, f(filterExpressions))
     }
 
     sortBy(f) {
