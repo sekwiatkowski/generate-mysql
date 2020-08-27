@@ -1,4 +1,4 @@
-const {createMapExpression} = require('../expressions/map_expressions')
+const {createMapExpression} = require('../expressions/map-expressions')
 const {mapValues} = require('compose-functions')
 const {generateQuery} = require('../generation/generate_query')
 

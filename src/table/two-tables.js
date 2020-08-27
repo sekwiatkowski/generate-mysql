@@ -1,4 +1,4 @@
-const {createMapExpression} = require('../expressions/map_expressions')
+const {createMapExpression} = require('../expressions/map-expressions')
 const {mapValues} = require('compose-functions')
 const {generateQuery} = require('../generation/generate_query')
 
@@ -19,14 +19,14 @@ class TwoTables {
     }
 
     select() {
-        return generateQuery({ select: '*', from: this.firstName, joins: [this.firstJoin] })
+        return generateQuery({ select: '*', from: this.firstName, joins: [ this.firstJoin ] })
     }
 
     map(f) {
         const firstExpressions = mapValues(createMapExpression(0))(this.firstMapping)
         const secondExpressions = mapValues(createMapExpression(1))(this.secondMapping)
 
-        return generateQuery({ select: f(firstExpressions, secondExpressions), from: this.firstName })
+        return generateQuery({ select: f(firstExpressions, secondExpressions), from: this.firstName, joins: [ this.firstJoin ] })
     }
 
 }
