@@ -23,10 +23,10 @@ class Table {
     }
 
     innerJoin(otherTable, f) {
-        const theseFilterExpressions = mapValues(createComparisonExpressions(0) (0))(this.mapping)
-        const otherFilterExpressions = mapValues(createComparisonExpressions(1) (0))(otherTable.mapping)
+        const firstComparisonExpressions = mapValues(createComparisonExpressions(0) (0))(this.mapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpressions(1) (0))(otherTable.mapping)
 
-        const comparison = f(theseFilterExpressions, otherFilterExpressions)
+        const comparison = f(firstComparisonExpressions, secondComparisonExpressions)
         const join = createJoin(1, otherTable.name, comparison)
 
         return new TwoTables(this.name, this.mapping, otherTable.name, otherTable.mapping, join)
