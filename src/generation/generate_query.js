@@ -2,14 +2,11 @@ const {surroundWithDoubleQuotes} = require('compose-functions')
 const {mapValues} = require('compose-functions')
 const {flattenObject} = require('compose-functions')
 const {applyPairTo} = require('compose-functions')
-const {applyPair} = require('compose-functions')
 const {joinWithCommaSpace} = require('compose-functions')
 const {fold} = require('compose-functions')
-const {betweenPair} = require('compose-functions')
 const {maybeUndefined} = require('compose-functions')
 const {onlyIf} = require('compose-functions')
 const {joinWithSpace} = require('compose-functions')
-const {mapFirst} = require('compose-functions')
 const {flipPair} = require('compose-functions')
 const {compose} = require('compose-functions')
 const {mapEntries} = require('compose-functions')
@@ -130,12 +127,11 @@ function generateJoin({ otherTable, comparison }) {
 }
 
 function generateJoins(joins) {
-    const items = map(generateJoin)(joins)
+    const pairs = map(generateJoin)(joins)
 
-    return fold
-        (([accSql, accParameters], [joinSql, joinParameters]) => [accSql + joinSql, accParameters.concat(joinParameters)])
-        (['', []])
-        (items)
+    const [ sqlFragments, parameters ] = invertPairs(pairs)
+
+    return [ joinWithNewline(sqlFragments), parameters ]
 }
 
 function generateQueryFragments(query) {
