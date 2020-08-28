@@ -129,7 +129,9 @@ function generateJoin({ otherTable, comparison }) {
 function generateJoins(joins) {
     const pairs = map(generateJoin)(joins)
 
-    const [ sqlFragments, parameters ] = invertPairs(pairs)
+    const [ sqlFragments, parameterLists ] = invertPairs(pairs)
+
+    const parameters = flatten(parameterLists)
 
     return [ joinWithNewline(sqlFragments), parameters ]
 }
