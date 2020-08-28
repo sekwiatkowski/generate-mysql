@@ -1,3 +1,4 @@
+const {surroundWithDoubleQuotes} = require('compose-functions')
 const {pair} = require('compose-functions')
 const {flatMap} = require('compose-functions')
 const {identity} = require('compose-functions')
@@ -20,16 +21,18 @@ const {toString} = require('compose-functions')
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
 
 function generateInsert(tableName) {
-    return keysToColumns => {
-        const jsProperties = properties(keys(keysToColumns))
+    return propertyNamesToColumnNames => {
+        const getAllProperties = properties(keys(propertyNamesToColumnNames))
 
-        const columns = jsProperties (keysToColumns)
-        const numberOfColumns = length(columns)
-        const columnList = generateList(columns)
+        const columnNames = getAllProperties (propertyNamesToColumnNames)
+        const escapedColumnNames = map(surroundWithDoubleQuotes)(columnNames)
+        const columnList = generateList(escapedColumnNames)
+
+        const numberOfColumns = length(columnNames)
 
         return objs => {
             const numberOfRows = length(objs)
-            const rows = map(jsProperties) (objs)
+            const rows = map(getAllProperties) (objs)
 
             const indices = range(0) (numberOfRows)
             const starts = map(compose(multiply(numberOfColumns), add(1))) (indices)
