@@ -1,6 +1,8 @@
-const {createMapExpression} = require('../expressions/map-expressions')
+const {ThreeFilteredTables} = require('./three-filtered-tables')
+const {createComparisonExpressions} = require('../../expressions/comparison-expressions')
+const {createMapExpression} = require('../../expressions/map-expressions')
 const {mapValues} = require('compose-functions')
-const {generateQuery} = require('../generation/generate_query')
+const {generateQuery} = require('../../generation/generate_query')
 
 class ThreeTables {
     firstName
@@ -23,6 +25,19 @@ class ThreeTables {
 
         this.firstJoin = firstJoin
         this.secondJoin = secondJoin
+    }
+
+    filter(f) {
+        const firstComparisonExpressions = mapValues(createComparisonExpressions(0) (0))(this.firstMapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpressions(1) (0))(this.secondMapping)
+        const thirdComparisonExpressions = mapValues(createComparisonExpressions(2) (0))(this.thirdMapping)
+
+        return new ThreeFilteredTables(
+            this.firstName, this.firstMapping,
+            this.secondName, this.secondMapping,
+            this.thirdName, this.thirdMapping,
+            this.firstJoin, this.secondJoin,
+            f(firstComparisonExpressions, secondComparisonExpressions, thirdComparisonExpressions))
     }
 
     map(f) {

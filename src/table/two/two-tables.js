@@ -1,9 +1,10 @@
-const {ThreeTables} = require('./three-tables')
-const {createJoin} = require('../expressions/join')
-const {createComparisonExpressions} = require('../expressions/comparison-expressions')
-const {createMapExpression} = require('../expressions/map-expressions')
+const {TwoFilteredTables} = require('./two-filtered-tables')
+const {ThreeTables} = require('../three/three-tables')
+const {createJoin} = require('../../expressions/join')
+const {createComparisonExpressions} = require('../../expressions/comparison-expressions')
+const {createMapExpression} = require('../../expressions/map-expressions')
 const {mapValues} = require('compose-functions')
-const {generateQuery} = require('../generation/generate_query')
+const {generateQuery} = require('../../generation/generate_query')
 
 class TwoTables {
     firstName
@@ -41,6 +42,17 @@ class TwoTables {
             secondJoin)
     }
 
+    filter(f) {
+        const firstComparisonExpressions = mapValues(createComparisonExpressions(0) (0))(this.firstMapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpressions(1) (0))(this.secondMapping)
+
+        return new TwoFilteredTables(
+            this.firstName, this.firstMapping,
+            this.secondName, this.secondMapping,
+            this.firstJoin,
+            f(firstComparisonExpressions, secondComparisonExpressions))
+    }
+
     map(f) {
         const firstExpressions = mapValues(createMapExpression(0))(this.firstMapping)
         const secondExpressions = mapValues(createMapExpression(1))(this.secondMapping)
@@ -51,7 +63,6 @@ class TwoTables {
             joins: [ this.firstJoin ]
         })
     }
-
 }
 
 module.exports = {

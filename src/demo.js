@@ -60,3 +60,21 @@ console.log(
             }
         }))
 )
+
+console.log(
+    BlogTable
+        .innerJoin(AuthorTable, (b, a) => b.authorId.equals(a.id))
+        .innerJoin(CategoryTable, (b, a, c) => b.categoryId.equals(c.id))
+        .filter((b, a, c) => c.name.equals('name'))
+        .map((b, a, c) => ({
+            id: b.id,
+            title: b.title,
+            author: {
+                firstName: a.firstName,
+                lastName: a.lastName
+            },
+            category: {
+                name: c.name
+            }
+        }))
+)

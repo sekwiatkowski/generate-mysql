@@ -1,4 +1,4 @@
-const {Table} = require('./table/table')
+const {Table} = require('./table/one/table')
 
 module.exports = {
     Table
