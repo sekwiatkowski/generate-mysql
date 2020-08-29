@@ -36,7 +36,7 @@ class ThreeFilteredTables {
         return generateQuery({
             select: f(firstExpressions, secondExpressions, thirdExpressions),
             from: this.firstName,
-            joins: [ this.firstJoin ],
+            joins: [ this.firstJoin, this.secondJoin ],
             where: this.where
         })
     }
