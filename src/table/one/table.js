@@ -47,7 +47,7 @@ class Table {
     sortDescendinglyBy(f) {
         const descendingExpressions = mapValues(createDescendingExpression(0))(this.mapping)
 
-        return new SortedTable(this.name, f(descendingExpressions))
+        return new SortedTable(this.name, this.mapping, f(descendingExpressions))
     }
 
     select() {

@@ -5,6 +5,7 @@ const BlogTable = new Table(
     {
         id: 'id',
         title: 'title',
+        teaser: 'teaser',
         published: 'published',
         authorId: 'authorId',
         categoryId: 'categoryId'
@@ -26,8 +27,8 @@ const CategoryTable = new Table(
         name: 'name'
     })
 
-const firstPost = { id: '1ea8dea3-f584-4367-b86e-b45774c2d624', title: 'First title', published: new Date() }
-const secondPost = { id: '2ea8dea3-f584-4367-b86e-b45774c2d624', title: 'Second title', published: new Date() }
+const firstPost = { id: 1, title: 'First title', teaser: 'First teaser', published: new Date(), authorId: 1, categoryId: 1 }
+const secondPost = { id: 2, title: 'Second title', teaser: 'Second teaser', published: new Date(), authorId: 1, categoryId: 2 }
 
 console.log(BlogTable.insert(firstPost))
 console.log(BlogTable.insertBatch([firstPost, secondPost]))
@@ -38,7 +39,9 @@ console.log(BlogTable.select())
 console.log(BlogTable.filter(b => b.id.equals('8ea8dea3-f584-4367-b86e-b45774c2d624')).select())
 
 console.log(BlogTable.sortBy(b => b.published).select())
+
 console.log(BlogTable.sortDescendinglyBy(b => b.published).select())
+console.log(BlogTable.sortDescendinglyBy(b => b.published).map(b => ({ title: b.title, teaser: b.teaser })))
 
 console.log(BlogTable.filter(j => j.id.equals('1ea8dea3-f584-4367-b86e-b45774c2d624')).select())
 
