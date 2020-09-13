@@ -24,7 +24,7 @@ function createEquals(left) {
     })
 }
 
-function createComparisonExpressions(tableIndex) {
+function createComparisonExpression(tableIndex) {
     return firstParameterIndex => columnName => {
         const left = createColumn(tableIndex)(columnName)
 
@@ -44,5 +44,5 @@ function createComparisonExpressions(tableIndex) {
 
 module.exports = {
     createColumn,
-    createComparisonExpressions
+    createComparisonExpression
 }

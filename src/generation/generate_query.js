@@ -1,3 +1,4 @@
+const {isFunction} = require('compose-functions')
 const {surroundWithDoubleQuotes} = require('compose-functions')
 const {mapValues} = require('compose-functions')
 const {flattenObject} = require('compose-functions')
@@ -80,8 +81,24 @@ function generateMap(obj) {
     return joinWithCommaSpace(mapEntries(compose(flipPair, applyPairTo(generateColumnAlias)))(createdColumns))
 }
 
+function generateGet(createColumn) {
+    return generateColumn(createColumn())
+}
+
+function generateSelectColumns(select) {
+    if (select === '*') {
+        return '*'
+    }
+    else if(isFunction(select)) {
+        return generateGet(select)
+    }
+    else {
+        return generateMap(select)
+    }
+}
+
 function generateSelect(select) {
-    return `SELECT ${select === '*' ? '*' : generateMap(select)}`
+    return `SELECT ${generateSelectColumns(select)}`
 }
 
 function generateFrom(from) {

@@ -1,4 +1,5 @@
-const {createMapExpression} = require('../../expressions/map-expressions')
+const {createMapExpression} = require('../../expressions/map-expression')
+const {createGetExpression} = require('../../expressions/map-expression')
 const {mapValues} = require('compose-functions')
 const {generateQuery} = require('../../generation/generate_query')
 
@@ -14,6 +15,8 @@ class ThreeFilteredTables {
 
     where
 
+    generateSelectFromJoinsWhere
+
     constructor(firstName, firstMapping, secondName, secondMapping, thirdName, thirdMapping, firstJoin, secondJoin, where) {
         this.firstName = firstName
         this.firstMapping = firstMapping
@@ -26,6 +29,13 @@ class ThreeFilteredTables {
         this.secondJoin = secondJoin
 
         this.where = where
+
+        this.generateSelectFromJoinsWhere = select => generateQuery({
+            select,
+            from: this.firstName,
+            joins: [ this.firstJoin ],
+            where: this.where
+        })
     }
 
     map(f) {
@@ -33,12 +43,15 @@ class ThreeFilteredTables {
         const secondExpressions = mapValues(createMapExpression(1)) (this.secondMapping)
         const thirdExpressions = mapValues(createMapExpression(2)) (this.thirdMapping)
 
-        return generateQuery({
-            select: f(firstExpressions, secondExpressions, thirdExpressions),
-            from: this.firstName,
-            joins: [ this.firstJoin, this.secondJoin ],
-            where: this.where
-        })
+        return this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions))
+    }
+
+    get(f) {
+        const firstExpressions = mapValues(createGetExpression(0)) (this.firstMapping)
+        const secondExpressions = mapValues(createGetExpression(1)) (this.secondMapping)
+        const thirdExpressions = mapValues(createGetExpression(2)) (this.thirdMapping)
+
+        return this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions))
     }
 }
 

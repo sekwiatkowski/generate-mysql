@@ -81,3 +81,8 @@ console.log(
             }
         }))
 )
+
+console.log(
+    BlogTable
+        .get(b => b.title)
+)

@@ -1,9 +1,9 @@
 {
     "name": "generate-sql",
-    "version": "0.4.2",
+    "version": "0.5.0",
     "main": "src/index.js",
     "dependencies": {
-        "compose-functions": "sekwiatkowski/compose-functions#v0.8.0"
+        "compose-functions": "sekwiatkowski/compose-functions#v0.11.1"
     },
     "devDependencies": {
         "pg": "8.3.2"

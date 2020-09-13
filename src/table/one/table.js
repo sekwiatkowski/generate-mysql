@@ -1,14 +1,15 @@
+const {createGetExpression} = require('../../expressions/get-expression')
 const {generateQuery} = require('../../generation/generate_query')
 const {createJoin} = require('../../expressions/join')
 const {TwoTables} = require('../two/two-tables')
-const {createMapExpression} = require('../../expressions/map-expressions')
+const {createMapExpression} = require('../../expressions/map-expression')
 const {generateParameterlessQuery} = require('../../generation/generate_query')
 const {generateTruncate} = require('../../generation/generate_truncate')
 const {SortedTable} = require('./sorted-table')
 const {generateInsert} = require('../../generation/generate_insert')
-const {createDescendingExpression} = require('../../expressions/sort-expressions')
-const {createAscendingExpression} = require('../../expressions/sort-expressions')
-const {createComparisonExpressions} = require('../../expressions/comparison-expressions')
+const {createDescendingExpression} = require('../../expressions/sort-expression')
+const {createAscendingExpression} = require('../../expressions/sort-expression')
+const {createComparisonExpression} = require('../../expressions/comparison-expression')
 const {FilteredTable} = require('./filtered-table')
 const {arrayOf} = require('compose-functions')
 const {mapValues} = require('compose-functions')
@@ -16,15 +17,17 @@ const {mapValues} = require('compose-functions')
 class Table {
     name
     mapping
+    generateSelectFrom
 
     constructor(name, mapping) {
         this.name = name
         this.mapping = mapping
+        this.generateSelectFrom = select => generateParameterlessQuery({ select, from: this.name })
     }
 
     innerJoin(otherTable, f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpressions(0) (0))(this.mapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpressions(1) (0))(otherTable.mapping)
+        const firstComparisonExpressions = mapValues(createComparisonExpression(0) (0))(this.mapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpression(1) (0))(otherTable.mapping)
 
         const comparison = f(firstComparisonExpressions, secondComparisonExpressions)
         const join = createJoin(1, otherTable.name, comparison)
@@ -33,7 +36,7 @@ class Table {
     }
 
     filter(f) {
-        const filterExpressions = mapValues(createComparisonExpressions(0) (0))(this.mapping)
+        const filterExpressions = mapValues(createComparisonExpression(0) (0))(this.mapping)
 
         return new FilteredTable(this.name, this.mapping, f(filterExpressions))
     }
@@ -51,13 +54,19 @@ class Table {
     }
 
     select() {
-        return generateParameterlessQuery({ select: '*', from: this.name })
+        return this.generateSelectFrom('*')
     }
 
     map(f) {
         const mapExpressions = mapValues(createMapExpression(0))(this.mapping)
 
-        return generateQuery({ select: f(mapExpressions), from: this.name })
+        return this.generateSelectFrom(f(mapExpressions))
+    }
+
+    get(f) {
+        const getExpressions = mapValues(createGetExpression(0))(this.mapping)
+
+        return this.generateSelectFrom(f(getExpressions))
     }
 
     insert(obj) {

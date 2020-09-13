@@ -1,4 +1,4 @@
-const {createColumn} = require('./comparison-expressions')
+const {createColumn} = require('./comparison-expression')
 
 function createMapExpression(tableIndex) {
     return column => () => createColumn(tableIndex) (column)
