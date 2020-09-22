@@ -1,9 +1,9 @@
-const {createGetExpression} = require('../../expressions/get-expression')
-const {createMapExpression} = require('../../expressions/map-expression')
-const {mapValues} = require('compose-functions')
-const {generateQuery} = require('../../generation/generate_query')
+import {mapValues} from 'compose-functions'
+import {createMapExpression} from '../../expressions/map-expression'
+import {createGetExpression} from '../../expressions/get-expression'
+import {generateQuery} from '../../generation/generate_query'
 
-class TwoFilteredTables {
+export class TwoFilteredTables {
     firstName
     firstMapping
     secondName
@@ -45,8 +45,4 @@ class TwoFilteredTables {
 
         return this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions))
     }
-}
-
-module.exports = {
-    TwoFilteredTables
 }

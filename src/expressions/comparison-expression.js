@@ -1,6 +1,6 @@
-const {isObject} = require('compose-functions')
+import {isObject} from 'compose-functions'
 
-function createColumn(tableIndex) {
+export function createColumn(tableIndex) {
     return column => ({
         tableIndex,
         column,
@@ -24,7 +24,7 @@ function createEquals(left) {
     })
 }
 
-function createComparisonExpression(tableIndex) {
+export function createComparisonExpression(tableIndex) {
     return firstParameterIndex => columnName => {
         const left = createColumn(tableIndex)(columnName)
 
@@ -40,9 +40,4 @@ function createComparisonExpression(tableIndex) {
             }
         })
     }
-}
-
-module.exports = {
-    createColumn,
-    createComparisonExpression
 }

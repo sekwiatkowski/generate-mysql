@@ -1,29 +1,13 @@
-const {isFunction} = require('compose-functions')
-const {surroundWithDoubleQuotes} = require('compose-functions')
-const {mapValues} = require('compose-functions')
-const {flattenObject} = require('compose-functions')
-const {applyPairTo} = require('compose-functions')
-const {joinWithCommaSpace} = require('compose-functions')
-const {fold} = require('compose-functions')
-const {maybeUndefined} = require('compose-functions')
-const {onlyIf} = require('compose-functions')
-const {joinWithSpace} = require('compose-functions')
-const {flipPair} = require('compose-functions')
-const {compose} = require('compose-functions')
-const {mapEntries} = require('compose-functions')
-const {some} = require('compose-functions')
-const {pairWith} = require('compose-functions')
-const {isString} = require('compose-functions')
-const {flatten} = require('compose-functions')
-const {invertPairs} = require('compose-functions')
-const {safePropertyOf} = require('compose-functions')
-const {concatOptions} = require('compose-functions')
-const {pair} = require('compose-functions')
-const {joinWithNewline} = require('compose-functions')
-const {mapOption} = require('compose-functions')
-const {foldPair} = require('compose-functions')
-const {mapSecond} = require('compose-functions')
-const {map} = require('compose-functions')
+import {
+    applyPairTo,
+    compose, concatOptions, flatten,
+    flattenObject, flipPair, foldPair, invertPairs, isFunction, isString,
+    joinWithCommaSpace, joinWithNewline,
+    joinWithSpace, map, mapEntries, mapOption, mapSecond,
+    mapValues, maybeUndefined, onlyIf,
+    pair, pairWith, safePropertyOf, some,
+    surroundWithDoubleQuotes
+} from 'compose-functions'
 
 function generateTableAlias(index) {
     return `t${index + 1}`
@@ -172,9 +156,9 @@ function generateQueryFragments(query) {
     return fragments
 }
 
-const ensurePair = onlyIf(isString) (pairWith([]))
+const ensurePair = onlyIf (isString) (pairWith([]))
 
-function generateParameterlessQuery({ select, from, orderBy }) {
+export function generateParameterlessQuery({ select, from, orderBy }) {
     const selectSql = some(generateSelect(select))
     const fromSql = some(generateFrom(from))
     const orderBySql = mapOption(generateOrderBy)(maybeUndefined(orderBy))
@@ -182,7 +166,7 @@ function generateParameterlessQuery({ select, from, orderBy }) {
     return joinWithNewline(concatOptions([selectSql, fromSql, orderBySql]))
 }
 
-function generateQuery(query) {
+export function generateQuery(query) {
     const fragments = generateQueryFragments(query)
 
     const ensuredPairs = map(ensurePair)(fragments)
@@ -193,10 +177,4 @@ function generateQuery(query) {
     const parameters = flatten(parameterFragments)
 
     return [sql, parameters]
-}
-
-
-module.exports = {
-    generateQuery,
-    generateParameterlessQuery
 }

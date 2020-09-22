@@ -1,9 +1,9 @@
-const {createGetExpression} = require('../../expressions/get-expression')
-const {createMapExpression} = require('../../expressions/map-expression')
-const {mapValues} = require('compose-functions')
-const {generateQuery} = require('../../generation/generate_query')
+import {generateQuery} from '../../generation/generate_query'
+import {mapValues} from 'compose-functions'
+import {createMapExpression} from '../../expressions/map-expression'
+import {createGetExpression} from '../../expressions/get-expression'
 
-class FilteredTable {
+export class FilteredTable {
     name
     mapping
     where
@@ -31,8 +31,4 @@ class FilteredTable {
 
         return this.generateSelectFromWhere(f(getExpressions))
     }
-}
-
-module.exports = {
-    FilteredTable
 }

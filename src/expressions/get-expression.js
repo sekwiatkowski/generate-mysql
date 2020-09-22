@@ -1,9 +1,5 @@
-const {createColumn} = require('./comparison-expression')
+import {createColumn} from './comparison-expression'
 
-function createGetExpression(tableIndex) {
+export function createGetExpression(tableIndex) {
     return column => () => createColumn(tableIndex) (column)
-}
-
-module.exports = {
-    createGetExpression
 }

@@ -1,26 +1,26 @@
-const {surroundWithDoubleQuotes} = require('compose-functions')
-const {pair} = require('compose-functions')
-const {flatMap} = require('compose-functions')
-const {identity} = require('compose-functions')
-const {surroundWithParentheses} = require('compose-functions')
-const {joinWithSpace} = require('compose-functions')
-const {joinWithCommaSpace} = require('compose-functions')
-const {prepend} = require('compose-functions')
-const {applyPairTo} = require('compose-functions')
-const {pairBy} = require('compose-functions')
-const {add} = require('compose-functions')
-const {length} = require('compose-functions')
-const {multiply} = require('compose-functions')
-const {compose} = require('compose-functions')
-const {map} = require('compose-functions')
-const {range} = require('compose-functions')
-const {properties} = require('compose-functions')
-const {keys} = require('compose-functions')
-const {toString} = require('compose-functions')
+import {
+    add,
+    applyPairTo,
+    compose,
+    flatMap,
+    identity,
+    joinWithCommaSpace,
+    joinWithSpace,
+    keys,
+    length,
+    map, multiply,
+    pair,
+    pairBy,
+    prepend,
+    properties,
+    range,
+    surroundWithDoubleQuotes,
+    surroundWithParentheses
+} from 'compose-functions'
 
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
 
-function generateInsert(tableName) {
+export function generateInsert(tableName) {
     return propertyNamesToColumnNames => {
         const getAllProperties = properties(keys(propertyNamesToColumnNames))
 
@@ -54,8 +54,4 @@ function generateInsert(tableName) {
             return pair(sql) (parameters)
         }
     }
-}
-
-module.exports = {
-    generateInsert
 }

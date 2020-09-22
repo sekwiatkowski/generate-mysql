@@ -7,11 +7,5 @@ function createSortExpression(direction) {
     })
 }
 
-
-const createAscendingExpression = createSortExpression('ASC')
-const createDescendingExpression = createSortExpression('DESC')
-
-module.exports = {
-    createAscendingExpression,
-    createDescendingExpression
-}
+export const createAscendingExpression = createSortExpression('ASC')
+export const createDescendingExpression = createSortExpression('DESC')

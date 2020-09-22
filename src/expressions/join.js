@@ -1,4 +1,4 @@
-function createJoin(otherIndex, otherTableName, comparison) {
+export function createJoin(otherIndex, otherTableName, comparison) {
     return ({
         otherTable: {
             index: otherIndex,
@@ -7,8 +7,4 @@ function createJoin(otherIndex, otherTableName, comparison) {
         comparison,
         kind: 'join'
     })
-}
-
-module.exports = {
-    createJoin
 }

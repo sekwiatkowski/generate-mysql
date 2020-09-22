@@ -1,5 +1,1 @@
-const {Table} = require('./table/one/table')
-
-module.exports = {
-    Table
-}
+export Table from './table/one/table'

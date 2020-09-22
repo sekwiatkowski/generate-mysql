@@ -1,20 +1,17 @@
-const {createGetExpression} = require('../../expressions/get-expression')
-const {generateQuery} = require('../../generation/generate_query')
-const {createJoin} = require('../../expressions/join')
-const {TwoTables} = require('../two/two-tables')
-const {createMapExpression} = require('../../expressions/map-expression')
-const {generateParameterlessQuery} = require('../../generation/generate_query')
-const {generateTruncate} = require('../../generation/generate_truncate')
-const {SortedTable} = require('./sorted-table')
-const {generateInsert} = require('../../generation/generate_insert')
-const {createDescendingExpression} = require('../../expressions/sort-expression')
-const {createAscendingExpression} = require('../../expressions/sort-expression')
-const {createComparisonExpression} = require('../../expressions/comparison-expression')
-const {FilteredTable} = require('./filtered-table')
-const {arrayOf} = require('compose-functions')
-const {mapValues} = require('compose-functions')
+import {generateParameterlessQuery} from '../../generation/generate_query'
+import {arrayOf, mapValues} from 'compose-functions'
+import {createComparisonExpression} from '../../expressions/comparison-expression'
+import {createAscendingExpression, createDescendingExpression} from '../../expressions/sort-expression'
+import {createJoin} from '../../expressions/join'
+import {TwoTables} from '../two/two-tables'
+import {FilteredTable} from './filtered-table'
+import {SortedTable} from './sorted-table'
+import {createMapExpression} from '../../expressions/map-expression'
+import {createGetExpression} from '../../expressions/get-expression'
+import {generateInsert} from '../../generation/generate_insert'
+import {generateTruncate} from '../../generation/generate_truncate'
 
-class Table {
+export class Table {
     name
     mapping
     generateSelectFrom
@@ -83,8 +80,4 @@ class Table {
     truncate() {
         return generateTruncate(this.name)
     }
-}
-
-module.exports = {
-    Table
 }

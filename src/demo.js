@@ -1,4 +1,4 @@
-const {Table} = require('./index')
+import {Table} from './table/one/table'
 
 const BlogTable = new Table(
     'blog',
@@ -84,5 +84,11 @@ console.log(
 
 console.log(
     BlogTable
+        .get(b => b.title)
+)
+
+console.log(
+    BlogTable
+        .filter(b => b.id.equals('1'))
         .get(b => b.title)
 )

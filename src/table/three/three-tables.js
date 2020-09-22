@@ -1,11 +1,11 @@
-const {createGetExpression} = require('../../expressions/get-expression')
-const {ThreeFilteredTables} = require('./three-filtered-tables')
-const {createComparisonExpression} = require('../../expressions/comparison-expression')
-const {createMapExpression} = require('../../expressions/map-expression')
-const {mapValues} = require('compose-functions')
-const {generateQuery} = require('../../generation/generate_query')
+import {mapValues} from 'compose-functions'
+import {generateQuery} from '../../generation/generate_query'
+import {createComparisonExpression} from '../../expressions/comparison-expression'
+import {ThreeFilteredTables} from './three-filtered-tables'
+import {createMapExpression} from '../../expressions/map-expression'
+import {createGetExpression} from '../../expressions/get-expression'
 
-class ThreeTables {
+export class ThreeTables {
     firstName
     firstMapping
     secondName
@@ -61,8 +61,4 @@ class ThreeTables {
         return this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions))
     }
 
-}
-
-module.exports = {
-    ThreeTables
 }
