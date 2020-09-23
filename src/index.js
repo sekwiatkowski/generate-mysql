@@ -1,1 +1,1 @@
-export Table from './table/one/table'
+export {Table} from './table/one/table'
