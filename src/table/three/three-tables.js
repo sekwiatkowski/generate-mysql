@@ -4,6 +4,7 @@ import {createComparisonExpression} from '../../expressions/comparison-expressio
 import {ThreeFilteredTables} from './three-filtered-tables'
 import {createMapExpression} from '../../expressions/map-expression'
 import {createGetExpression} from '../../expressions/get-expression'
+import {createQuery} from '../../query'
 
 export class ThreeTables {
     firstName
@@ -50,7 +51,7 @@ export class ThreeTables {
         const secondExpressions = mapValues(createMapExpression(1))(this.secondMapping)
         const thirdExpressions = mapValues(createMapExpression(2))(this.thirdMapping)
 
-        return this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions))
+        return createQuery(() => this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 
     get(f) {
@@ -58,7 +59,7 @@ export class ThreeTables {
         const secondExpressions = mapValues(createGetExpression(1))(this.secondMapping)
         const thirdExpressions = mapValues(createGetExpression(2))(this.thirdMapping)
 
-        return this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions))
+        return createQuery(() => this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 
 }

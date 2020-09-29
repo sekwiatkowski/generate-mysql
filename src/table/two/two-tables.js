@@ -6,6 +6,7 @@ import {generateQuery} from '../../generation/generate_query'
 import {ThreeTables} from '../three/three-tables'
 import {createGetExpression} from '../../expressions/get-expression'
 import {createMapExpression} from '../../expressions/map-expression'
+import {createQuery} from '../../query'
 
 export class TwoTables {
     firstName
@@ -66,13 +67,13 @@ export class TwoTables {
         const firstExpressions = mapValues(createMapExpression(0))(this.firstMapping)
         const secondExpressions = mapValues(createMapExpression(1))(this.secondMapping)
 
-        return this.generateSelectFromJoins(f(firstExpressions, secondExpressions))
+        return createQuery(() => this.generateSelectFromJoins(f(firstExpressions, secondExpressions)))
     }
 
     get(f) {
         const firstExpressions = mapValues(createGetExpression(0))(this.firstMapping)
         const secondExpressions = mapValues(createGetExpression(1))(this.secondMapping)
 
-        return this.generateSelectFromJoins(f(firstExpressions, secondExpressions))
+        return createQuery(() => this.generateSelectFromJoins(f(firstExpressions, secondExpressions)))
     }
 }

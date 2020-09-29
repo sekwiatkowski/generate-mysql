@@ -2,6 +2,7 @@ import {generateQuery} from '../../generation/generate_query'
 import {mapValues} from 'compose-functions'
 import {createMapExpression} from '../../expressions/map-expression'
 import {createGetExpression} from '../../expressions/get-expression'
+import {createQuery} from '../../query'
 
 export class FilteredTable {
     name
@@ -17,18 +18,18 @@ export class FilteredTable {
     }
 
     select() {
-        return this.generateSelectFromWhere('*')
+        return createQuery(() => this.generateSelectFromWhere('*'))
     }
 
     map(f) {
         const mapExpressions = mapValues(createMapExpression(0))(this.mapping)
 
-        return this.generateSelectFromWhere(f(mapExpressions))
+        return createQuery(() => this.generateSelectFromWhere(f(mapExpressions)))
     }
 
     get(f) {
         const getExpressions = mapValues(createGetExpression(0))(this.mapping)
 
-        return this.generateSelectFromWhere(f(getExpressions))
+        return createQuery(() => this.generateSelectFromWhere(f(getExpressions)))
     }
 }

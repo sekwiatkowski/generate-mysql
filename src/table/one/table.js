@@ -10,6 +10,7 @@ import {createMapExpression} from '../../expressions/map-expression'
 import {createGetExpression} from '../../expressions/get-expression'
 import {generateInsert} from '../../generation/generate_insert'
 import {generateTruncate} from '../../generation/generate_truncate'
+import {createQuery} from '../../query'
 
 export class Table {
     name
@@ -51,19 +52,19 @@ export class Table {
     }
 
     select() {
-        return this.generateSelectFrom('*')
+        return createQuery(() => this.generateSelectFrom('*'))
     }
 
     map(f) {
         const mapExpressions = mapValues(createMapExpression(0))(this.mapping)
 
-        return this.generateSelectFrom(f(mapExpressions))
+        return createQuery(() => this.generateSelectFrom(f(mapExpressions)))
     }
 
     get(f) {
         const getExpressions = mapValues(createGetExpression(0))(this.mapping)
 
-        return this.generateSelectFrom(f(getExpressions))
+        return createQuery(() => this.generateSelectFrom(f(getExpressions)))
     }
 
     insert(obj) {
