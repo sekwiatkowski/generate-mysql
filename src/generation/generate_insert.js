@@ -14,6 +14,7 @@ import {
     prepend,
     properties,
     range,
+    toString,
     surroundWithDoubleQuotes,
     surroundWithParentheses
 } from 'compose-functions'
@@ -38,14 +39,14 @@ export function generateInsert(tableName) {
             const starts = map(compose(multiply(numberOfColumns), add(1))) (indices)
             const ranges = map(compose(pairBy(add(numberOfColumns)), applyPairTo(range))) (starts)
             const withDollarSign = map(map(compose(toString, prepend('$')))) (ranges)
-            const parameterLists = map(generateList) (withDollarSign)
+            const argumentLists = map(generateList) (withDollarSign)
 
             const fragments = [
                 'INSERT INTO',
                 tableName,
                 columnList,
                 'VALUES',
-                joinWithCommaSpace(parameterLists)
+                joinWithCommaSpace(argumentLists)
             ]
 
             const sql = joinWithSpace(fragments)
