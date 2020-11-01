@@ -16,10 +16,14 @@ import {
     range,
     toString,
     surroundWithDoubleQuotes,
-    surroundWithParentheses
+    surroundWithParentheses, flatten
 } from 'compose-functions'
 
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
+
+function serializeParameter(p) {
+    return p instanceof Date ? p.toISOString() : p
+}
 
 export function generateInsert(tableName) {
     return propertyNamesToColumnNames => {
@@ -50,9 +54,12 @@ export function generateInsert(tableName) {
             ]
 
             const sql = joinWithSpace(fragments)
-            const parameters = flatMap(identity)(rows)
 
-            return pair(sql) (parameters)
+            const parameters = flatten(rows)
+
+            const serializedParameters = map(serializeParameter)(parameters)
+
+            return pair(sql) (serializedParameters)
         }
     }
 }

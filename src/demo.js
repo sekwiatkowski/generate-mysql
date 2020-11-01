@@ -7,8 +7,8 @@ const BlogTable = new Table(
         title: 'title',
         teaser: 'teaser',
         published: 'published',
-        authorId: 'authorId',
-        categoryId: 'categoryId'
+        authorId: 'author_id',
+        categoryId: 'category_id'
     })
 
 const AuthorTable = new Table(
