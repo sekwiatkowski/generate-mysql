@@ -1,4 +1,4 @@
-import generateColumn from './generate_column'
+import generateColumn from './generate-column'
 
 export function generateValue({value}) {
     return ['?', [value]]

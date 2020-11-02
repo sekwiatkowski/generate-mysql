@@ -1,5 +1,5 @@
 import {mapValues} from 'compose-functions'
-import {generateQuery} from '../../generation/generate_query'
+import {generateQuery} from '../../generation/generate-query'
 import {createComparisonExpression} from '../../expressions/comparison-expression'
 import {ThreeFilteredTables} from './three-filtered-tables'
 import createMapExpression from '../../expressions/map-expression'

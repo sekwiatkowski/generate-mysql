@@ -1,5 +1,5 @@
 import {mapValues} from 'compose-functions'
-import {generateParameterlessQuery} from '../../generation/generate_query'
+import {generateParameterlessQuery} from '../../generation/generate-query'
 import createMapExpression from '../../expressions/map-expression'
 import createGetExpression from '../../expressions/get-expression'
 import {createQuery} from '../../query'

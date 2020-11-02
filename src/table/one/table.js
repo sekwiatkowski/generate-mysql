@@ -1,4 +1,4 @@
-import {generateParameterlessQuery} from '../../generation/generate_query'
+import {generateParameterlessQuery} from '../../generation/generate-query'
 import {arrayOf, mapValues} from 'compose-functions'
 import {createComparisonExpression} from '../../expressions/comparison-expression'
 import {createAscendingExpression, createDescendingExpression} from '../../expressions/sort-expression'
@@ -8,8 +8,8 @@ import {FilteredTable} from './filtered-table'
 import {SortedTable} from './sorted-table'
 import createMapExpression from '../../expressions/map-expression'
 import createGetExpression from '../../expressions/get-expression'
-import {generateInsert} from '../../generation/generate_insert'
-import {generateTruncate} from '../../generation/generate_truncate'
+import {generateInsert} from '../../generation/generate-insert'
+import {generateTruncate} from '../../generation/generate-truncate'
 import {createQuery} from '../../query'
 
 export class Table {

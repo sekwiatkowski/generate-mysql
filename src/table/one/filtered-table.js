@@ -1,9 +1,9 @@
-import {generateQuery} from '../../generation/generate_query'
+import {generateQuery} from '../../generation/generate-query'
 import {mapValues} from 'compose-functions'
 import createMapExpression from '../../expressions/map-expression'
 import createGetExpression from '../../expressions/get-expression'
 import {createQuery} from '../../query'
-import generateUpdate from '../../generation/generate_update'
+import generateUpdate from '../../generation/generate-update'
 
 export class FilteredTable {
     name

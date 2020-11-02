@@ -24,9 +24,9 @@ import {
     some,
     surroundWithDoubleQuotes
 } from 'compose-functions'
-import {generateTableExpression} from './generate_table'
-import generateColumn from './generate_column'
-import {generateComparison} from './generate_comparison'
+import {generateTableExpression} from './generate-table'
+import generateColumn from './generate-column'
+import {generateComparison} from './generate-comparison'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }

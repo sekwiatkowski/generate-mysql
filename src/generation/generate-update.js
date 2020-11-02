@@ -9,8 +9,8 @@ import {
     propertyOf,
     unzip
 } from 'compose-functions'
-import {generateTableExpression} from './generate_table'
-import {generateComparison} from './generate_comparison'
+import {generateTableExpression} from './generate-table'
+import {generateComparison} from './generate-comparison'
 import createValue from '../expressions/value-expressions'
 import {createEquality} from '../expressions/comparison-expression'
 import createColumn from '../expressions/column-expressions'
