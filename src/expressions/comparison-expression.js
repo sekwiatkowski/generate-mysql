@@ -1,6 +1,6 @@
 import {isObject} from 'compose-functions'
-import createColumn from './column-expressions'
-import createValue from './value-expressions'
+import createColumn from './column'
+import createValue from './value'
 
 export function createEquality(left) {
     return right => ({
