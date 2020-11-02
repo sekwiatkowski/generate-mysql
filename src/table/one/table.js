@@ -8,8 +8,8 @@ import {FilteredTable} from './filtered-table'
 import {SortedTable} from './sorted-table'
 import createMapExpression from '../../expressions/map-expression'
 import createGetExpression from '../../expressions/get-expression'
-import {generateInsert} from '../../generation/generate-insert'
-import {generateTruncate} from '../../generation/generate-truncate'
+import generateInsert from '../../generation/generate-insert'
+import generateTruncate from '../../generation/generate-truncate'
 import {createQuery} from '../../query'
 
 export class Table {

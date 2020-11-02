@@ -13,7 +13,7 @@ function generateSide(side) {
     }
 }
 
-export function generateComparison({kind, left, right}) {
+export default function generateComparison({kind, left, right}) {
     switch (kind) {
         case 'equals':
             const [leftSql, leftParameters] = generateSide(left)

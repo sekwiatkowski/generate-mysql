@@ -26,7 +26,7 @@ import {
 } from 'compose-functions'
 import {generateTableExpression} from './generate-table'
 import generateColumn from './generate-column'
-import {generateComparison} from './generate-comparison'
+import generateComparison from './generate-comparison'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }

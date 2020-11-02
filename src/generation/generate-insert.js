@@ -14,7 +14,7 @@ import {
 
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
 
-export function generateInsert(tableName) {
+export default function generateInsert(tableName) {
     return propertyNamesToColumnNames => {
         const getAllProperties = properties(keys(propertyNamesToColumnNames))
 
