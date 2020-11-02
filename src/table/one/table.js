@@ -24,8 +24,8 @@ export class Table {
     }
 
     innerJoin(otherTable, f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0) (0))(this.mapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1) (0))(otherTable.mapping)
+        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.mapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(otherTable.mapping)
 
         const comparison = f(firstComparisonExpressions, secondComparisonExpressions)
         const join = createJoin(1, otherTable.name, comparison)
@@ -34,7 +34,7 @@ export class Table {
     }
 
     filter(f) {
-        const filterExpressions = mapValues(createComparisonExpression(0) (0))(this.mapping)
+        const filterExpressions = mapValues(createComparisonExpression(0))(this.mapping)
 
         return new FilteredTable(this.name, this.mapping, f(filterExpressions))
     }
@@ -42,7 +42,7 @@ export class Table {
     sortBy(f) {
         const ascendingExpressions = mapValues(createAscendingExpression(0))(this.mapping)
 
-        return new SortedTable(this.name, f(ascendingExpressions))
+        return new SortedTable(this.name, this.mapping, f(ascendingExpressions))
     }
 
     sortDescendinglyBy(f) {

@@ -34,9 +34,9 @@ export class ThreeTables {
     }
 
     filter(f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0) (0))(this.firstMapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1) (0))(this.secondMapping)
-        const thirdComparisonExpressions = mapValues(createComparisonExpression(2) (0))(this.thirdMapping)
+        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.firstMapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(this.secondMapping)
+        const thirdComparisonExpressions = mapValues(createComparisonExpression(2))(this.thirdMapping)
 
         return new ThreeFilteredTables(
             this.firstName, this.firstMapping,

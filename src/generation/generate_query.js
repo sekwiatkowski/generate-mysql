@@ -17,8 +17,8 @@ function generateColumn({tableIndex, column}) {
     return `${generateTableAlias(tableIndex)}.${column}`
 }
 
-function generateValue({parameterIndex, value}) {
-    return pair(`$${parameterIndex + 1}`)([ value ])
+function generateValue({value}) {
+    return ['?', [value]]
 }
 
 function generateSide(side) {

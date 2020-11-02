@@ -8,12 +8,11 @@ export function createColumn(tableIndex) {
     })
 }
 
-function createValue(parameterIndex) {
-    return value => ({
-        parameterIndex,
+function createValue(value) {
+    return {
         value,
         kind: 'value'
-    })
+    }
 }
 
 function createEquals(left) {
@@ -25,7 +24,7 @@ function createEquals(left) {
 }
 
 export function createComparisonExpression(tableIndex) {
-    return firstParameterIndex => columnName => {
+    return columnName => {
         const left = createColumn(tableIndex)(columnName)
 
         return ({
@@ -34,7 +33,7 @@ export function createComparisonExpression(tableIndex) {
             equals: function (other) {
                 const right = isObject(other)
                     ? createColumn(other.tableIndex)(other.columnName)
-                    : createValue(firstParameterIndex)(other)
+                    : createValue(other)
 
                 return createEquals(left)(right)
             }

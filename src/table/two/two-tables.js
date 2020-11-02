@@ -34,9 +34,9 @@ export class TwoTables {
     }
 
     innerJoin(otherTable, f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0) (0))(this.firstMapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1) (0))(this.secondMapping)
-        const thirdComparisonExpressions = mapValues(createComparisonExpression(2) (0))(otherTable.mapping)
+        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.firstMapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(this.secondMapping)
+        const thirdComparisonExpressions = mapValues(createComparisonExpression(2))(otherTable.mapping)
 
         const comparison = f(firstComparisonExpressions, secondComparisonExpressions, thirdComparisonExpressions)
         const secondJoin = createJoin(2, otherTable.name, comparison)
@@ -53,8 +53,8 @@ export class TwoTables {
     }
 
     filter(f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0) (0))(this.firstMapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1) (0))(this.secondMapping)
+        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.firstMapping)
+        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(this.secondMapping)
 
         return new TwoFilteredTables(
             this.firstName, this.firstMapping,

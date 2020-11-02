@@ -1,29 +1,20 @@
 import {
-    add,
-    applyPairTo,
     compose,
-    flatMap,
-    identity,
+    fill,
+    first,
+    flatten,
     joinWithCommaSpace,
     joinWithSpace,
     keys,
     length,
-    map, multiply,
+    map,
     pair,
-    pairBy,
-    prepend,
     properties,
-    range,
-    toString,
     surroundWithDoubleQuotes,
-    surroundWithParentheses, flatten
+    surroundWithParentheses
 } from 'compose-functions'
 
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
-
-function serializeParameter(p) {
-    return p instanceof Date ? p.toISOString() : p
-}
 
 export function generateInsert(tableName) {
     return propertyNamesToColumnNames => {
@@ -33,33 +24,32 @@ export function generateInsert(tableName) {
         const escapedColumnNames = map(surroundWithDoubleQuotes)(columnNames)
         const columnList = generateList(escapedColumnNames)
 
-        const numberOfColumns = length(columnNames)
-
         return objs => {
-            const numberOfRows = length(objs)
             const rows = map(getAllProperties) (objs)
 
-            const indices = range(0) (numberOfRows)
-            const starts = map(compose(multiply(numberOfColumns), add(1))) (indices)
-            const ranges = map(compose(pairBy(add(numberOfColumns)), applyPairTo(range))) (starts)
-            const withDollarSign = map(map(compose(toString, prepend('$')))) (ranges)
-            const argumentLists = map(generateList) (withDollarSign)
+            const firstObj = first(objs)
+            const numberOfRows = length(objs)
+            const numberOfCells = length(keys(firstObj))
+
+            const questionMarks = fill('?') (numberOfCells)
+            const listOfQuestionMark = joinWithCommaSpace(questionMarks)
+            const valuesExpression = surroundWithParentheses(listOfQuestionMark)
+            const listOfQuestionMarkLists = fill(valuesExpression) (numberOfRows)
+            const listOfValueExpressions = joinWithCommaSpace(listOfQuestionMarkLists)
 
             const fragments = [
                 'INSERT INTO',
                 tableName,
                 columnList,
                 'VALUES',
-                joinWithCommaSpace(argumentLists)
+                listOfValueExpressions
             ]
 
             const sql = joinWithSpace(fragments)
 
             const parameters = flatten(rows)
 
-            const serializedParameters = map(serializeParameter)(parameters)
-
-            return pair(sql) (serializedParameters)
+            return [sql, parameters]
         }
     }
 }
