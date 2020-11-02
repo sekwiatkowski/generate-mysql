@@ -1,7 +1,7 @@
 import {mapValues} from 'compose-functions'
 import {generateParameterlessQuery} from '../../generation/generate_query'
-import {createMapExpression} from '../../expressions/map-expression'
-import {createGetExpression} from '../../expressions/get-expression'
+import createMapExpression from '../../expressions/map-expression'
+import createGetExpression from '../../expressions/get-expression'
 import {createQuery} from '../../query'
 
 export class SortedTable {

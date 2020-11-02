@@ -1,5 +1,5 @@
-import createColumn from './column_expressions'
+import createColumn from './column-expressions'
 
-export function createMapExpression(tableIndex) {
+export default function createMapExpression(tableIndex) {
     return column => () => createColumn(tableIndex) (column)
 }

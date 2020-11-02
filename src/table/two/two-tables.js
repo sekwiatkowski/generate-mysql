@@ -1,11 +1,11 @@
 import {mapValues} from 'compose-functions'
 import {createComparisonExpression} from '../../expressions/comparison-expression'
-import {createJoin} from '../../expressions/join'
+import createJoin from '../../expressions/join'
 import {TwoFilteredTables} from './two-filtered-tables'
 import {generateQuery} from '../../generation/generate_query'
 import {ThreeTables} from '../three/three-tables'
-import {createGetExpression} from '../../expressions/get-expression'
-import {createMapExpression} from '../../expressions/map-expression'
+import createGetExpression from '../../expressions/get-expression'
+import createMapExpression from '../../expressions/map-expression'
 import {createQuery} from '../../query'
 
 export class TwoTables {

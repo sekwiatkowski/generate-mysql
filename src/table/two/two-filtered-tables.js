@@ -1,6 +1,6 @@
 import {mapValues} from 'compose-functions'
-import {createMapExpression} from '../../expressions/map-expression'
-import {createGetExpression} from '../../expressions/get-expression'
+import createMapExpression from '../../expressions/map-expression'
+import createGetExpression from '../../expressions/get-expression'
 import {generateQuery} from '../../generation/generate_query'
 import {createQuery} from '../../query'
 

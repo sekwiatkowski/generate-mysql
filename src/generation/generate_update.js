@@ -11,9 +11,9 @@ import {
 } from 'compose-functions'
 import {generateTableExpression} from './generate_table'
 import {generateComparison} from './generate_comparison'
-import createValue from '../expressions/value_expressions'
+import createValue from '../expressions/value-expressions'
 import {createEquality} from '../expressions/comparison-expression'
-import createColumn from '../expressions/column_expressions'
+import createColumn from '../expressions/column-expressions'
 
 export default function generateUpdate(tableName) {
     return propertyNamesToColumnNames => comparison => partialObject => {

@@ -1,6 +1,6 @@
 import {isObject} from 'compose-functions'
-import createColumn from './column_expressions'
-import createValue from './value_expressions'
+import createColumn from './column-expressions'
+import createValue from './value-expressions'
 
 export function createEquality(left) {
     return right => ({
@@ -19,10 +19,10 @@ export function createComparisonExpression(tableIndex) {
             tableIndex,
             equals: function (other) {
                 const right = isObject(other)
-                    ? createColumn(other.tableIndex)(other.columnName)
+                    ? createColumn(other.tableIndex) (other.columnName)
                     : createValue(other)
 
-                return createEquality(left)(right)
+                return createEquality(left) (right)
             }
         })
     }

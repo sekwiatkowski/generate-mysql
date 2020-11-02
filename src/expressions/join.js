@@ -1,4 +1,4 @@
-export function createJoin(otherIndex, otherTableName, comparison) {
+export default function createJoin(otherIndex, otherTableName, comparison) {
     return ({
         otherTable: {
             index: otherIndex,

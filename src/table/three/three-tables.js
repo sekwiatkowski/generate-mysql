@@ -2,8 +2,8 @@ import {mapValues} from 'compose-functions'
 import {generateQuery} from '../../generation/generate_query'
 import {createComparisonExpression} from '../../expressions/comparison-expression'
 import {ThreeFilteredTables} from './three-filtered-tables'
-import {createMapExpression} from '../../expressions/map-expression'
-import {createGetExpression} from '../../expressions/get-expression'
+import createMapExpression from '../../expressions/map-expression'
+import createGetExpression from '../../expressions/get-expression'
 import {createQuery} from '../../query'
 
 export class ThreeTables {
