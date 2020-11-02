@@ -8,9 +8,7 @@ import {
     keys,
     length,
     map,
-    pair,
     properties,
-    surroundWithDoubleQuotes,
     surroundWithParentheses
 } from 'compose-functions'
 
@@ -21,8 +19,7 @@ export function generateInsert(tableName) {
         const getAllProperties = properties(keys(propertyNamesToColumnNames))
 
         const columnNames = getAllProperties (propertyNamesToColumnNames)
-        const escapedColumnNames = map(surroundWithDoubleQuotes)(columnNames)
-        const columnList = generateList(escapedColumnNames)
+        const columnList = generateList(columnNames)
 
         return objs => {
             const rows = map(getAllProperties) (objs)
@@ -32,8 +29,7 @@ export function generateInsert(tableName) {
             const numberOfCells = length(keys(firstObj))
 
             const questionMarks = fill('?') (numberOfCells)
-            const listOfQuestionMark = joinWithCommaSpace(questionMarks)
-            const valuesExpression = surroundWithParentheses(listOfQuestionMark)
+            const valuesExpression = generateList(questionMarks)
             const listOfQuestionMarkLists = fill(valuesExpression) (numberOfRows)
             const listOfValueExpressions = joinWithCommaSpace(listOfQuestionMarkLists)
 
