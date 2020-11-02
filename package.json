@@ -1,6 +1,6 @@
 {
     "name": "generate-sql",
-    "version": "0.8.1",
+    "version": "0.9.0",
     "main": "src/index.js",
     "dependencies": {
         "compose-functions": "github:sekwiatkowski/compose-functions#v0.16.5"

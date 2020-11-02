@@ -1,21 +1,8 @@
 import {isObject} from 'compose-functions'
+import createColumn from './column_expressions'
+import createValue from './value_expressions'
 
-export function createColumn(tableIndex) {
-    return column => ({
-        tableIndex,
-        column,
-        kind: 'column'
-    })
-}
-
-function createValue(value) {
-    return {
-        value,
-        kind: 'value'
-    }
-}
-
-function createEquals(left) {
+export function createEquality(left) {
     return right => ({
         left,
         right,
@@ -35,7 +22,7 @@ export function createComparisonExpression(tableIndex) {
                     ? createColumn(other.tableIndex)(other.columnName)
                     : createValue(other)
 
-                return createEquals(left)(right)
+                return createEquality(left)(right)
             }
         })
     }

@@ -1,43 +1,32 @@
 import {
     applyPairTo,
-    compose, concatOptions, flatten,
-    flattenObject, flipPair, foldPair, invertPairs, isFunction, isString,
-    joinWithCommaSpace, joinWithNewline,
-    joinWithSpace, map, mapEntries, mapOption, mapSecond,
-    mapValues, maybeUndefined, onlyIf,
-    pair, pairWith, safePropertyOf, some,
+    compose,
+    concatOptions,
+    flatten,
+    flattenObject,
+    flipPair,
+    foldPair,
+    invertPairs,
+    isFunction,
+    isString,
+    joinWithCommaSpace,
+    joinWithNewline,
+    joinWithSpace,
+    map,
+    mapEntries,
+    mapOption,
+    mapSecond,
+    mapValues,
+    maybeUndefined,
+    onlyIf,
+    pairWith,
+    safePropertyOf,
+    some,
     surroundWithDoubleQuotes
 } from 'compose-functions'
-
-function generateTableAlias(index) {
-    return `t${index + 1}`
-}
-
-function generateColumn({tableIndex, column}) {
-    return `${generateTableAlias(tableIndex)}.${column}`
-}
-
-function generateValue({value}) {
-    return ['?', [value]]
-}
-
-function generateSide(side) {
-    switch (side.kind) {
-        case 'column':
-            return pair(generateColumn(side))([])
-        case 'value':
-            return generateValue(side)
-    }
-}
-
-function generateComparison({kind, left, right}) {
-    switch (kind) {
-        case 'equals':
-            const [leftSql, leftParameters] = generateSide(left)
-            const [rightSql, rightParameters] = generateSide(right)
-            return [`${leftSql} = ${rightSql}`, leftParameters.concat(rightParameters) ]
-    }
-}
+import {generateTableExpression} from './generate_table'
+import generateColumn from './generate_column'
+import {generateComparison} from './generate_comparison'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -86,7 +75,7 @@ function generateSelect(select) {
 }
 
 function generateFrom(from) {
-    return `FROM ${from} ${generateTableAlias(0)}`
+    return `FROM ${generateTableExpression(from, 0)}`
 }
 
 function generateWhere(comparison) {
@@ -116,8 +105,7 @@ function generateJoin({ otherTable, comparison }) {
 
     const sqlFragments = [
         'INNER JOIN',
-        otherTable.name,
-        generateTableAlias(otherTable.index),
+        generateTableExpression(otherTable.name, otherTable.index),
         'ON',
         comparisonSql
     ]

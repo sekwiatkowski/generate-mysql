@@ -3,6 +3,7 @@ import {mapValues} from 'compose-functions'
 import {createMapExpression} from '../../expressions/map-expression'
 import {createGetExpression} from '../../expressions/get-expression'
 import {createQuery} from '../../query'
+import generateUpdate from '../../generation/generate_update'
 
 export class FilteredTable {
     name
@@ -31,5 +32,9 @@ export class FilteredTable {
         const getExpressions = mapValues(createGetExpression(0))(this.mapping)
 
         return createQuery(() => this.generateSelectFromWhere(f(getExpressions)))
+    }
+
+    update(partialObject) {
+        return generateUpdate(this.name) (this.mapping) (this.where) (partialObject)
     }
 }
