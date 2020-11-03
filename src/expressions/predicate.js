@@ -29,5 +29,5 @@ export function createPredicateBuilder(tableIndex) {
 }
 
 export function createPredicateBuildersFromMapping(tableIndex, mapping) {
-    return  mapValues(createPredicateBuilder(tableIndex))(mapping)
+    return mapValues(createPredicateBuilder(tableIndex))(mapping)
 }

@@ -1,6 +1,5 @@
-import {mapValues} from 'compose-functions'
 import {generateQuery} from '../../generation/generate-query'
-import {createPredicateBuilder} from '../../expressions/predicate'
+import {createPredicateBuildersFromMapping} from '../../expressions/predicate'
 import {ThreeFilteredTables} from './three-filtered-tables'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
@@ -33,32 +32,32 @@ export class ThreeTables {
     }
 
     filter(f) {
-        const firstComparisonExpressions = mapValues(createPredicateBuilder(0))(this.firstMapping)
-        const secondComparisonExpressions = mapValues(createPredicateBuilder(1))(this.secondMapping)
-        const thirdComparisonExpressions = mapValues(createPredicateBuilder(2))(this.thirdMapping)
+        const firstPredicates = createPredicateBuildersFromMapping(0, this.firstMapping)
+        const secondPredicates = createPredicateBuildersFromMapping(1, this.secondMapping)
+        const thirdPredicates = createPredicateBuildersFromMapping(2, this.thirdMapping)
 
         return new ThreeFilteredTables(
             this.firstName, this.firstMapping,
             this.secondName, this.secondMapping,
             this.thirdName, this.thirdMapping,
             this.firstJoin, this.secondJoin,
-            f(firstComparisonExpressions, secondComparisonExpressions, thirdComparisonExpressions))
+            f(firstPredicates, secondPredicates, thirdPredicates))
     }
 
     map(f) {
-        const firstExpressions = createColumnsFromMapping(0, this.firstMapping)
-        const secondExpressions = createColumnsFromMapping(1, this.secondMapping)
-        const thirdExpressions = createColumnsFromMapping(2, this.thirdMapping)
+        const firstColumns = createColumnsFromMapping(0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping(1, this.secondMapping)
+        const thirdColumns = createColumnsFromMapping(2, this.thirdMapping)
 
-        return createQuery(this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
+        return createQuery(this.generateSelectFromJoin(f(firstColumns, secondColumns, thirdColumns)))
     }
 
     get(f) {
-        const firstExpressions = createColumnsFromMapping(0, this.firstMapping)
-        const secondExpressions = createColumnsFromMapping(1, this.secondMapping)
-        const thirdExpressions = createColumnsFromMapping(2, this.thirdMapping)
+        const firstColumns = createColumnsFromMapping(0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping(1, this.secondMapping)
+        const thirdColumns = createColumnsFromMapping(2, this.thirdMapping)
 
-        return createQuery(this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
+        return createQuery(this.generateSelectFromJoin(f(firstColumns, secondColumns, thirdColumns)))
     }
 
 }
