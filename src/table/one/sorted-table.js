@@ -17,18 +17,18 @@ export class SortedTable {
     }
 
     select() {
-        return createQuery(() => this.generateSelectFromOrderBy('*'))
+        return createQuery(this.generateSelectFromOrderBy('*'))
     }
 
     map(f) {
         const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromOrderBy(f(columns)))
+        return createQuery(this.generateSelectFromOrderBy(f(columns)))
     }
 
     get(f) {
         const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromOrderBy(f(columns)))
+        return createQuery(this.generateSelectFromOrderBy(f(columns)))
     }
 }

@@ -66,13 +66,13 @@ export class TwoTables {
         const firstColumns = mapValues(createColumn(0))(this.firstMapping)
         const secondColumns = mapValues(createColumn(1))(this.secondMapping)
 
-        return createQuery(() => this.generateSelectFromJoins(f(firstColumns, secondColumns)))
+        return createQuery(this.generateSelectFromJoins(f(firstColumns, secondColumns)))
     }
 
     get(f) {
         const firstColumns = mapValues(createColumn(0))(this.firstMapping)
         const secondColumns = mapValues(createColumn(1))(this.secondMapping)
 
-        return createQuery(() => this.generateSelectFromJoins(f(firstColumns, secondColumns)))
+        return createQuery(this.generateSelectFromJoins(f(firstColumns, secondColumns)))
     }
 }

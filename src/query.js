@@ -22,34 +22,34 @@ function addLimitAndOffset(limit) {
     }
 }
 
-export function createQuery(generateSql) {
+export function createQuery(statement) {
     return {
         kind: 'query',
-        generate: () => generateSql(),
-        limit: n => createLimitedQuery(generateSql, n),
-        offset: n => createOffsetQuery(generateSql, n)
+        generate: () => statement,
+        limit: n => createLimitedQuery(statement, n),
+        offset: n => createOffsetQuery(statement, n)
     }
 }
 
-export function createLimitedQuery(generateSql, limit) {
+export function createLimitedQuery(statement, limit) {
     return {
         kind: 'limited-query',
-        generate: () => addToQuery(generateSql()) (addLimit(limit)),
-        offset: n => createLimitedOffsetQuery(generateSql, limit, n)
+        generate: () => addToQuery(statement) (addLimit(limit)),
+        offset: n => createLimitedOffsetQuery(statement, limit, n)
     }
 }
 
-export function createLimitedOffsetQuery(generateSql, limit, offset) {
+export function createLimitedOffsetQuery(statement, limit, offset) {
     return {
         kind: 'limited-query',
-        generate: () => addToQuery(generateSql()) (addLimitAndOffset(limit) (offset))
+        generate: () => addToQuery(statement) (addLimitAndOffset(limit) (offset))
     }
 }
 
-export function createOffsetQuery(generateSql, offset) {
+export function createOffsetQuery(statement, offset) {
     return {
         kind: 'offset-query',
-        generate: () => addToQuery(generateSql()) (addOffset(offset)),
+        generate: () => addToQuery(statement) (addOffset(offset)),
         offset
     }
 }

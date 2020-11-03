@@ -51,19 +51,19 @@ export class Table {
     }
 
     select() {
-        return createQuery(() => this.generateSelectFrom('*'))
+        return createQuery(this.generateSelectFrom('*'))
     }
 
     map(f) {
         const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFrom(f(columns)))
+        return createQuery(this.generateSelectFrom(f(columns)))
     }
 
     get(f) {
         const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFrom(f(columns)))
+        return createQuery(this.generateSelectFrom(f(columns)))
     }
 
     insert(obj) {

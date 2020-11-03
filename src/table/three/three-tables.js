@@ -50,7 +50,7 @@ export class ThreeTables {
         const secondExpressions = mapValues(createColumn(1))(this.secondMapping)
         const thirdExpressions = mapValues(createColumn(2))(this.thirdMapping)
 
-        return createQuery(() => this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
+        return createQuery(this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 
     get(f) {
@@ -58,7 +58,7 @@ export class ThreeTables {
         const secondExpressions = mapValues(createColumn(1))(this.secondMapping)
         const thirdExpressions = mapValues(createColumn(2))(this.thirdMapping)
 
-        return createQuery(() => this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
+        return createQuery(this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 
 }

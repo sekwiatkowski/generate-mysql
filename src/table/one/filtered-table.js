@@ -18,19 +18,19 @@ export class FilteredTable {
     }
 
     select() {
-        return createQuery(() => this.generateSelectFromWhere('*'))
+        return createQuery(this.generateSelectFromWhere('*'))
     }
 
     map(f) {
         const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromWhere(f(columns)))
+        return createQuery(this.generateSelectFromWhere(f(columns)))
     }
 
     get(f) {
         const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromWhere(f(columns)))
+        return createQuery(this.generateSelectFromWhere(f(columns)))
     }
 
     update(partialObject) {

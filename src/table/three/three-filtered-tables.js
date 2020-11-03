@@ -43,7 +43,7 @@ export class ThreeFilteredTables {
         const secondExpressions = mapValues(createColumn(1)) (this.secondMapping)
         const thirdExpressions = mapValues(createColumn(2)) (this.thirdMapping)
 
-        return createQuery(() => this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions)))
+        return createQuery(this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 
     get(f) {
@@ -51,6 +51,6 @@ export class ThreeFilteredTables {
         const secondExpressions = mapValues(createColumn(1)) (this.secondMapping)
         const thirdExpressions = mapValues(createColumn(2)) (this.thirdMapping)
 
-        return createQuery(() => this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions)))
+        return createQuery(this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 }
