@@ -1,7 +1,6 @@
-import {mapValues} from 'compose-functions'
 import {generateParameterlessQuery} from '../../generation/generate-query'
 import {createQuery} from '../../query'
-import createColumn from '../../expressions/column'
+import {createColumnsFromMapping} from '../../expressions/column'
 
 export class SortedTable {
     name
@@ -21,13 +20,13 @@ export class SortedTable {
     }
 
     map(f) {
-        const columns = mapValues(createColumn(0))(this.mapping)
+        const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFromOrderBy(f(columns)))
     }
 
     get(f) {
-        const columns = mapValues(createColumn(0))(this.mapping)
+        const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFromOrderBy(f(columns)))
     }

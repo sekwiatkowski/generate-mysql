@@ -5,7 +5,7 @@ import {TwoFilteredTables} from './two-filtered-tables'
 import {generateQuery} from '../../generation/generate-query'
 import {ThreeTables} from '../three/three-tables'
 import {createQuery} from '../../query'
-import createColumn from '../../expressions/column'
+import {createColumn, createColumnsFromMapping} from '../../expressions/column'
 
 export class TwoTables {
     firstName
@@ -63,15 +63,15 @@ export class TwoTables {
     }
 
     map(f) {
-        const firstColumns = mapValues(createColumn(0))(this.firstMapping)
-        const secondColumns = mapValues(createColumn(1))(this.secondMapping)
+        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
 
         return createQuery(this.generateSelectFromJoins(f(firstColumns, secondColumns)))
     }
 
     get(f) {
-        const firstColumns = mapValues(createColumn(0))(this.firstMapping)
-        const secondColumns = mapValues(createColumn(1))(this.secondMapping)
+        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
 
         return createQuery(this.generateSelectFromJoins(f(firstColumns, secondColumns)))
     }

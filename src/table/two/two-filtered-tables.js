@@ -1,7 +1,7 @@
 import {mapValues} from 'compose-functions'
 import {generateQuery} from '../../generation/generate-query'
 import {createQuery} from '../../query'
-import createColumn from '../../expressions/column'
+import {createColumn, createColumnsFromMapping} from '../../expressions/column'
 
 export class TwoFilteredTables {
     firstName
@@ -33,15 +33,15 @@ export class TwoFilteredTables {
     }
 
     map(f) {
-        const firstColumns = mapValues(createColumn(0)) (this.firstMapping)
-        const secondColumns = mapValues(createColumn(1)) (this.secondMapping)
+        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
 
         return createQuery(this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
     }
 
     get(f) {
-        const firstColumns = mapValues(createColumn(0))(this.firstMapping)
-        const secondColumns = mapValues(createColumn(1))(this.secondMapping)
+        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
 
         return createQuery(this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
     }

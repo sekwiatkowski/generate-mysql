@@ -9,7 +9,7 @@ import {SortedTable} from './sorted-table'
 import generateInsert from '../../generation/generate-insert'
 import generateTruncate from '../../generation/generate-truncate'
 import {createQuery} from '../../query'
-import createColumn from '../../expressions/column'
+import {createColumnsFromMapping} from '../../expressions/column'
 
 export class Table {
     name
@@ -55,13 +55,13 @@ export class Table {
     }
 
     map(f) {
-        const columns = mapValues(createColumn(0))(this.mapping)
+        const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFrom(f(columns)))
     }
 
     get(f) {
-        const columns = mapValues(createColumn(0))(this.mapping)
+        const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFrom(f(columns)))
     }

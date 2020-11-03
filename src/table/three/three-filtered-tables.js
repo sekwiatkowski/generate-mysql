@@ -1,7 +1,6 @@
-import {mapValues} from 'compose-functions'
 import {generateQuery} from '../../generation/generate-query'
 import {createQuery} from '../../query'
-import createColumn from '../../expressions/column'
+import {createColumnsFromMapping} from '../../expressions/column'
 
 export class ThreeFilteredTables {
     firstName
@@ -39,17 +38,17 @@ export class ThreeFilteredTables {
     }
 
     map(f) {
-        const firstExpressions = mapValues(createColumn(0)) (this.firstMapping)
-        const secondExpressions = mapValues(createColumn(1)) (this.secondMapping)
-        const thirdExpressions = mapValues(createColumn(2)) (this.thirdMapping)
+        const firstExpressions = createColumnsFromMapping (0, this.firstMapping)
+        const secondExpressions = createColumnsFromMapping (1, this.secondMapping)
+        const thirdExpressions = createColumnsFromMapping (2, this.thirdMapping)
 
         return createQuery(this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 
     get(f) {
-        const firstExpressions = mapValues(createColumn(0)) (this.firstMapping)
-        const secondExpressions = mapValues(createColumn(1)) (this.secondMapping)
-        const thirdExpressions = mapValues(createColumn(2)) (this.thirdMapping)
+        const firstExpressions = createColumnsFromMapping (0, this.firstMapping)
+        const secondExpressions = createColumnsFromMapping (1, this.secondMapping)
+        const thirdExpressions = createColumnsFromMapping (2, this.thirdMapping)
 
         return createQuery(this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions)))
     }

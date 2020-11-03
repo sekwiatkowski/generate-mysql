@@ -1,8 +1,7 @@
 import {generateQuery} from '../../generation/generate-query'
-import {mapValues} from 'compose-functions'
 import {createQuery} from '../../query'
 import generateUpdate from '../../generation/generate-update'
-import createColumn from '../../expressions/column'
+import {createColumnsFromMapping} from '../../expressions/column'
 
 export class FilteredTable {
     name
@@ -22,13 +21,13 @@ export class FilteredTable {
     }
 
     map(f) {
-        const columns = mapValues(createColumn(0))(this.mapping)
+        const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFromWhere(f(columns)))
     }
 
     get(f) {
-        const columns = mapValues(createColumn(0))(this.mapping)
+        const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFromWhere(f(columns)))
     }

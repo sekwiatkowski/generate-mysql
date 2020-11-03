@@ -1,4 +1,6 @@
-export default function createColumn(tableIndex) {
+import {mapValues} from 'compose-functions'
+
+export function createColumn(tableIndex) {
     return column => ({
         tableIndex,
         column,
@@ -6,3 +8,7 @@ export default function createColumn(tableIndex) {
     })
 }
 
+
+export function createColumnsFromMapping(tableIndex, mapping) {
+    return mapValues(createColumn(tableIndex))(mapping)
+}
