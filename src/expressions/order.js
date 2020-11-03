@@ -1,4 +1,4 @@
-function createSort(direction) {
+function createOrder(direction) {
     return tableIndex => column => ({
         tableIndex,
         direction,
@@ -7,5 +7,5 @@ function createSort(direction) {
     })
 }
 
-export const createAscendingSort = createSort('ASC')
-export const createDescending = createSort('DESC')
+export const createAscendingOrder = createOrder('ASC')
+export const createDescendingOrder = createOrder('DESC')

@@ -1,7 +1,7 @@
 import {generateParameterlessQuery} from '../../generation/generate-query'
 import {arrayOf, mapValues} from 'compose-functions'
-import {createPredicateBuilder, createPredicateBuildersFromMapping} from '../../expressions/predicate'
-import {createAscendingSort, createDescending} from '../../expressions/order'
+import {createPredicateBuildersFromMapping} from '../../expressions/predicate'
+import {createAscendingOrder, createDescendingOrder} from '../../expressions/order'
 import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
 import {FilteredTable} from './filtered-table'
@@ -39,13 +39,13 @@ export class Table {
     }
 
     sortBy(f) {
-        const orders = mapValues(createAscendingSort(0))(this.mapping)
+        const orders = mapValues(createAscendingOrder(0))(this.mapping)
 
         return new SortedTable(this.name, this.mapping, f(orders))
     }
 
     sortDescendinglyBy(f) {
-        const orders = mapValues(createDescending(0))(this.mapping)
+        const orders = mapValues(createDescendingOrder(0))(this.mapping)
 
         return new SortedTable(this.name, this.mapping, f(orders))
     }
