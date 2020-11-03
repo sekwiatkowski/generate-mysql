@@ -1,7 +1,6 @@
-import {mapValues} from 'compose-functions'
 import {generateQuery} from '../../generation/generate-query'
 import {createQuery} from '../../query'
-import {createColumn, createColumnsFromMapping} from '../../expressions/column'
+import {createColumnsFromMapping} from '../../expressions/column'
 
 export class TwoFilteredTables {
     firstName

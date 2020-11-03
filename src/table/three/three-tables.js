@@ -1,6 +1,6 @@
 import {mapValues} from 'compose-functions'
 import {generateQuery} from '../../generation/generate-query'
-import {createComparisonExpression} from '../../expressions/predicate'
+import {createPredicateBuilder} from '../../expressions/predicate'
 import {ThreeFilteredTables} from './three-filtered-tables'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
@@ -33,9 +33,9 @@ export class ThreeTables {
     }
 
     filter(f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.firstMapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(this.secondMapping)
-        const thirdComparisonExpressions = mapValues(createComparisonExpression(2))(this.thirdMapping)
+        const firstComparisonExpressions = mapValues(createPredicateBuilder(0))(this.firstMapping)
+        const secondComparisonExpressions = mapValues(createPredicateBuilder(1))(this.secondMapping)
+        const thirdComparisonExpressions = mapValues(createPredicateBuilder(2))(this.thirdMapping)
 
         return new ThreeFilteredTables(
             this.firstName, this.firstMapping,

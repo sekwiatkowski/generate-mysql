@@ -1,6 +1,6 @@
 import {generateParameterlessQuery} from '../../generation/generate-query'
 import {arrayOf, mapValues} from 'compose-functions'
-import {createComparisonExpression} from '../../expressions/predicate'
+import {createPredicateBuilder, createPredicateBuildersFromMapping} from '../../expressions/predicate'
 import {createAscendingSort, createDescending} from '../../expressions/order'
 import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
@@ -23,8 +23,8 @@ export class Table {
     }
 
     innerJoin(otherTable, f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.mapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(otherTable.mapping)
+        const firstComparisonExpressions = createPredicateBuildersFromMapping(0, this.mapping)
+        const secondComparisonExpressions = createPredicateBuildersFromMapping(1, otherTable.mapping)
 
         const comparison = f(firstComparisonExpressions, secondComparisonExpressions)
         const join = createJoin(1, otherTable.name, comparison)
@@ -33,7 +33,7 @@ export class Table {
     }
 
     filter(f) {
-        const predicates = mapValues(createComparisonExpression(0))(this.mapping)
+        const predicates = createPredicateBuildersFromMapping(0, this.mapping)
         
         return new FilteredTable(this.name, this.mapping, f(predicates))
     }

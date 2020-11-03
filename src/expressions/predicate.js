@@ -1,4 +1,4 @@
-import {isObject} from 'compose-functions'
+import {isObject, mapValues} from 'compose-functions'
 import createValue from './value'
 import {createColumn} from './column'
 
@@ -10,7 +10,7 @@ export function createEquality(left) {
     })
 }
 
-export function createComparisonExpression(tableIndex) {
+export function createPredicateBuilder(tableIndex) {
     return columnName => {
         const left = createColumn(tableIndex)(columnName)
 
@@ -26,4 +26,8 @@ export function createComparisonExpression(tableIndex) {
             }
         })
     }
+}
+
+export function createPredicateBuildersFromMapping(tableIndex, mapping) {
+    return  mapValues(createPredicateBuilder(tableIndex))(mapping)
 }
