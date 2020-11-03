@@ -1,16 +1,15 @@
 import {generateParameterlessQuery} from '../../generation/generate-query'
 import {arrayOf, mapValues} from 'compose-functions'
-import {createComparisonExpression} from '../../expressions/comparison-expression'
-import {createAscendingSort, createDescending} from '../../expressions/sort'
+import {createComparisonExpression} from '../../expressions/predicate'
+import {createAscendingSort, createDescending} from '../../expressions/order'
 import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
 import {FilteredTable} from './filtered-table'
 import {SortedTable} from './sorted-table'
-import createMapExpression from '../../expressions/map-expression'
-import createGetExpression from '../../expressions/get-expression'
 import generateInsert from '../../generation/generate-insert'
 import generateTruncate from '../../generation/generate-truncate'
 import {createQuery} from '../../query'
+import createColumn from '../../expressions/column'
 
 export class Table {
     name
@@ -34,21 +33,21 @@ export class Table {
     }
 
     filter(f) {
-        const filterExpressions = mapValues(createComparisonExpression(0))(this.mapping)
-
-        return new FilteredTable(this.name, this.mapping, f(filterExpressions))
+        const predicates = mapValues(createComparisonExpression(0))(this.mapping)
+        
+        return new FilteredTable(this.name, this.mapping, f(predicates))
     }
 
     sortBy(f) {
-        const ascendingExpressions = mapValues(createAscendingSort(0))(this.mapping)
+        const orders = mapValues(createAscendingSort(0))(this.mapping)
 
-        return new SortedTable(this.name, this.mapping, f(ascendingExpressions))
+        return new SortedTable(this.name, this.mapping, f(orders))
     }
 
     sortDescendinglyBy(f) {
-        const descendingExpressions = mapValues(createDescending(0))(this.mapping)
+        const orders = mapValues(createDescending(0))(this.mapping)
 
-        return new SortedTable(this.name, this.mapping, f(descendingExpressions))
+        return new SortedTable(this.name, this.mapping, f(orders))
     }
 
     select() {
@@ -56,15 +55,15 @@ export class Table {
     }
 
     map(f) {
-        const mapExpressions = mapValues(createMapExpression(0))(this.mapping)
+        const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFrom(f(mapExpressions)))
+        return createQuery(() => this.generateSelectFrom(f(columns)))
     }
 
     get(f) {
-        const getExpressions = mapValues(createGetExpression(0))(this.mapping)
+        const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFrom(f(getExpressions)))
+        return createQuery(() => this.generateSelectFrom(f(columns)))
     }
 
     insert(obj) {

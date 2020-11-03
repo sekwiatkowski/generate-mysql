@@ -1,8 +1,7 @@
 import {mapValues} from 'compose-functions'
-import createMapExpression from '../../expressions/map-expression'
-import createGetExpression from '../../expressions/get-expression'
 import {generateQuery} from '../../generation/generate-query'
 import {createQuery} from '../../query'
+import createColumn from '../../expressions/column'
 
 export class TwoFilteredTables {
     firstName
@@ -34,16 +33,16 @@ export class TwoFilteredTables {
     }
 
     map(f) {
-        const firstExpressions = mapValues(createMapExpression(0)) (this.firstMapping)
-        const secondExpressions = mapValues(createMapExpression(1)) (this.secondMapping)
+        const firstColumns = mapValues(createColumn(0)) (this.firstMapping)
+        const secondColumns = mapValues(createColumn(1)) (this.secondMapping)
 
-        return createQuery(() => this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions)))
+        return createQuery(() => this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
     }
 
     get(f) {
-        const firstExpressions = mapValues(createGetExpression(0))(this.firstMapping)
-        const secondExpressions = mapValues(createGetExpression(1))(this.secondMapping)
+        const firstColumns = mapValues(createColumn(0))(this.firstMapping)
+        const secondColumns = mapValues(createColumn(1))(this.secondMapping)
 
-        return createQuery(() => this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions)))
+        return createQuery(() => this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
     }
 }

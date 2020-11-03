@@ -5,7 +5,7 @@ import {
     flatten,
     flattenObject,
     flipPair,
-    foldPair,
+    foldPair, hasProperty,
     invertPairs,
     isFunction,
     isString,
@@ -39,8 +39,8 @@ import generateComparison from './generate-comparison'
 
     [ 't1.some_column', 'AS', 'someProperty' ]
  */
-function generateColumnAlias(column) {
-    return alias => joinWithSpace([
+function generateColumnAlias([alias, column]) {
+    return joinWithSpace([
         generateColumn(column),
         'AS',
         surroundWithDoubleQuotes(alias)
@@ -48,21 +48,22 @@ function generateColumnAlias(column) {
 }
 
 function generateMap(obj) {
-    const flattened = flattenObject(obj)
-    const createdColumns = mapValues(f => f()) (flattened)
+    const columns = flattenObject(obj, hasProperty('kind'))
 
-    return joinWithCommaSpace(mapEntries(compose(flipPair, applyPairTo(generateColumnAlias)))(createdColumns))
+    const aliases = mapEntries(generateColumnAlias) (columns)
+
+    return joinWithCommaSpace(aliases)
 }
 
-function generateGet(createColumn) {
-    return generateColumn(createColumn())
+function generateGet(column) {
+    return generateColumn(column)
 }
 
 function generateSelectColumns(select) {
     if (select === '*') {
         return '*'
     }
-    else if(isFunction(select)) {
+    else if(select.kind === 'column') {
         return generateGet(select)
     }
     else {

@@ -1,10 +1,9 @@
 import {mapValues} from 'compose-functions'
 import {generateQuery} from '../../generation/generate-query'
-import {createComparisonExpression} from '../../expressions/comparison-expression'
+import {createComparisonExpression} from '../../expressions/predicate'
 import {ThreeFilteredTables} from './three-filtered-tables'
-import createMapExpression from '../../expressions/map-expression'
-import createGetExpression from '../../expressions/get-expression'
 import {createQuery} from '../../query'
+import createColumn from '../../expressions/column'
 
 export class ThreeTables {
     firstName
@@ -47,17 +46,17 @@ export class ThreeTables {
     }
 
     map(f) {
-        const firstExpressions = mapValues(createMapExpression(0))(this.firstMapping)
-        const secondExpressions = mapValues(createMapExpression(1))(this.secondMapping)
-        const thirdExpressions = mapValues(createMapExpression(2))(this.thirdMapping)
+        const firstExpressions = mapValues(createColumn(0))(this.firstMapping)
+        const secondExpressions = mapValues(createColumn(1))(this.secondMapping)
+        const thirdExpressions = mapValues(createColumn(2))(this.thirdMapping)
 
         return createQuery(() => this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
     }
 
     get(f) {
-        const firstExpressions = mapValues(createGetExpression(0))(this.firstMapping)
-        const secondExpressions = mapValues(createGetExpression(1))(this.secondMapping)
-        const thirdExpressions = mapValues(createGetExpression(2))(this.thirdMapping)
+        const firstExpressions = mapValues(createColumn(0))(this.firstMapping)
+        const secondExpressions = mapValues(createColumn(1))(this.secondMapping)
+        const thirdExpressions = mapValues(createColumn(2))(this.thirdMapping)
 
         return createQuery(() => this.generateSelectFromJoin(f(firstExpressions, secondExpressions, thirdExpressions)))
     }

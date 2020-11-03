@@ -1,8 +1,7 @@
 import {mapValues} from 'compose-functions'
 import {generateParameterlessQuery} from '../../generation/generate-query'
-import createMapExpression from '../../expressions/map-expression'
-import createGetExpression from '../../expressions/get-expression'
 import {createQuery} from '../../query'
+import createColumn from '../../expressions/column'
 
 export class SortedTable {
     name
@@ -22,14 +21,14 @@ export class SortedTable {
     }
 
     map(f) {
-        const mapExpressions = mapValues(createMapExpression(0))(this.mapping)
+        const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromOrderBy(f(mapExpressions)))
+        return createQuery(() => this.generateSelectFromOrderBy(f(columns)))
     }
 
     get(f) {
-        const getExpressions = mapValues(createGetExpression(0))(this.mapping)
+        const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromOrderBy(f(getExpressions)))
+        return createQuery(() => this.generateSelectFromOrderBy(f(columns)))
     }
 }

@@ -1,12 +1,11 @@
 import {mapValues} from 'compose-functions'
-import {createComparisonExpression} from '../../expressions/comparison-expression'
+import {createComparisonExpression} from '../../expressions/predicate'
 import createJoin from '../../expressions/join'
 import {TwoFilteredTables} from './two-filtered-tables'
 import {generateQuery} from '../../generation/generate-query'
 import {ThreeTables} from '../three/three-tables'
-import createGetExpression from '../../expressions/get-expression'
-import createMapExpression from '../../expressions/map-expression'
 import {createQuery} from '../../query'
+import createColumn from '../../expressions/column'
 
 export class TwoTables {
     firstName
@@ -29,16 +28,16 @@ export class TwoTables {
         this.generateSelectFromJoins = select => generateQuery({
             select,
             from: this.firstName,
-            joins: [ this.firstJoin, this.secondJoin ]
+            joins: [ this.firstJoin ]
         })
     }
 
     innerJoin(otherTable, f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.firstMapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(this.secondMapping)
-        const thirdComparisonExpressions = mapValues(createComparisonExpression(2))(otherTable.mapping)
+        const firstPredicates = mapValues(createComparisonExpression(0))(this.firstMapping)
+        const secondPredicates = mapValues(createComparisonExpression(1))(this.secondMapping)
+        const thirdPredicates = mapValues(createComparisonExpression(2))(otherTable.mapping)
 
-        const comparison = f(firstComparisonExpressions, secondComparisonExpressions, thirdComparisonExpressions)
+        const comparison = f(firstPredicates, secondPredicates, thirdPredicates)
         const secondJoin = createJoin(2, otherTable.name, comparison)
 
         return new ThreeTables(
@@ -53,27 +52,27 @@ export class TwoTables {
     }
 
     filter(f) {
-        const firstComparisonExpressions = mapValues(createComparisonExpression(0))(this.firstMapping)
-        const secondComparisonExpressions = mapValues(createComparisonExpression(1))(this.secondMapping)
+        const firstPredicates = mapValues(createComparisonExpression(0))(this.firstMapping)
+        const secondPredicates = mapValues(createComparisonExpression(1))(this.secondMapping)
 
         return new TwoFilteredTables(
             this.firstName, this.firstMapping,
             this.secondName, this.secondMapping,
             this.firstJoin,
-            f(firstComparisonExpressions, secondComparisonExpressions))
+            f(firstPredicates, secondPredicates))
     }
 
     map(f) {
-        const firstExpressions = mapValues(createMapExpression(0))(this.firstMapping)
-        const secondExpressions = mapValues(createMapExpression(1))(this.secondMapping)
+        const firstColumns = mapValues(createColumn(0))(this.firstMapping)
+        const secondColumns = mapValues(createColumn(1))(this.secondMapping)
 
-        return createQuery(() => this.generateSelectFromJoins(f(firstExpressions, secondExpressions)))
+        return createQuery(() => this.generateSelectFromJoins(f(firstColumns, secondColumns)))
     }
 
     get(f) {
-        const firstExpressions = mapValues(createGetExpression(0))(this.firstMapping)
-        const secondExpressions = mapValues(createGetExpression(1))(this.secondMapping)
+        const firstColumns = mapValues(createColumn(0))(this.firstMapping)
+        const secondColumns = mapValues(createColumn(1))(this.secondMapping)
 
-        return createQuery(() => this.generateSelectFromJoins(f(firstExpressions, secondExpressions)))
+        return createQuery(() => this.generateSelectFromJoins(f(firstColumns, secondColumns)))
     }
 }

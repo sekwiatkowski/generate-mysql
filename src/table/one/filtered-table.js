@@ -1,9 +1,8 @@
 import {generateQuery} from '../../generation/generate-query'
 import {mapValues} from 'compose-functions'
-import createMapExpression from '../../expressions/map-expression'
-import createGetExpression from '../../expressions/get-expression'
 import {createQuery} from '../../query'
 import generateUpdate from '../../generation/generate-update'
+import createColumn from '../../expressions/column'
 
 export class FilteredTable {
     name
@@ -23,15 +22,15 @@ export class FilteredTable {
     }
 
     map(f) {
-        const mapExpressions = mapValues(createMapExpression(0))(this.mapping)
+        const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromWhere(f(mapExpressions)))
+        return createQuery(() => this.generateSelectFromWhere(f(columns)))
     }
 
     get(f) {
-        const getExpressions = mapValues(createGetExpression(0))(this.mapping)
+        const columns = mapValues(createColumn(0))(this.mapping)
 
-        return createQuery(() => this.generateSelectFromWhere(f(getExpressions)))
+        return createQuery(() => this.generateSelectFromWhere(f(columns)))
     }
 
     update(partialObject) {

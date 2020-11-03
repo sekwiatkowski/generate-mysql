@@ -12,7 +12,7 @@ import {
 import {generateTableExpression} from './generate-table'
 import generateComparison from './generate-comparison'
 import createValue from '../expressions/value'
-import {createEquality} from '../expressions/comparison-expression'
+import {createEquality} from '../expressions/predicate'
 import createColumn from '../expressions/column'
 
 export default function generateUpdate(tableName) {
