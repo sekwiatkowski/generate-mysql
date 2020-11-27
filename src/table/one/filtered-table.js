@@ -2,6 +2,7 @@ import {generateQuery} from '../../generation/generate-query'
 import {createQuery} from '../../query'
 import generateUpdate from '../../generation/generate-update'
 import {createColumnsFromMapping} from '../../expressions/column'
+import {generateFilteredDelete} from '../../generation/generate-delete'
 
 export class FilteredTable {
     name
@@ -34,5 +35,9 @@ export class FilteredTable {
 
     update(partialObject) {
         return generateUpdate(this.name) (this.mapping) (this.where) (partialObject)
+    }
+
+    delete() {
+        return generateFilteredDelete(this.name) (this.where)
     }
 }

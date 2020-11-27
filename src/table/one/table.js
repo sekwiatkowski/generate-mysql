@@ -9,6 +9,7 @@ import generateInsert from '../../generation/generate-insert'
 import generateTruncate from '../../generation/generate-truncate'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
+import {generateDelete} from '../../generation/generate-delete'
 
 export class Table {
     name
@@ -71,6 +72,10 @@ export class Table {
 
     insertBatch(objs) {
         return generateInsert(this.name) (this.mapping) (objs)
+    }
+
+    deleteAll() {
+        return generateDelete(this.name)
     }
 
     /* TRUNCATE quickly removes all rows from a set of tables.

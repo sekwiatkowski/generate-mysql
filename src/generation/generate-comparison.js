@@ -4,20 +4,20 @@ export function generateValue({value}) {
     return ['?', [value]]
 }
 
-function generateSide(side) {
+function generateSide(side, useAlias) {
     switch (side.kind) {
         case 'column':
-            return [generateColumn(side), []]
+            return [useAlias ? generateColumn(side) : side.column, []]
         case 'value':
             return generateValue(side)
     }
 }
 
-export default function generateComparison({kind, left, right}) {
+export default function generateComparison({kind, left, right}, useAlias = true) {
     switch (kind) {
         case 'equals':
-            const [leftSql, leftParameters] = generateSide(left)
-            const [rightSql, rightParameters] = generateSide(right)
+            const [leftSql, leftParameters] = generateSide(left, useAlias)
+            const [rightSql, rightParameters] = generateSide(right, useAlias)
             return [`${leftSql} = ${rightSql}`, leftParameters.concat(rightParameters)]
     }
 }

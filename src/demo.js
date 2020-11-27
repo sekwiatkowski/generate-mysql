@@ -102,3 +102,6 @@ console.log(
 console.log(BlogTable.select().limit(1).generate())
 console.log(BlogTable.select().offset(1).generate())
 console.log(BlogTable.select().limit(1).offset(1).generate())
+
+console.log(BlogTable.deleteAll())
+console.log(BlogTable.filter(b => b.id.equals(1)).delete())
