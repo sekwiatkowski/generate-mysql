@@ -1,5 +1,4 @@
 import {
-    concatOptions,
     flatten,
     flattenObject,
     foldPair,
@@ -11,18 +10,15 @@ import {
     joinWithSpace,
     map,
     mapEntries,
-    mapOption,
     mapSecond,
-    maybeUndefined,
     onlyIf,
     pairWith,
-    safePropertyOf,
-    some,
     surroundWithDoubleQuotes
-} from 'compose-functions'
+} from 'standard-functions'
 import {generateTableExpression} from './generate-table'
 import generateColumn from './generate-column'
 import generateComparison from './generate-comparison'
+import {concatOptions, mapOption, maybeUndefined, safePropertyOf, some} from 'data-structures'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -36,11 +32,11 @@ import generateComparison from './generate-comparison'
     [ 't1.some_column', 'AS', 'someProperty' ]
  */
 function generateColumnAlias([alias, column]) {
-    return joinWithSpace([
+    return joinWithSpace(
         generateColumn(column),
         'AS',
         surroundWithDoubleQuotes(alias)
-    ])
+    )
 }
 
 function generateMap(obj) {
@@ -146,7 +142,7 @@ const ensurePair = onlyIf (isString) (pairWith([]))
 export function generateParameterlessQuery({ select, from, orderBy }) {
     const selectSql = some(generateSelect(select))
     const fromSql = some(generateFrom(from))
-    const orderBySql = mapOption(generateOrderBy)(maybeUndefined(orderBy))
+    const orderBySql = mapOption(generateOrderBy) (maybeUndefined(orderBy))
 
     return joinWithNewline(concatOptions([selectSql, fromSql, orderBySql]))
 }

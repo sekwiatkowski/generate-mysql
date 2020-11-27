@@ -1,4 +1,5 @@
 import generateColumn from './generate-column'
+import {concat} from 'standard-functions'
 
 export function generateValue({value}) {
     return ['?', [value]]
@@ -18,6 +19,6 @@ export default function generateComparison({kind, left, right}, useAlias = true)
         case 'equals':
             const [leftSql, leftParameters] = generateSide(left, useAlias)
             const [rightSql, rightParameters] = generateSide(right, useAlias)
-            return [`${leftSql} = ${rightSql}`, leftParameters.concat(rightParameters)]
+            return [`${leftSql} = ${rightSql}`, concat(leftParameters, rightParameters) ]
     }
 }

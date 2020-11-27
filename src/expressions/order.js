@@ -1,4 +1,4 @@
-import {mapValues} from 'compose-functions'
+import {mapValues} from 'standard-functions'
 
 function createOrder(direction) {
     return tableIndex => column => ({

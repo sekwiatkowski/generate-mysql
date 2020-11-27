@@ -1,4 +1,4 @@
-import {concat, joinWithNewline} from 'compose-functions'
+import {joinWithNewline} from 'standard-functions'
 import generateComparison from './generate-comparison'
 
 export function generateDelete(tableName) {
@@ -15,8 +15,7 @@ export function generateFilteredDelete(tableName) {
         const fragments = [ deleteTable, where ]
 
         const sql = joinWithNewline(fragments)
-        const parameters = concat([ whereParameters ])
 
-        return [sql, parameters]
+        return [sql, whereParameters]
     }
 }

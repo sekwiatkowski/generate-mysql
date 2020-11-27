@@ -1,4 +1,4 @@
-import {isArray, mapFirst} from 'compose-functions'
+import {isArray, mapFirst} from 'standard-functions'
 
 function addToQuery(stringOrArray) {
     return addToSql => isArray(stringOrArray)

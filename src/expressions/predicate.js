@@ -1,4 +1,4 @@
-import {isObject, mapValues} from 'compose-functions'
+import {isObject, mapValues} from 'standard-functions'
 import createValue from './value'
 import {createColumn} from './column'
 

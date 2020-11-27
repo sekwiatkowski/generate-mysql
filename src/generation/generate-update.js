@@ -8,7 +8,7 @@ import {
     mapKeys,
     propertyOf,
     unzip
-} from 'compose-functions'
+} from 'standard-functions'
 import {generateTableExpression} from './generate-table'
 import generateComparison from './generate-comparison'
 import createValue from '../expressions/value'
@@ -39,7 +39,7 @@ export default function generateUpdate(tableName) {
         const fragments = [ updateTable, set, where ]
 
         const sql = joinWithNewline(fragments)
-        const parameters = concat([ flatten(assignmentParameters), whereParameters ])
+        const parameters = concat(flatten(assignmentParameters), whereParameters)
 
         return [sql, parameters]
     }

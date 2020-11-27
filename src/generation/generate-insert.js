@@ -10,7 +10,7 @@ import {
     map,
     properties,
     surroundWithParentheses
-} from 'compose-functions'
+} from 'standard-functions'
 
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
 
