@@ -1,10 +1,10 @@
-export default function createJoin(otherIndex, otherTableName, comparison) {
+export default function createJoin(otherIndex, otherTableName, predicate) {
     return ({
         otherTable: {
             index: otherIndex,
             name: otherTableName
         },
-        comparison,
+        predicate,
         kind: 'join'
     })
 }

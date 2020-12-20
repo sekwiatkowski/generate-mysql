@@ -14,11 +14,16 @@ function generateSide(side, useAlias) {
     }
 }
 
-export default function generateComparison({kind, left, right}, useAlias = true) {
-    switch (kind) {
+export function generateEquality({left, right}, useAlias) {
+    const [leftSql, leftParameters] = generateSide(left, useAlias)
+    const [rightSql, rightParameters] = generateSide(right, useAlias)
+    return [`${leftSql} = ${rightSql}`, concat(leftParameters, rightParameters) ]
+}
+
+export function generateComparison(comparison, useAlias = true) {
+    switch (comparison.kind) {
         case 'equals':
-            const [leftSql, leftParameters] = generateSide(left, useAlias)
-            const [rightSql, rightParameters] = generateSide(right, useAlias)
-            return [`${leftSql} = ${rightSql}`, concat(leftParameters, rightParameters) ]
+            return generateEquality(comparison, useAlias)
     }
 }
+

@@ -10,13 +10,14 @@ import {
     unzip
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
-import generateComparison from './generate-comparison'
+import {generateEquality} from './generate-comparison'
 import createValue from '../expressions/value'
 import {createEquality} from '../expressions/predicate'
 import {createColumn} from '../expressions/column'
+import generatePredicate from './generate-predicate'
 
 export default function generateUpdate(tableName) {
-    return propertyNamesToColumnNames => comparison => partialObject => {
+    return propertyNamesToColumnNames => predicate => partialObject => {
         const partialRow = mapKeys(propertyOf(propertyNamesToColumnNames)) (partialObject)
 
         const assignments = mapEntries(([name, value]) => {
@@ -26,14 +27,14 @@ export default function generateUpdate(tableName) {
             return createEquality(columnExpression) (valueExpression)
         }) (partialRow)
 
-        const [ generatedAssignments, assignmentParameters ] = unzip(map(generateComparison) (assignments))
+        const [ generatedAssignments, assignmentParameters ] = unzip(map(generateEquality) (assignments))
 
         const assignmentList = joinWithCommaSpace(generatedAssignments)
 
         const updateTable = `UPDATE ${generateTableExpression(tableName, 0)}`
         const set = `SET ${assignmentList}`
 
-        const [ whereExpression, whereParameters ] = generateComparison(comparison)
+        const [ whereExpression, whereParameters ] = generatePredicate(predicate)
         const where = `WHERE ${whereExpression}`
 
         const fragments = [ updateTable, set, where ]

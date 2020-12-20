@@ -26,8 +26,8 @@ export class Table {
         const firstComparisonExpressions = createPredicateBuildersFromMapping(0, this.mapping)
         const secondComparisonExpressions = createPredicateBuildersFromMapping(1, otherTable.mapping)
 
-        const comparison = f(firstComparisonExpressions, secondComparisonExpressions)
-        const join = createJoin(1, otherTable.name, comparison)
+        const predicate = f(firstComparisonExpressions, secondComparisonExpressions)
+        const join = createJoin(1, otherTable.name, predicate)
 
         return new TwoTables(this.name, this.mapping, otherTable.name, otherTable.mapping, join)
     }

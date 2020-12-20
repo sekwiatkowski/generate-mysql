@@ -36,8 +36,8 @@ export class TwoTables {
         const secondPredicates = createPredicateBuildersFromMapping(1, this.secondMapping)
         const thirdPredicates = createPredicateBuildersFromMapping(2, otherTable.mapping)
 
-        const comparison = f(firstPredicates, secondPredicates, thirdPredicates)
-        const secondJoin = createJoin(2, otherTable.name, comparison)
+        const predicate = f(firstPredicates, secondPredicates, thirdPredicates)
+        const secondJoin = createJoin(2, otherTable.name, predicate)
 
         return new ThreeTables(
             this.firstName,

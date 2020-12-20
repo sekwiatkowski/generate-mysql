@@ -1,15 +1,15 @@
 import {joinWithNewline} from 'standard-functions'
-import generateComparison from './generate-comparison'
+import generatePredicate from './generate-predicate'
 
 export function generateDelete(tableName) {
     return`DELETE FROM ${tableName}`
 }
 
 export function generateFilteredDelete(tableName) {
-    return comparison => {
+    return predicate => {
         const deleteTable = generateDelete(tableName)
 
-        const [ whereExpression, whereParameters ] = generateComparison(comparison, false)
+        const [ whereExpression, whereParameters ] = generatePredicate(predicate, false)
         const where = `WHERE ${whereExpression}`
 
         const fragments = [ deleteTable, where ]

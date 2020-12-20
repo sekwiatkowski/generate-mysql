@@ -17,8 +17,8 @@ import {
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
 import generateColumn from './generate-column'
-import generateComparison from './generate-comparison'
 import {concatOptions, mapOption, maybeUndefined, safePropertyOf, some} from 'data-structures'
+import generatePredicate from './generate-predicate'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -71,8 +71,8 @@ function generateFrom(from) {
     return `FROM ${generateTableExpression(from, 0)}`
 }
 
-function generateWhere(comparison) {
-    const [sql, parameters] = generateComparison(comparison)
+function generateWhere(predicate) {
+    const [sql, parameters] = generatePredicate(predicate)
     return [`WHERE ${sql}`, parameters]
 }
 
@@ -93,8 +93,8 @@ const queryGenerators = [
     [generateOrderBy, 'orderBy']
 ]
 
-function generateJoin({ otherTable, comparison }) {
-    const [comparisonSql, parameters] = generateComparison(comparison)
+function generateJoin({ otherTable, predicate }) {
+    const [comparisonSql, parameters] = generatePredicate(predicate)
 
     const sqlFragments = [
         'INNER JOIN',
