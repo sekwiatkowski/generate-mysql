@@ -45,6 +45,7 @@ console.log(BlogTable.select().generate())
 console.log(BlogTable.filter(b => b.id.equals('8ea8dea3-f584-4367-b86e-b45774c2d624')).select().generate())
 
 console.log(BlogTable.sortBy(b => b.published).select().generate())
+console.log(BlogTable.filter(b => b.categoryId.equals(1)).sortBy(b => b.published).select().generate())
 
 console.log(BlogTable.sortDescendinglyBy(b => b.published).select().generate())
 console.log(BlogTable.sortDescendinglyBy(b => b.published).map(b => ({ title: b.title, teaser: b.teaser })).generate())

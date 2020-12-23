@@ -1,23 +1,21 @@
 import {
+    filter,
     flatten,
     flattenObject,
-    foldPair,
     hasProperty,
     invertPairs,
-    isString,
+    isArray,
     joinWithCommaSpace,
     joinWithNewline,
     joinWithSpace,
+    keys,
     map,
     mapEntries,
-    mapSecond,
-    onlyIf,
-    pairWith,
+    pick,
     surroundWithDoubleQuotes
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
 import generateColumn from './generate-column'
-import {concatOptions, mapOption, maybeUndefined, safePropertyOf, some} from 'data-structures'
 import generatePredicate from './generate-predicate'
 
 /*
@@ -85,13 +83,14 @@ function generateOrderBy(expr) {
     return `ORDER BY ${generateSortExpression(expr)}`
 }
 
-const queryGenerators = [
-    [generateSelect, 'select'],
-    [generateFrom, 'from'],
-    [generateJoins, 'joins'],
-    [generateWhere, 'where'],
-    [generateOrderBy, 'orderBy']
-]
+const queryGenerators = {
+    select: generateSelect,
+    from: generateFrom,
+    joins: generateJoins,
+    where: generateWhere,
+    orderBy: generateOrderBy
+}
+const queryFragments = keys(queryGenerators)
 
 function generateJoin({ otherTable, predicate }) {
     const [comparisonSql, parameters] = generatePredicate(predicate)
@@ -119,38 +118,24 @@ function generateJoins(joins) {
 }
 
 function generateQueryFragments(query) {
-    /* [ [ generateSelect, some(select) ],
-         [ generateFrom, some(from) ],
-         [ generateWhere, maybe([where, parameters]) ]  */
-    const withInput = map(mapSecond(safePropertyOf(query))) (queryGenerators)
+    const presentFragments = filter(fragment => query[fragment])(queryFragments)
 
-    /* [ some('SELECT ...'])
-         some('FROM ...'])
-         maybe([['WHERE ...', parameters]) ] */
-    const generated = map(foldPair(mapOption)) (withInput)
+    const relevantGenerators = pick(presentFragments) (queryGenerators)
 
-    /* [ 'SELECT ...',
-         'FROM ...',
-         ['WHERE ...', parameters] ] */
-    const fragments = concatOptions(generated)
+    const fragments = mapEntries(([fragment, generate]) =>
+        generate(query[fragment])
+    )(relevantGenerators)
 
     return fragments
-}
-
-const ensurePair = onlyIf (isString) (pairWith([]))
-
-export function generateParameterlessQuery({ select, from, orderBy }) {
-    const selectSql = some(generateSelect(select))
-    const fromSql = some(generateFrom(from))
-    const orderBySql = mapOption(generateOrderBy) (maybeUndefined(orderBy))
-
-    return joinWithNewline(concatOptions([selectSql, fromSql, orderBySql]))
 }
 
 export function generateQuery(query) {
     const fragments = generateQueryFragments(query)
 
-    const ensuredPairs = map(ensurePair)(fragments)
+    const ensuredPairs = map(stringOrArray => isArray(stringOrArray)
+        ? stringOrArray
+        : [stringOrArray, []]
+    ) (fragments)
 
     const [sqlFragments, parameterFragments] = invertPairs(ensuredPairs)
 

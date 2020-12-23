@@ -1,4 +1,4 @@
-import {generateParameterlessQuery} from '../../generation/generate-query'
+import {generateQuery} from '../../generation/generate-query'
 import {createPredicateBuildersFromMapping} from '../../expressions/predicate'
 import {createAscendingOrdersFromMapping, createDescendingOrdersFromMapping} from '../../expressions/order'
 import createJoin from '../../expressions/join'
@@ -19,7 +19,7 @@ export class Table {
     constructor(name, mapping) {
         this.name = name
         this.mapping = mapping
-        this.generateSelectFrom = select => generateParameterlessQuery({ select, from: this.name })
+        this.generateSelectFrom = select => generateQuery({ select, from: this.name })
     }
 
     innerJoin(otherTable, f) {
@@ -41,13 +41,13 @@ export class Table {
     sortBy(f) {
         const orders = createAscendingOrdersFromMapping(0, this.mapping)
 
-        return new SortedTable(this.name, this.mapping, f(orders))
+        return new SortedTable(this.name, this.mapping, null, f(orders))
     }
 
     sortDescendinglyBy(f) {
         const orders = createDescendingOrdersFromMapping(0, this.mapping)
 
-        return new SortedTable(this.name, this.mapping, f(orders))
+        return new SortedTable(this.name, this.mapping, null, f(orders))
     }
 
     select() {
