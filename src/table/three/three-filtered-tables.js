@@ -1,5 +1,5 @@
 import {generateQuery} from '../../generation/generate-query'
-import {createQuery} from '../../query'
+import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 
 export class ThreeFilteredTables {
@@ -51,5 +51,9 @@ export class ThreeFilteredTables {
         const thirdExpressions = createColumnsFromMapping (2, this.thirdMapping)
 
         return createQuery(this.generateSelectFromJoinsWhere(f(firstExpressions, secondExpressions, thirdExpressions)))
+    }
+
+    count() {
+        return createCountQuery(this.generateSelectFromJoinsWhere)
     }
 }

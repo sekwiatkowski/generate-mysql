@@ -1,5 +1,5 @@
 import {generateQuery} from '../../generation/generate-query'
-import {createQuery} from '../../query'
+import {createCountQuery, createQuery} from '../../query'
 import generateUpdate from '../../generation/generate-update'
 import {createColumnsFromMapping} from '../../expressions/column'
 import {generateFilteredDelete} from '../../generation/generate-delete'
@@ -45,6 +45,10 @@ export class FilteredTable {
         const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFromWhere(f(columns)))
+    }
+
+    count() {
+        return createCountQuery(this.generateSelectFromWhere)
     }
 
     update(partialObject) {

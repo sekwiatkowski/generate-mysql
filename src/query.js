@@ -53,3 +53,10 @@ export function createOffsetQuery(statement, offset) {
         offset
     }
 }
+
+export function createCountQuery(select) {
+    return {
+        kind: 'count-query',
+        generate: () => select('COUNT(*)')
+    }
+}

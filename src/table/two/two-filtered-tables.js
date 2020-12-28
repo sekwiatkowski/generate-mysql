@@ -1,5 +1,5 @@
 import {generateQuery} from '../../generation/generate-query'
-import {createQuery} from '../../query'
+import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 
 export class TwoFilteredTables {
@@ -43,5 +43,9 @@ export class TwoFilteredTables {
         const secondColumns = createColumnsFromMapping (1, this.secondMapping)
 
         return createQuery(this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
+    }
+
+    count() {
+        return createCountQuery(this.generateSelectFromJoinsWhere)
     }
 }

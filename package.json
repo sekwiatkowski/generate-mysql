@@ -1,6 +1,6 @@
 {
     "name": "generate-sql",
-    "version": "0.12.0",
+    "version": "0.13.0",
     "main": "src/index.js",
     "dependencies": {
         "data-structures": "github:sekwiatkowski/data-structures#v0.1.3",

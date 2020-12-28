@@ -50,8 +50,8 @@ function generateGet(column) {
 }
 
 function generateSelectColumns(select) {
-    if (select === '*') {
-        return '*'
+    if (select === '*' || select === 'COUNT(*)') {
+        return select
     }
     else if(select.kind === 'column') {
         return generateGet(select)

@@ -7,7 +7,7 @@ import {FilteredTable} from './filtered-table'
 import {SortedTable} from './sorted-table'
 import generateInsert from '../../generation/generate-insert'
 import generateTruncate from '../../generation/generate-truncate'
-import {createQuery} from '../../query'
+import {createCountQuery, createLimitedQuery, createOffsetQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 import {generateDelete} from '../../generation/generate-delete'
 
@@ -64,6 +64,10 @@ export class Table {
         const columns = createColumnsFromMapping(0, this.mapping)
 
         return createQuery(this.generateSelectFrom(f(columns)))
+    }
+
+    count() {
+        return createCountQuery(this.generateSelectFrom)
     }
 
     insert(obj) {

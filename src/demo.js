@@ -110,3 +110,6 @@ console.log(BlogTable.select().limit(1).offset(1).generate())
 
 console.log(BlogTable.deleteAll())
 console.log(BlogTable.filter(b => b.id.equals(1)).delete())
+
+console.log(BlogTable.count().generate())
+console.log(BlogTable.filter(b => b.categoryId.equals(1)).count().generate())
