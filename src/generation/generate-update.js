@@ -14,7 +14,7 @@ import {generateEquality} from './generate-comparison'
 import createValue from '../expressions/value'
 import {createEquality} from '../expressions/predicate'
 import {createColumn} from '../expressions/column'
-import generatePredicate from './generate-predicate'
+import generateRootPredicate from './generate-predicate'
 
 export default function generateUpdate(tableName) {
     return propertyNamesToColumnNames => predicate => partialObject => {
@@ -34,7 +34,7 @@ export default function generateUpdate(tableName) {
         const updateTable = `UPDATE ${generateTableExpression(tableName, 0)}`
         const set = `SET ${assignmentList}`
 
-        const [ whereExpression, whereParameters ] = generatePredicate(predicate)
+        const [ whereExpression, whereParameters ] = generateRootPredicate(predicate)
         const where = `WHERE ${whereExpression}`
 
         const fragments = [ updateTable, set, where ]

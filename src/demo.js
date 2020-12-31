@@ -113,3 +113,4 @@ console.log(BlogTable.filter(b => b.id.equals(1)).delete())
 
 console.log(BlogTable.count().generate())
 console.log(BlogTable.filter(b => b.categoryId.equals(1)).count().generate())
+console.log(BlogTable.filter(b => and(b.authorId.equals(1), or(b.categoryId.equals(2), b.categoryId.equals(3)))).count().generate())
