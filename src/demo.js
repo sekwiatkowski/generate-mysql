@@ -39,6 +39,8 @@ console.log(BlogTable.filter(b => or(b.categoryId.equals(1), b.categoryId.equals
 console.log(BlogTable.insert(firstPost))
 console.log(BlogTable.insertBatch([firstPost, secondPost]))
 
+console.log(BlogTable.replace(firstPost))
+
 console.log(BlogTable.truncate())
 
 console.log(BlogTable.select().generate())

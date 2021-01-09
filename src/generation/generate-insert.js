@@ -14,8 +14,8 @@ import {
 
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
 
-export default function generateInsert(tableName) {
-    return propertyNamesToColumnNames => {
+function generateStore(statement) {
+    return tableName => propertyNamesToColumnNames => {
         const getAllProperties = properties(keys(propertyNamesToColumnNames))
 
         const columnNames = getAllProperties (propertyNamesToColumnNames)
@@ -34,7 +34,7 @@ export default function generateInsert(tableName) {
             const listOfValueExpressions = joinWithCommaSpace(listOfQuestionMarkLists)
 
             const fragments = [
-                'INSERT INTO',
+                `${statement} INTO`,
                 tableName,
                 columnList,
                 'VALUES',
@@ -49,3 +49,6 @@ export default function generateInsert(tableName) {
         }
     }
 }
+
+export const generateInsert = generateStore('INSERT')
+export const generateReplace = generateStore('REPLACE')

@@ -5,11 +5,11 @@ import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
 import {FilteredTable} from './filtered-table'
 import {SortedTable} from './sorted-table'
-import generateInsert from '../../generation/generate-insert'
 import generateTruncate from '../../generation/generate-truncate'
-import {createCountQuery, createLimitedQuery, createOffsetQuery, createQuery} from '../../query'
+import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 import {generateDelete} from '../../generation/generate-delete'
+import {generateInsert, generateReplace} from '../../generation/generate-insert'
 
 export class Table {
     name
@@ -74,8 +74,16 @@ export class Table {
         return this.insertBatch([ obj ])
     }
 
+    replace(obj) {
+        return this.replaceBatch([ obj ])
+    }
+
     insertBatch(objs) {
         return generateInsert(this.name) (this.mapping) (objs)
+    }
+
+    replaceBatch(objs) {
+        return generateReplace(this.name) (this.mapping) (objs)
     }
 
     deleteAll() {
