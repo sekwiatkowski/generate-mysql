@@ -3,7 +3,6 @@ import {
     flatten,
     flattenObject,
     hasProperty,
-    invertPairs,
     isArray,
     joinWithCommaSpace,
     joinWithNewline,
@@ -12,7 +11,7 @@ import {
     map,
     mapEntries,
     pick,
-    surroundWithDoubleQuotes
+    surroundWithDoubleQuotes, unzip
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
 import generateColumn from './generate-column'
@@ -110,7 +109,7 @@ function generateJoin({ otherTable, predicate }) {
 function generateJoins(joins) {
     const pairs = map(generateJoin)(joins)
 
-    const [ sqlFragments, parameterLists ] = invertPairs(pairs)
+    const [ sqlFragments, parameterLists ] = unzip(pairs)
 
     const parameters = flatten(parameterLists)
 
@@ -137,7 +136,7 @@ export function generateQuery(query) {
         : [stringOrArray, []]
     ) (fragments)
 
-    const [sqlFragments, parameterFragments] = invertPairs(ensuredPairs)
+    const [sqlFragments, parameterFragments] = unzip(ensuredPairs)
 
     const sql = joinWithNewline(sqlFragments)
     const parameters = flatten(parameterFragments)
