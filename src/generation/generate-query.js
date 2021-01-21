@@ -52,7 +52,7 @@ function generateSelectColumns(select) {
     if (select === '*' || select === 'COUNT(*)') {
         return select
     }
-    else if(select.kind === 'column') {
+    else if(select.kind === 'column' || select.kind === 'isnull') {
         return generateGet(select)
     }
     else {
@@ -73,9 +73,9 @@ function generateWhere(predicate) {
     return [`WHERE ${sql}`, parameters]
 }
 
-function generateSortExpression(expr) {
-    const column = generateColumn(expr)
-    return `${column} ${expr.direction}`
+function generateSortExpression(sort) {
+    const column = generateColumn(sort.expression)
+    return `${column} ${sort.direction}`
 }
 
 function generateOrderBy(expr) {

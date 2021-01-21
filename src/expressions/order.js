@@ -1,10 +1,10 @@
 import {mapValues} from 'standard-functions'
+import {createColumn} from './column'
 
 function createOrder(direction) {
     return tableIndex => column => ({
-        tableIndex,
+        expression: createColumn(tableIndex) (column),
         direction,
-        column,
         kind: 'sort-expression'
     })
 }

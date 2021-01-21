@@ -1,5 +1,6 @@
 import {Table} from './table/one/table'
-import {and, or} from './expressions/logical'
+import {and, or} from './expressions/logical-operators'
+import {isNull} from './expressions/functions'
 
 const BlogTable = new Table(
     'blog',
@@ -116,3 +117,9 @@ console.log(BlogTable.filter(b => b.id.equals(1)).delete())
 console.log(BlogTable.count().generate())
 console.log(BlogTable.filter(b => b.categoryId.equals(1)).count().generate())
 console.log(BlogTable.filter(b => and(b.authorId.equals(1), or(b.categoryId.equals(2), b.categoryId.equals(3)))).count().generate())
+
+console.log(
+    BlogTable
+        .get(b => isNull(b.published))
+        .generate()
+)
