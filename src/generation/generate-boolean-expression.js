@@ -1,12 +1,13 @@
 import {generateComparison} from './generate-comparison'
-import {generateAnd, generateOr} from './generate-logical-operation'
-import {generateIsNull} from './generate-function-invocation'
+import {generateAnd, generateOr, generateIsNull, generateIsNotNull} from './generate-predicate'
 
 function generateBooleanExpression(isRoot) {
     return (expression, useAlias = true) => {
         switch (expression.kind) {
-            case 'isnull':
+            case 'is null':
                 return [generateIsNull(expression), []]
+            case 'is not null':
+                return [generateIsNotNull(expression), []]
             case 'equals':
                 return generateComparison(expression, useAlias)
             case 'and':

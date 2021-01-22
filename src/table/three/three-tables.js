@@ -1,5 +1,4 @@
 import {generateQuery} from '../../generation/generate-query'
-import {createPredicateBuildersFromMapping} from '../../expressions/predicate'
 import {ThreeFilteredTables} from './three-filtered-tables'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
@@ -32,9 +31,9 @@ export class ThreeTables {
     }
 
     filter(f) {
-        const firstPredicates = createPredicateBuildersFromMapping(0, this.firstMapping)
-        const secondPredicates = createPredicateBuildersFromMapping(1, this.secondMapping)
-        const thirdPredicates = createPredicateBuildersFromMapping(2, this.thirdMapping)
+        const firstPredicates = createColumnsFromMapping(0, this.firstMapping)
+        const secondPredicates = createColumnsFromMapping(1, this.secondMapping)
+        const thirdPredicates = createColumnsFromMapping(2, this.thirdMapping)
 
         return new ThreeFilteredTables(
             this.firstName, this.firstMapping,

@@ -1,16 +1,16 @@
 import generateColumnExpression from './generate-column-expression'
-import {concat} from 'standard-functions'
+import {concat, isObject} from 'standard-functions'
 
 export function generateValue({value}) {
     return ['?', [value]]
 }
 
 function generateSide(side, useAlias) {
-    switch (side.kind) {
-        case 'column':
-            return [useAlias ? generateColumnExpression(side) : side.columnName, []]
-        case 'value':
-            return generateValue(side)
+    if (isObject(side)) {
+        return [useAlias ? generateColumnExpression(side) : side.columnName, []]
+    }
+    else {
+        return generateValue(side)
     }
 }
 

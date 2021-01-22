@@ -1,6 +1,5 @@
 import {Table} from './table/one/table'
-import {and, or} from './expressions/logical-operators'
-import {isNull} from './expressions/functions'
+import {and, equals, isNull, isNotNull, or} from './expressions/predicate'
 
 const BlogTable = new Table(
     'blog',
@@ -32,10 +31,10 @@ const CategoryTable = new Table(
 const firstPost = { id: 1, title: 'First title', teaser: 'First teaser', published: new Date(), authorId: 1, categoryId: 1 }
 const secondPost = { id: 2, title: 'Second title', teaser: 'Second teaser', published: new Date(), authorId: 1, categoryId: 2 }
 
-console.log(BlogTable.filter(b => b.id.equals(1)).update({ title: 'updated title', teaser: 'updated teaser' }))
+console.log(BlogTable.filter(b => equals(b.id, 1)).update({ title: 'updated title', teaser: 'updated teaser' }))
 
-console.log(BlogTable.filter(b => and(b.authorId.equals(1), b.categoryId.equals(2))).select().generate())
-console.log(BlogTable.filter(b => or(b.categoryId.equals(1), b.categoryId.equals(2))).select().generate())
+console.log(BlogTable.filter(b => and(equals(b.authorId, 1), equals(b.categoryId, 2))).select().generate())
+console.log(BlogTable.filter(b => or(equals(b.categoryId, 1), equals(b.categoryId, 2))).select().generate())
 
 console.log(BlogTable.insert(firstPost))
 console.log(BlogTable.insertBatch([firstPost, secondPost]))
@@ -45,22 +44,22 @@ console.log(BlogTable.replace(firstPost))
 console.log(BlogTable.truncate())
 
 console.log(BlogTable.select().generate())
-console.log(BlogTable.filter(b => b.id.equals('8ea8dea3-f584-4367-b86e-b45774c2d624')).select().generate())
+console.log(BlogTable.filter(b => equals(b.id, '8ea8dea3-f584-4367-b86e-b45774c2d624')).select().generate())
 
 console.log(BlogTable.sortBy(b => b.published).select().generate())
-console.log(BlogTable.filter(b => b.categoryId.equals(1)).sortBy(b => b.published).select().generate())
+console.log(BlogTable.filter(b => equals(b.categoryId, 1)).sortBy(b => b.published).select().generate())
 
 console.log(BlogTable.sortDescendinglyBy(b => b.published).select().generate())
 console.log(BlogTable.sortDescendinglyBy(b => b.published).map(b => ({ title: b.title, teaser: b.teaser })).generate())
 
-console.log(BlogTable.filter(j => j.id.equals('1ea8dea3-f584-4367-b86e-b45774c2d624')).select().generate())
+console.log(BlogTable.filter(j => equals(j.id, '1ea8dea3-f584-4367-b86e-b45774c2d624')).select().generate())
 
 console.log(BlogTable.map(b => ({authorId: b.authorId})).generate())
 
 console.log(
     BlogTable
-        .innerJoin(AuthorTable, (b, a) => b.authorId.equals(a.id))
-        .innerJoin(CategoryTable, (b, a, c) => b.categoryId.equals(c.id))
+        .innerJoin(AuthorTable, (b, a) => equals(b.authorId, a.id))
+        .innerJoin(CategoryTable, (b, a, c) => equals(b.categoryId, c.id))
         .map((b, a, c) => ({
             id: b.id,
             title: b.title,
@@ -77,9 +76,9 @@ console.log(
 
 console.log(
     BlogTable
-        .innerJoin(AuthorTable, (b, a) => b.authorId.equals(a.id))
-        .innerJoin(CategoryTable, (b, a, c) => b.categoryId.equals(c.id))
-        .filter((b, a, c) => c.name.equals('name'))
+        .innerJoin(AuthorTable, (b, a) => equals(b.authorId, a.id))
+        .innerJoin(CategoryTable, (b, a, c) => equals(b.categoryId, c.id))
+        .filter((b, a, c) => equals(c.name, 'name'))
         .map((b, a, c) => ({
             id: b.id,
             title: b.title,
@@ -102,7 +101,7 @@ console.log(
 
 console.log(
     BlogTable
-        .filter(b => b.id.equals('1'))
+        .filter(b => equals(b.id, '1'))
         .get(b => b.title)
         .generate()
 )
@@ -112,11 +111,11 @@ console.log(BlogTable.select().offset(1).generate())
 console.log(BlogTable.select().limit(1).offset(1).generate())
 
 console.log(BlogTable.deleteAll())
-console.log(BlogTable.filter(b => b.id.equals(1)).delete())
+console.log(BlogTable.filter(b => equals(b.id, 1)).delete())
 
 console.log(BlogTable.count().generate())
-console.log(BlogTable.filter(b => b.categoryId.equals(1)).count().generate())
-console.log(BlogTable.filter(b => and(b.authorId.equals(1), or(b.categoryId.equals(2), b.categoryId.equals(3)))).count().generate())
+console.log(BlogTable.filter(b => equals(b.categoryId, 1)).count().generate())
+console.log(BlogTable.filter(b => and(equals(b.authorId, 1), or(equals(b.categoryId, 2), equals(b.categoryId, 3)))).count().generate())
 
 console.log(
     BlogTable
@@ -126,7 +125,20 @@ console.log(
 
 console.log(
     BlogTable
+        .get(b => isNotNull(b.published))
+        .generate()
+)
+
+console.log(
+    BlogTable
         .filter(b => isNull(b.published))
+        .get(b => b.title)
+        .generate()
+)
+
+console.log(
+    BlogTable
+        .filter(b => isNotNull(b.published))
         .get(b => b.title)
         .generate()
 )

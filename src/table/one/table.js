@@ -1,5 +1,4 @@
 import {generateQuery} from '../../generation/generate-query'
-import {createPredicateBuildersFromMapping} from '../../expressions/predicate'
 import {createAscendingOrdersFromMapping, createDescendingOrdersFromMapping} from '../../expressions/order'
 import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
@@ -23,19 +22,19 @@ export class Table {
     }
 
     innerJoin(otherTable, f) {
-        const firstComparisonExpressions = createPredicateBuildersFromMapping(0, this.mapping)
-        const secondComparisonExpressions = createPredicateBuildersFromMapping(1, otherTable.mapping)
+        const predicate = f(
+            createColumnsFromMapping(0, this.mapping),
+            createColumnsFromMapping(1, otherTable.mapping))
 
-        const predicate = f(firstComparisonExpressions, secondComparisonExpressions)
         const join = createJoin(1, otherTable.name, predicate)
 
         return new TwoTables(this.name, this.mapping, otherTable.name, otherTable.mapping, join)
     }
 
     filter(f) {
-        const predicates = createPredicateBuildersFromMapping(0, this.mapping)
+        const predicate = f(createColumnsFromMapping(0, this.mapping))
         
-        return new FilteredTable(this.name, this.mapping, f(predicates))
+        return new FilteredTable(this.name, this.mapping, predicate)
     }
 
     sortBy(f) {

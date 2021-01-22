@@ -52,7 +52,7 @@ function generateSelectColumns(select) {
     if (select === '*' || select === 'COUNT(*)') {
         return select
     }
-    else if(select.kind === 'column' || select.kind === 'isnull') {
+    else if(select.kind === 'column' || select.kind === 'is null' || select.kind === 'is not null') {
         return generateGet(select)
     }
     else {

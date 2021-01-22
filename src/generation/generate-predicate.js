@@ -1,7 +1,18 @@
 import {concat, join, map, surroundWithParentheses, unzip} from 'standard-functions'
 import {generateInnerBooleanExpression} from './generate-boolean-expression'
+import generateColumnAccess from './generate-column-access'
 
-function generateLogicalOperation(operator) {
+function generateUnaryPredicate(operator) {
+    return expression => {
+        const columnAccess = generateColumnAccess(expression.column)
+        return `${columnAccess} ${operator}`
+    }
+}
+
+export const generateIsNull = generateUnaryPredicate('IS NULL')
+export const generateIsNotNull = generateUnaryPredicate('IS NOT NULL')
+
+function generateNAryPredicate(operator) {
     return (isRoot, { values }) => {
         const generatedValues = map(generateInnerBooleanExpression)(values)
 
@@ -14,5 +25,5 @@ function generateLogicalOperation(operator) {
     }
 }
 
-export const generateAnd = generateLogicalOperation('AND')
-export const generateOr = generateLogicalOperation('OR')
+export const generateAnd = generateNAryPredicate('AND')
+export const generateOr = generateNAryPredicate('OR')

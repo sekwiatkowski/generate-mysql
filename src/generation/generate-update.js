@@ -11,10 +11,9 @@ import {
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
 import {generateEquality} from './generate-comparison'
-import createValue from '../expressions/value'
-import {createEquality} from '../expressions/predicate'
 import {createColumn} from '../expressions/column'
 import {generateRootBooleanExpression} from './generate-boolean-expression'
+import {equals} from '../expressions/predicate'
 
 export default function generateUpdate(tableName) {
     return propertyNamesToColumnNames => predicate => partialObject => {
@@ -22,9 +21,8 @@ export default function generateUpdate(tableName) {
 
         const assignments = mapEntries(([name, value]) => {
             const columnExpression = createColumn(0)(name)
-            const valueExpression = createValue(value)
 
-            return createEquality(columnExpression) (valueExpression)
+            return equals(columnExpression, value)
         }) (partialRow)
 
         const [ generatedAssignments, assignmentParameters ] = unzip(map(generateEquality) (assignments))

@@ -1,4 +1,3 @@
-import {createPredicateBuildersFromMapping} from '../../expressions/predicate'
 import createJoin from '../../expressions/join'
 import {TwoFilteredTables} from './two-filtered-tables'
 import {generateQuery} from '../../generation/generate-query'
@@ -32,9 +31,9 @@ export class TwoTables {
     }
 
     innerJoin(otherTable, f) {
-        const firstPredicates = createPredicateBuildersFromMapping(0, this.firstMapping)
-        const secondPredicates = createPredicateBuildersFromMapping(1, this.secondMapping)
-        const thirdPredicates = createPredicateBuildersFromMapping(2, otherTable.mapping)
+        const firstPredicates = createColumnsFromMapping(0, this.firstMapping)
+        const secondPredicates = createColumnsFromMapping(1, this.secondMapping)
+        const thirdPredicates = createColumnsFromMapping(2, otherTable.mapping)
 
         const predicate = f(firstPredicates, secondPredicates, thirdPredicates)
         const secondJoin = createJoin(2, otherTable.name, predicate)
@@ -51,8 +50,8 @@ export class TwoTables {
     }
 
     filter(f) {
-        const firstPredicates = createPredicateBuildersFromMapping(0, this.firstMapping)
-        const secondPredicates = createPredicateBuildersFromMapping(2, this.secondMapping)
+        const firstPredicates = createColumnsFromMapping(0, this.firstMapping)
+        const secondPredicates = createColumnsFromMapping(2, this.secondMapping)
 
         return new TwoFilteredTables(
             this.firstName, this.firstMapping,
