@@ -3,7 +3,6 @@ import {
     flatten,
     joinWithCommaSpace,
     joinWithNewline,
-    map,
     mapEntries,
     mapKeys,
     propertyOf,
@@ -11,28 +10,28 @@ import {
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
 import {generateEquality} from './generate-comparison'
-import {createColumn} from '../expressions/column'
 import {generateRootBooleanExpression} from './generate-boolean-expression'
-import {equals} from '../expressions/predicate'
+import {createColumn} from '../expressions/column'
+
+
+function generateAssignment([ columnName, value ]) {
+    const column = createColumn(0) (columnName)
+
+    return generateEquality({ left: column, right: value}, false)
+}
 
 export default function generateUpdate(tableName) {
     return propertyNamesToColumnNames => predicate => partialObject => {
         const partialRow = mapKeys(propertyOf(propertyNamesToColumnNames)) (partialObject)
 
-        const assignments = mapEntries(([name, value]) => {
-            const columnExpression = createColumn(0)(name)
-
-            return equals(columnExpression, value)
-        }) (partialRow)
-
-        const [ generatedAssignments, assignmentParameters ] = unzip(map(generateEquality) (assignments))
+        const [ generatedAssignments, assignmentParameters ] = unzip(mapEntries(generateAssignment) (partialRow))
 
         const assignmentList = joinWithCommaSpace(generatedAssignments)
 
         const updateTable = `UPDATE ${generateTableExpression(tableName, 0)}`
         const set = `SET ${assignmentList}`
 
-        const [ whereExpression, whereParameters ] = generateRootBooleanExpression(predicate)
+        const [ whereExpression, whereParameters ] = generateRootBooleanExpression(predicate, false)
         const where = `WHERE ${whereExpression}`
 
         const fragments = [ updateTable, set, where ]
