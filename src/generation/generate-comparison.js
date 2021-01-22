@@ -1,7 +1,7 @@
 import generateColumnExpression from './generate-column-expression'
 import {concat, isObject} from 'standard-functions'
 
-export function generateValue({value}) {
+export function generateValue(value) {
     return ['?', [value]]
 }
 

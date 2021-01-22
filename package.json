@@ -1,10 +1,10 @@
 {
     "name": "generate-mysql",
-    "version": "0.16.0",
+    "version": "0.16.1",
     "main": "src/index.js",
     "dependencies": {
         "data-structures": "github:sekwiatkowski/data-structures#v0.2.1",
-        "standard-functions": "github:sekwiatkowski/standard-functions#v0.24.4"
+        "standard-functions": "github:sekwiatkowski/standard-functions#v0.25.3"
     },
     "devDependencies": {},
     "type": "module"
