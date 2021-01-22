@@ -1,16 +1,20 @@
 import generateColumnExpression from './generate-column-expression'
-import {concat, isObject} from 'standard-functions'
+import {concat, isBoolean, isNumber, isString} from 'standard-functions'
 
-export function generateValue(value) {
+function generateValue(value) {
     return ['?', [value]]
 }
 
+function isValue(input) {
+    return isString(input) || isNumber(input) || isBoolean(input) || input instanceof Date
+}
+
 function generateSide(side, useAlias) {
-    if (isObject(side)) {
-        return [useAlias ? generateColumnExpression(side) : side.columnName, []]
+    if (isValue(side)) {
+        return generateValue(side)
     }
     else {
-        return generateValue(side)
+        return [useAlias ? generateColumnExpression(side) : side.columnName, []]
     }
 }
 
