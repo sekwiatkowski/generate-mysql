@@ -1,8 +1,6 @@
-import {createColumn} from './column'
-
-export function isNull({ tableIndex, column }) {
+export function isNull(column) {
     return {
-        column: createColumn(tableIndex) (column),
+        column,
         kind: 'isnull'
     }
 }

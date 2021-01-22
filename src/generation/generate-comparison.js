@@ -1,4 +1,4 @@
-import generateColumn from './generate-column'
+import generateColumnExpression from './generate-column-expression'
 import {concat} from 'standard-functions'
 
 export function generateValue({value}) {
@@ -8,7 +8,7 @@ export function generateValue({value}) {
 function generateSide(side, useAlias) {
     switch (side.kind) {
         case 'column':
-            return [useAlias ? generateColumn(side) : side.column, []]
+            return [useAlias ? generateColumnExpression(side) : side.columnName, []]
         case 'value':
             return generateValue(side)
     }

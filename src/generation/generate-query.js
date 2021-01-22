@@ -14,8 +14,8 @@ import {
     surroundWithDoubleQuotes, unzip
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
-import generateColumn from './generate-column'
-import generateRootPredicate from './generate-predicate'
+import generateColumnExpression from './generate-column-expression'
+import {generateRootBooleanExpression} from './generate-boolean-expression'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -30,7 +30,7 @@ import generateRootPredicate from './generate-predicate'
  */
 function generateColumnAlias([alias, column]) {
     return joinWithSpace(
-        generateColumn(column),
+        generateColumnExpression(column),
         'AS',
         surroundWithDoubleQuotes(alias)
     )
@@ -45,7 +45,7 @@ function generateMap(obj) {
 }
 
 function generateGet(column) {
-    return generateColumn(column)
+    return generateColumnExpression(column)
 }
 
 function generateSelectColumns(select) {
@@ -69,12 +69,12 @@ function generateFrom(from) {
 }
 
 function generateWhere(predicate) {
-    const [sql, parameters] = generateRootPredicate(predicate)
+    const [sql, parameters] = generateRootBooleanExpression(predicate)
     return [`WHERE ${sql}`, parameters]
 }
 
 function generateSortExpression(sort) {
-    const column = generateColumn(sort.expression)
+    const column = generateColumnExpression(sort.expression)
     return `${column} ${sort.direction}`
 }
 
@@ -92,7 +92,7 @@ const queryGenerators = {
 const queryFragments = keys(queryGenerators)
 
 function generateJoin({ otherTable, predicate }) {
-    const [comparisonSql, parameters] = generateRootPredicate(predicate)
+    const [comparisonSql, parameters] = generateRootBooleanExpression(predicate)
 
     const sqlFragments = [
         'INNER JOIN',

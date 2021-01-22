@@ -1,9 +1,9 @@
 import {mapValues} from 'standard-functions'
 
 export function createColumn(tableIndex) {
-    return column => ({
+    return columnName => ({
         tableIndex,
-        column,
+        columnName,
         kind: 'column'
     })
 }

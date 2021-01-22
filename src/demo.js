@@ -123,3 +123,10 @@ console.log(
         .get(b => isNull(b.published))
         .generate()
 )
+
+console.log(
+    BlogTable
+        .filter(b => isNull(b.published))
+        .get(b => b.title)
+        .generate()
+)
