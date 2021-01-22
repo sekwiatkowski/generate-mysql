@@ -28,7 +28,7 @@ export default function generateUpdate(tableName) {
 
         const assignmentList = joinWithCommaSpace(generatedAssignments)
 
-        const updateTable = `UPDATE ${generateTableExpression(tableName, 0)}`
+        const updateTable = `UPDATE ${tableName}`
         const set = `SET ${assignmentList}`
 
         const [ whereExpression, whereParameters ] = generateRootBooleanExpression(predicate, false)
