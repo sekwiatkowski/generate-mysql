@@ -2,20 +2,21 @@ import {generateComparison} from './generate-comparison'
 import {generateAnd, generateOr, generateIsNull, generateIsNotNull} from './generate-predicate'
 
 function generateBooleanExpression(isRoot) {
-    return (expression, useAlias = true) => {
-        switch (expression.kind) {
-            case 'is null':
-                return [generateIsNull(expression), []]
-            case 'is not null':
-                return [generateIsNotNull(expression), []]
-            case 'equals':
-                return generateComparison(expression, useAlias)
-            case 'and':
-                return generateAnd(isRoot, expression)
-            case 'or':
-                return generateOr(isRoot, expression)
+    return useAlias =>
+        expression => {
+            switch (expression.kind) {
+                case 'is null':
+                    return generateIsNull(useAlias) (expression)
+                case 'is not null':
+                    return generateIsNotNull(useAlias) (expression)
+                case 'equals':
+                    return generateComparison(useAlias) (expression)
+                case 'and':
+                    return generateAnd(isRoot) (useAlias) (expression)
+                case 'or':
+                    return generateOr(isRoot) (useAlias) (expression)
+            }
         }
-    }
 }
 
 export const generateRootBooleanExpression = generateBooleanExpression(true)

@@ -1,7 +1,14 @@
 import {generateTableAlias} from './generate-table'
 
-export default function generateColumnAccess(expression) {
-    const {tableIndex, columnName} = expression
+export default function generateColumnAccess(useAlias) {
+    return expression => {
+        const {tableIndex, columnName} = expression
 
-    return `${generateTableAlias(tableIndex)}.${columnName}`
+        if (useAlias) {
+            return [`${generateTableAlias(tableIndex)}.${columnName}`, []]
+        }
+        else {
+            return [columnName, []]
+        }
+    }
 }

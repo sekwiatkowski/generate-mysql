@@ -9,25 +9,30 @@ function isValue(input) {
     return isString(input) || isNumber(input) || isBoolean(input) || input instanceof Date
 }
 
-function generateSide(side, useAlias) {
-    if (isValue(side)) {
-        return generateValue(side)
-    }
-    else {
-        return [useAlias ? generateColumnExpression(side) : side.columnName, []]
+function generateSide(useAlias) {
+    return side =>
+        isValue(side)
+            ? generateValue(side)
+            : generateColumnExpression(useAlias) (side)
+}
+
+export function generateEquality(useAlias) {
+    return ({left, right}) =>
+    {
+        const [leftSql, leftParameters] = generateSide(useAlias) (left)
+        const [rightSql, rightParameters] = generateSide(useAlias) (right)
+        return [`${leftSql} = ${rightSql}`, concat(leftParameters, rightParameters)]
     }
 }
 
-export function generateEquality({left, right}, useAlias) {
-    const [leftSql, leftParameters] = generateSide(left, useAlias)
-    const [rightSql, rightParameters] = generateSide(right, useAlias)
-    return [`${leftSql} = ${rightSql}`, concat(leftParameters, rightParameters) ]
-}
-
-export function generateComparison(comparison, useAlias = true) {
-    switch (comparison.kind) {
-        case 'equals':
-            return generateEquality(comparison, useAlias)
+export function generateComparison(useAlias) {
+    return comparison => {
+        switch (comparison.kind) {
+            case 'equals':
+                return generateEquality(useAlias) (comparison)
+            default:
+                throw Error('Unsupported kind of comparison.')
+        }
     }
 }
 

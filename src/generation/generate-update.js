@@ -8,16 +8,15 @@ import {
     propertyOf,
     unzip
 } from 'standard-functions'
-import {generateTableExpression} from './generate-table'
 import {generateEquality} from './generate-comparison'
-import {generateRootBooleanExpression} from './generate-boolean-expression'
 import {createColumn} from '../expressions/column'
+import {generateWhere} from './generate-query'
 
 
 function generateAssignment([ columnName, value ]) {
     const column = createColumn(0) (columnName)
 
-    return generateEquality({ left: column, right: value}, false)
+    return generateEquality(false) ({left: column, right: value})
 }
 
 export default function generateUpdate(tableName) {
@@ -28,13 +27,12 @@ export default function generateUpdate(tableName) {
 
         const assignmentList = joinWithCommaSpace(generatedAssignments)
 
-        const updateTable = `UPDATE ${tableName}`
-        const set = `SET ${assignmentList}`
+        const updateSql = `UPDATE ${tableName}`
+        const setSql = `SET ${assignmentList}`
 
-        const [ whereExpression, whereParameters ] = generateRootBooleanExpression(predicate, false)
-        const where = `WHERE ${whereExpression}`
+        const [ whereSql, whereParameters ] = generateWhere(false) (predicate)
 
-        const fragments = [ updateTable, set, where ]
+        const fragments = [ updateSql, setSql, whereSql ]
 
         const sql = joinWithNewline(fragments)
         const parameters = concat(flatten(assignmentParameters), whereParameters)

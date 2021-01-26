@@ -1,18 +1,17 @@
 import {joinWithNewline} from 'standard-functions'
-import {generateRootBooleanExpression} from './generate-boolean-expression'
+import {generateWhere} from './generate-query'
 
 export function generateDelete(tableName) {
-    return`DELETE FROM ${tableName}`
+    return [`DELETE FROM ${tableName}`, []]
 }
 
 export function generateFilteredDelete(tableName) {
     return predicate => {
-        const deleteTable = generateDelete(tableName)
+        const [ deleteSql, _ ] = generateDelete(tableName)
 
-        const [ whereExpression, whereParameters ] = generateRootBooleanExpression(predicate, false)
-        const where = `WHERE ${whereExpression}`
+        const [ whereSql, whereParameters ] = generateWhere(false) (predicate)
 
-        const fragments = [ deleteTable, where ]
+        const fragments = [ deleteSql, whereSql ]
 
         const sql = joinWithNewline(fragments)
 

@@ -1,4 +1,5 @@
 import {
+    concat,
     filter,
     flatten,
     flattenObject,
@@ -10,7 +11,7 @@ import {
     keys,
     map,
     mapEntries,
-    pick,
+    pick, propertyOf,
     surroundWithDoubleQuotes, unzip
 } from 'standard-functions'
 import {generateTableExpression} from './generate-table'
@@ -29,28 +30,31 @@ import {generateRootBooleanExpression} from './generate-boolean-expression'
     [ 't1.some_column', 'AS', 'someProperty' ]
  */
 function generateColumnAlias([alias, column]) {
-    return joinWithSpace(
-        generateColumnExpression(column),
-        'AS',
-        surroundWithDoubleQuotes(alias)
-    )
+    const [columnSql, parameters] = generateColumnExpression(true) (column)
+
+    const aliasedSql = joinWithSpace(columnSql, 'AS', surroundWithDoubleQuotes(alias))
+
+    return [aliasedSql, parameters]
 }
 
 function generateMap(obj) {
     const columns = flattenObject(obj, hasProperty('kind'))
 
-    const aliases = mapEntries(generateColumnAlias) (columns)
+    const [columnSql, parameters] = unzip(mapEntries(generateColumnAlias) (columns))
 
-    return joinWithCommaSpace(aliases)
+    const joinedSql = joinWithCommaSpace(columnSql)
+    const concatenatedParameters = concat(parameters)
+
+    return [joinedSql, concatenatedParameters]
 }
 
 function generateGet(column) {
-    return generateColumnExpression(column)
+    return generateColumnExpression(true) (column)
 }
 
 function generateSelectColumns(select) {
     if (select === '*' || select === 'COUNT(*)') {
-        return select
+        return [select, []]
     }
     else if(select.kind === 'column' || select.kind === 'is null' || select.kind === 'is not null') {
         return generateGet(select)
@@ -61,38 +65,42 @@ function generateSelectColumns(select) {
 }
 
 function generateSelect(select) {
-    return `SELECT ${generateSelectColumns(select)}`
+    const [columnsSql, parameters] = generateSelectColumns(select)
+    return [ `SELECT ${columnsSql}`, parameters]
 }
 
 function generateFrom(from) {
     return `FROM ${generateTableExpression(from, 0)}`
 }
 
-function generateWhere(predicate) {
-    const [sql, parameters] = generateRootBooleanExpression(predicate)
-    return [`WHERE ${sql}`, parameters]
+export function generateWhere(useAlias) {
+    return predicate => {
+        const [sql, parameters] = generateRootBooleanExpression(useAlias) (predicate)
+        return [`WHERE ${sql}`, parameters]
+    }
 }
 
 function generateSortExpression(sort) {
-    const column = generateColumnExpression(sort.expression)
-    return `${column} ${sort.direction}`
+    const [columnSql, parameters] = generateColumnExpression(true) (sort.expression)
+    return [`${columnSql} ${sort.direction}`, parameters]
 }
 
 function generateOrderBy(expr) {
-    return `ORDER BY ${generateSortExpression(expr)}`
+    const [sortSql, parameters] = generateSortExpression(expr)
+    return [`ORDER BY ${sortSql}`, parameters]
 }
 
 const queryGenerators = {
     select: generateSelect,
     from: generateFrom,
     joins: generateJoins,
-    where: generateWhere,
+    where: generateWhere(true),
     orderBy: generateOrderBy
 }
 const queryFragments = keys(queryGenerators)
 
 function generateJoin({ otherTable, predicate }) {
-    const [comparisonSql, parameters] = generateRootBooleanExpression(predicate)
+    const [comparisonSql, parameters] = generateRootBooleanExpression(true) (predicate)
 
     const sqlFragments = [
         'INNER JOIN',
@@ -117,7 +125,7 @@ function generateJoins(joins) {
 }
 
 function generateQueryFragments(query) {
-    const presentFragments = filter(fragment => query[fragment])(queryFragments)
+    const presentFragments = filter(propertyOf(query)) (queryFragments)
 
     const relevantGenerators = pick(presentFragments) (queryGenerators)
 

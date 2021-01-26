@@ -1,3 +1,3 @@
 export default function generateTruncate(tableName) {
-    return `TRUNCATE ${tableName}`
+    return [`TRUNCATE ${tableName}`, []]
 }
