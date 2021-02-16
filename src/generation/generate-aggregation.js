@@ -1,0 +1,1 @@
+export const countExpression = ['COUNT(*)', []]

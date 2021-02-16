@@ -9,6 +9,7 @@ import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 import {generateDelete} from '../../generation/generate-delete'
 import {generateInsert, generateReplace} from '../../generation/generate-insert'
+import {GroupedTable} from './grouped-table'
 
 export class Table {
     name
@@ -29,6 +30,12 @@ export class Table {
         const join = createJoin(1, otherTable.name, predicate)
 
         return new TwoTables(this.name, this.mapping, otherTable.name, otherTable.mapping, join)
+    }
+
+    groupBy(f) {
+        const key = f(createColumnsFromMapping(0, this.mapping))
+
+        return new GroupedTable(this.name, this.mapping, key)
     }
 
     filter(f) {

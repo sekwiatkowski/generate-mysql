@@ -1,5 +1,6 @@
 import {Table} from './table/one/table'
 import {and, equals, isNull, isNotNull, or} from './expressions/predicate'
+import {count} from './expressions/aggregation'
 
 const BlogTable = new Table(
     'blog',
@@ -140,5 +141,35 @@ console.log(
     BlogTable
         .filter(b => isNotNull(b.published))
         .get(b => b.title)
+        .generate()
+)
+
+console.log(
+    BlogTable
+        .groupBy(b => b.categoryId)
+        .map(b => ({
+                category: b.categoryId
+        }))
+        .generate()
+)
+
+console.log(
+    BlogTable
+        .groupBy(b => b.categoryId)
+        .map(b => ({
+                category: b.categoryId,
+                count: count(),
+        }))
+        .generate()
+)
+
+console.log(
+    BlogTable
+        .groupBy(b => b.categoryId)
+        .filter(b => equals(b.authorId, '1'))
+        .map(b => ({
+                category: b.categoryId,
+                count: count(),
+        }))
         .generate()
 )

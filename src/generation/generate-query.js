@@ -90,12 +90,18 @@ function generateOrderBy(expr) {
     return [`ORDER BY ${sortSql}`, parameters]
 }
 
+function generateGroupBy(expr) {
+    const [sql, parameters] = generateColumnExpression(true) (expr)
+    return [`GROUP BY ${sql}`, parameters]
+}
+
 const queryGenerators = {
     select: generateSelect,
     from: generateFrom,
     joins: generateJoins,
     where: generateWhere(true),
-    orderBy: generateOrderBy
+    orderBy: generateOrderBy,
+    groupBy: generateGroupBy
 }
 const queryFragments = keys(queryGenerators)
 
