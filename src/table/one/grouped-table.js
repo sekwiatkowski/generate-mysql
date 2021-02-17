@@ -22,10 +22,6 @@ export class GroupedTable {
         return new FilteredGroupedTable(this.name, this.mapping, this.groupBy, predicate)
     }
 
-    select() {
-        return createQuery(this.generateSelectFromGroupBy('*'))
-    }
-
     map(f) {
         const columns = createColumnsFromMapping(0, this.mapping)
 

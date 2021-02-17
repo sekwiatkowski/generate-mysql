@@ -16,10 +16,6 @@ export class FilteredGroupedTable {
         this.generateSelectFromWhereGroupBy = select => generateQuery({ select, from: this.name, where: this.where, groupBy: this.groupBy })
     }
 
-    select() {
-        return createQuery(this.generateSelectFromWhereGroupBy('*'))
-    }
-
     map(f) {
         const columns = createColumnsFromMapping(0, this.mapping)
 
