@@ -5,7 +5,7 @@ import {createColumnsFromMapping} from '../../expressions/column'
 import {generateFilteredDelete} from '../../generation/generate-delete'
 import {createAscendingOrdersFromMapping, createDescendingOrdersFromMapping} from '../../expressions/order'
 import {SortedTable} from './sorted-table'
-import set from '../../expressions/update'
+import {set} from '../../expressions/update'
 
 export class FilteredTable {
     name

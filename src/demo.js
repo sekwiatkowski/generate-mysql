@@ -1,7 +1,7 @@
 import {Table} from './table/one/table'
 import {and, equals, isNull, isNotNull, or} from './expressions/predicate'
 import {count} from './expressions/aggregation'
-import set from './expressions/update'
+import {set} from './expressions/update'
 
 const BlogTable = new Table(
     'blog',

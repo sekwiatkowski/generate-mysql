@@ -1,4 +1,4 @@
-export default function set(tableIndex, partialObject) {
+export function set(tableIndex, partialObject) {
     return {
         tableIndex,
         partialObject,
