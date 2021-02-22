@@ -10,9 +10,10 @@ import {
 } from 'standard-functions'
 import {generateEquality} from '../boolean/generate-comparison'
 import {createColumn} from '../../expressions/column'
-import {generateJoins, generateWhere} from './generate-select-statement'
 import {generateTableAccess} from '../access/generate-table-access'
 import combineFragments from './combine-fragments'
+import {generateJoins} from '../generate-joins'
+import {generateWhere} from '../generate-where'
 
 function generateUpdateTable(tableName, tableIndex) {
     return [`UPDATE ${generateTableAccess(tableName, tableIndex)}`, []]

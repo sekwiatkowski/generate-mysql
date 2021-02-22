@@ -1,8 +1,9 @@
 import {joinWithNewline} from 'standard-functions'
-import {generateWhere} from './generate-select-statement'
+import {generateWhere} from '../generate-where'
+import {generateFrom} from '../generate-from'
 
 export function generateDeleteStatement(tableName) {
-    return [`DELETE FROM ${tableName}`, []]
+    return [`DELETE ${generateFrom(false) (tableName)}`, []]
 }
 
 export function generateFilteredDelete(tableName) {

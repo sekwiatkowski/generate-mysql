@@ -1,24 +1,22 @@
 import {
     concat,
     filter,
-    flatten,
     flattenObject,
     hasProperty,
     joinWithCommaSpace,
-    joinWithNewline,
     joinWithSpace,
     keys,
-    map,
     mapEntries,
     pick,
     propertyOf,
     surroundWithDoubleQuotes,
     unzip
 } from 'standard-functions'
-import {generateTableAccess} from '../access/generate-table-access'
 import generateColumnExpression from '../generate-column-expression'
-import {generateRootBooleanExpression} from '../boolean/generate-boolean-expression'
 import combineFragments from './combine-fragments'
+import {generateJoins} from '../generate-joins'
+import {generateWhere} from '../generate-where'
+import {generateFrom} from '../generate-from'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -71,17 +69,6 @@ function generateSelect(select) {
     return [ `SELECT ${columnsSql}`, parameters]
 }
 
-function generateFrom(from) {
-    return [`FROM ${generateTableAccess(from, 0)}`, []]
-}
-
-export function generateWhere(useAlias) {
-    return predicate => {
-        const [sql, parameters] = generateRootBooleanExpression(useAlias) (predicate)
-        return [`WHERE ${sql}`, parameters]
-    }
-}
-
 function generateSortExpression(sort) {
     const [columnSql, parameters] = generateColumnExpression(true) (sort.expression)
     return [`${columnSql} ${sort.direction}`, parameters]
@@ -99,38 +86,13 @@ function generateGroupBy(expr) {
 
 const queryGenerators = {
     select: generateSelect,
-    from: generateFrom,
+    from: generateFrom(true),
     joins: generateJoins,
     where: generateWhere(true),
     orderBy: generateOrderBy,
     groupBy: generateGroupBy
 }
 const queryFragments = keys(queryGenerators)
-
-function generateJoin({ otherTable, predicate }) {
-    const [comparisonSql, parameters] = generateRootBooleanExpression(true) (predicate)
-
-    const sqlFragments = [
-        'INNER JOIN',
-        generateTableAccess(otherTable.name, otherTable.index),
-        'ON',
-        comparisonSql
-    ]
-
-    const sql = joinWithSpace(sqlFragments)
-
-    return [sql, parameters]
-}
-
-export function generateJoins(joins) {
-    const pairs = map(generateJoin)(joins)
-
-    const [ sqlFragments, parameterLists ] = unzip(pairs)
-
-    const parameters = flatten(parameterLists)
-
-    return [ joinWithNewline(sqlFragments), parameters ]
-}
 
 function generateQueryFragments(query) {
     const presentFragments = filter(propertyOf(query)) (queryFragments)
