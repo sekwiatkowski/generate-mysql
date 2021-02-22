@@ -1,16 +1,5 @@
 import {concat, join, map, surroundWithParentheses, unzip} from 'standard-functions'
 import {generateInnerBooleanExpression} from './generate-boolean-expression'
-import generateColumnAccess from './generate-column-access'
-
-function generateUnaryPredicate(operator) {
-    return useAlias => expression => {
-        const [accessSql, parameters] = generateColumnAccess(useAlias) (expression.column)
-        return [`${accessSql} ${operator}`, parameters]
-    }
-}
-
-export const generateIsNull = generateUnaryPredicate('IS NULL')
-export const generateIsNotNull = generateUnaryPredicate('IS NOT NULL')
 
 function generateNAryPredicate(operator) {
     return isRoot => useAlias => ({ values }) => {

@@ -1,4 +1,4 @@
-import generateColumnExpression from './generate-column-expression'
+import generateColumnExpression from '../generate-column-expression'
 import {concat, isBoolean, isNull, isNumber, isString} from 'standard-functions'
 
 function generateValue(value) {

@@ -1,4 +1,4 @@
-import {generateQuery} from '../../generation/generate-query'
+import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 import {FilteredGroupedTable} from './filtered-grouped-table'
@@ -13,7 +13,7 @@ export class GroupedTable {
         this.name = name
         this.mapping = mapping
         this.groupBy = groupBy
-        this.generateSelectFromGroupBy = select => generateQuery({ select, from: this.name, groupBy: this.groupBy })
+        this.generateSelectFromGroupBy = select => generateSelectStatement({ select, from: this.name, groupBy: this.groupBy })
     }
 
     filter(f) {

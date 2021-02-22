@@ -1,6 +1,6 @@
 import createJoin from '../../expressions/join'
 import {TwoFilteredTables} from './two-filtered-tables'
-import {generateQuery} from '../../generation/generate-query'
+import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {ThreeTables} from '../three/three-tables'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
@@ -23,7 +23,7 @@ export class TwoTables {
 
         this.firstJoin = firstJoin
 
-        this.generateSelectFromJoins = select => generateQuery({
+        this.generateSelectFromJoins = select => generateSelectStatement({
             select,
             from: this.firstName,
             joins: [ this.firstJoin ]

@@ -1,14 +1,14 @@
-import {generateQuery} from '../../generation/generate-query'
+import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createAscendingOrdersFromMapping, createDescendingOrdersFromMapping} from '../../expressions/order'
 import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
 import {FilteredTable} from './filtered-table'
 import {SortedTable} from './sorted-table'
-import generateTruncate from '../../generation/generate-truncate'
+import generateTruncateStatement from '../../generation/statements/generate-truncate-statement'
 import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
-import {generateDelete} from '../../generation/generate-delete'
-import {generateInsert, generateReplace} from '../../generation/generate-insert'
+import {generateDeleteStatement} from '../../generation/statements/generate-delete-statement'
+import {generateInsert, generateReplace} from '../../generation/statements/generate-store-statements'
 import {GroupedTable} from './grouped-table'
 
 export class Table {
@@ -19,7 +19,7 @@ export class Table {
     constructor(name, mapping) {
         this.name = name
         this.mapping = mapping
-        this.generateSelectFrom = select => generateQuery({ select, from: this.name })
+        this.generateSelectFrom = select => generateSelectStatement({ select, from: this.name })
     }
 
     innerJoin(otherTable, f) {
@@ -93,13 +93,13 @@ export class Table {
     }
 
     deleteAll() {
-        return generateDelete(this.name)
+        return generateDeleteStatement(this.name)
     }
 
     /* TRUNCATE quickly removes all rows from a set of tables.
        It has the same effect as an unqualified DELETE on each table, but since it does not actually scan the tables it is faster.
        Furthermore, it reclaims disk space immediately, rather than requiring a subsequent VACUUM operation. This is most useful on large tables. */
     truncate() {
-        return generateTruncate(this.name)
+        return generateTruncateStatement(this.name)
     }
 }

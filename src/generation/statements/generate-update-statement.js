@@ -1,21 +1,21 @@
 import {
-    appendTo,
-    concat, filter,
-    flatten, fold, isNotNull,
+    filter,
+    flatten,
+    isNotNull,
     joinWithCommaSpace,
-    joinWithNewline,
     mapEntries,
     mapKeys,
     propertyOf,
     unzip
 } from 'standard-functions'
-import {generateEquality} from './generate-comparison'
-import {createColumn} from '../expressions/column'
-import {generateJoins, generateWhere} from './generate-query'
-import {generateTableExpression} from './generate-table'
+import {generateEquality} from '../boolean/generate-comparison'
+import {createColumn} from '../../expressions/column'
+import {generateJoins, generateWhere} from './generate-select-statement'
+import {generateTableAccess} from '../access/generate-table-access'
+import combineFragments from './combine-fragments'
 
 function generateUpdateTable(tableName, tableIndex) {
-    return [`UPDATE ${generateTableExpression(tableName, tableIndex)}`, []]
+    return [`UPDATE ${generateTableAccess(tableName, tableIndex)}`, []]
 }
 
 function generateAssignment(tableIndex) {
@@ -38,7 +38,7 @@ function generateSet(mapping, tableIndex, partialObject) {
     return [setSql, flatten(setParameters)]
 }
 
-export default function generateUpdate({ tableNames, mappings, joins, where, set }) {
+export function generateUpdateStatement({ tableNames, mappings, joins, where, set }) {
     const { tableIndex, partialObject } = set
 
     const updateTableFragment = generateUpdateTable(tableNames[tableIndex], tableIndex)
@@ -50,18 +50,5 @@ export default function generateUpdate({ tableNames, mappings, joins, where, set
 
     const presentFragments = filter(isNotNull) (fragments)
 
-    const [sqlArray, parameters ] = fold((acc, fragment) => {
-        const [accSql, accParameters] = acc
-        const [fragmentSql, fragmentParameters] = fragment
-
-        return [
-            appendTo(accSql) (fragmentSql),
-            concat(accParameters, fragmentParameters)
-        ]
-    }) ([[], []]) (presentFragments)
-
-    return [
-        joinWithNewline(sqlArray),
-        parameters
-    ]
+    return combineFragments(presentFragments)
 }

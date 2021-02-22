@@ -1,11 +1,11 @@
-import {generateQuery} from '../../generation/generate-query'
+import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
-import generateUpdate from '../../generation/generate-update'
 import {createColumnsFromMapping} from '../../expressions/column'
-import {generateFilteredDelete} from '../../generation/generate-delete'
+import {generateFilteredDelete} from '../../generation/statements/generate-delete-statement'
 import {createAscendingOrdersFromMapping, createDescendingOrdersFromMapping} from '../../expressions/order'
 import {SortedTable} from './sorted-table'
 import {set} from '../../expressions/update'
+import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
 
 export class FilteredTable {
     name
@@ -17,7 +17,7 @@ export class FilteredTable {
         this.name = name
         this.mapping = mapping
         this.where = where
-        this.generateSelectFromWhere = select => generateQuery({ select, from: this.name, where: this.where })
+        this.generateSelectFromWhere = select => generateSelectStatement({ select, from: this.name, where: this.where })
     }
 
     sortBy(f) {
@@ -53,7 +53,12 @@ export class FilteredTable {
     }
 
     update(partialObject) {
-        return generateUpdate({ tableNames: [this.name], mappings: [this.mapping], where: this.where, set: set(0, partialObject)})
+        return generateUpdateStatement({
+            tableNames: [this.name],
+            mappings: [this.mapping],
+            where: this.where,
+            set: set(0, partialObject)
+        })
     }
 
     delete() {

@@ -4,19 +4,21 @@ import {
     flatten,
     flattenObject,
     hasProperty,
-    isArray,
     joinWithCommaSpace,
     joinWithNewline,
     joinWithSpace,
     keys,
     map,
     mapEntries,
-    pick, propertyOf,
-    surroundWithDoubleQuotes, unzip
+    pick,
+    propertyOf,
+    surroundWithDoubleQuotes,
+    unzip
 } from 'standard-functions'
-import {generateTableExpression} from './generate-table'
-import generateColumnExpression from './generate-column-expression'
-import {generateRootBooleanExpression} from './generate-boolean-expression'
+import {generateTableAccess} from '../access/generate-table-access'
+import generateColumnExpression from '../generate-column-expression'
+import {generateRootBooleanExpression} from '../boolean/generate-boolean-expression'
+import combineFragments from './combine-fragments'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -70,7 +72,7 @@ function generateSelect(select) {
 }
 
 function generateFrom(from) {
-    return `FROM ${generateTableExpression(from, 0)}`
+    return [`FROM ${generateTableAccess(from, 0)}`, []]
 }
 
 export function generateWhere(useAlias) {
@@ -110,7 +112,7 @@ function generateJoin({ otherTable, predicate }) {
 
     const sqlFragments = [
         'INNER JOIN',
-        generateTableExpression(otherTable.name, otherTable.index),
+        generateTableAccess(otherTable.name, otherTable.index),
         'ON',
         comparisonSql
     ]
@@ -137,23 +139,13 @@ function generateQueryFragments(query) {
 
     const fragments = mapEntries(([fragment, generate]) =>
         generate(query[fragment])
-    )(relevantGenerators)
+    ) (relevantGenerators)
 
     return fragments
 }
 
-export function generateQuery(query) {
-    const fragments = generateQueryFragments(query)
+export function generateSelectStatement(input) {
+    const fragments = generateQueryFragments(input)
 
-    const ensuredPairs = map(stringOrArray => isArray(stringOrArray)
-        ? stringOrArray
-        : [stringOrArray, []]
-    ) (fragments)
-
-    const [sqlFragments, parameterFragments] = unzip(ensuredPairs)
-
-    const sql = joinWithNewline(sqlFragments)
-    const parameters = flatten(parameterFragments)
-
-    return [sql, parameters]
+    return combineFragments(fragments)
 }

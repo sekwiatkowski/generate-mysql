@@ -1,7 +1,7 @@
-import {generateQuery} from '../../generation/generate-query'
+import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
-import generateUpdate from '../../generation/generate-update'
+import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
 
 export class TwoFilteredTables {
     firstName
@@ -24,7 +24,7 @@ export class TwoFilteredTables {
         this.firstJoin = firstJoin
         this.where = where
 
-        this.generateSelectFromJoinsWhere = select => generateQuery({
+        this.generateSelectFromJoinsWhere = select => generateSelectStatement({
             select,
             from: this.firstName,
             joins: [ this.firstJoin ],
@@ -51,7 +51,7 @@ export class TwoFilteredTables {
     }
 
     update(f) {
-        return generateUpdate({
+        return generateUpdateStatement({
             tableNames: [this.firstName, this.secondName],
             mappings: [this.firstMapping, this.secondMapping],
             joins: [this.firstJoin],

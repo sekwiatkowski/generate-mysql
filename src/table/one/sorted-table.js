@@ -1,4 +1,4 @@
-import {generateQuery} from '../../generation/generate-query'
+import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 
@@ -14,7 +14,7 @@ export class SortedTable {
         this.mapping = mapping
         this.where = where
         this.orderBy = orderBy
-        this.generateSelectFromWhereOrderBy = select => generateQuery({ select, from: this.name, where: this.where, orderBy: this.orderBy })
+        this.generateSelectFromWhereOrderBy = select => generateSelectStatement({ select, from: this.name, where: this.where, orderBy: this.orderBy })
     }
 
     select() {

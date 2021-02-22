@@ -1,6 +1,6 @@
-import generateColumnAccess from './generate-column-access'
-import {generateIsNotNull, generateIsNull} from './generate-predicate'
+import generateColumnAccess from './access/generate-column-access'
 import {countExpression} from './generate-aggregation'
+import {generateIsNotNull, generateIsNull} from './boolean/generate-unary-predicate'
 
 
 export default function generateColumnExpression(useAlias) {
@@ -15,7 +15,7 @@ export default function generateColumnExpression(useAlias) {
             case 'count':
                 return countExpression
             default:
-                throw Error(`Unsupported column function: ${expression.kind}`)
+                throw Error(`Unsupported kind of column expression: ${expression.kind}`)
         }
     }
 }

@@ -1,6 +1,6 @@
-export function set(tableIndex, partialObject) {
+export function set(table, partialObject) {
     return {
-        tableIndex,
+        tableIndex: table,
         partialObject,
         kind: 'set'
     }

@@ -1,4 +1,4 @@
-import {generateTableAlias} from './generate-table'
+import {generateTableAlias} from './generate-table-access'
 
 export default function generateColumnAccess(useAlias) {
     return expression => {
