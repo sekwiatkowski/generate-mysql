@@ -1,6 +1,7 @@
 import {generateQuery} from '../../generation/generate-query'
 import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
+import generateUpdate from '../../generation/generate-update'
 
 export class TwoFilteredTables {
     firstName
@@ -47,5 +48,15 @@ export class TwoFilteredTables {
 
     count() {
         return createCountQuery(this.generateSelectFromJoinsWhere)
+    }
+
+    update(f) {
+        return generateUpdate({
+            tableNames: [this.firstName, this.secondName],
+            mappings: [this.firstMapping, this.secondMapping],
+            joins: [this.firstJoin],
+            where: this.where,
+            set: f(0, 1)
+        })
     }
 }

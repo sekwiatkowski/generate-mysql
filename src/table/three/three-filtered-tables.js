@@ -1,6 +1,7 @@
 import {generateQuery} from '../../generation/generate-query'
 import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
+import generateUpdate from '../../generation/generate-update'
 
 export class ThreeFilteredTables {
     firstName
@@ -55,5 +56,15 @@ export class ThreeFilteredTables {
 
     count() {
         return createCountQuery(this.generateSelectFromJoinsWhere)
+    }
+
+    update(f) {
+        return generateUpdate({
+            tableNames: [this.firstName, this.secondName, this.thirdName],
+            mappings: [this.firstMapping, this.secondMapping, this.thirdMapping],
+            joins: [this.firstJoin, this.secondJoin],
+            where: this.where,
+            set: f(0, 1, 2)
+        })
     }
 }

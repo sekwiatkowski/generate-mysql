@@ -1,6 +1,7 @@
 import {Table} from './table/one/table'
 import {and, equals, isNull, isNotNull, or} from './expressions/predicate'
 import {count} from './expressions/aggregation'
+import set from './expressions/update'
 
 const BlogTable = new Table(
     'blog',
@@ -33,6 +34,11 @@ const firstPost = { id: 1, title: 'First title', teaser: 'First teaser', publish
 const secondPost = { id: 2, title: 'Second title', teaser: 'Second teaser', published: new Date(), authorId: 1, categoryId: 2 }
 
 console.log(BlogTable.filter(b => equals(b.id, 1)).update({ title: 'updated title', teaser: 'updated teaser' }))
+
+console.log(BlogTable
+    .innerJoin(CategoryTable, (b, c) => equals(b.categoryId, c.id))
+    .filter((b, c) => equals(c.name, 'category name'))
+    .update(b => set(b, {published: null})))
 
 console.log(BlogTable.filter(b => and(equals(b.authorId, 1), equals(b.categoryId, 2))).select().generate())
 console.log(BlogTable.filter(b => or(equals(b.categoryId, 1), equals(b.categoryId, 2))).select().generate())

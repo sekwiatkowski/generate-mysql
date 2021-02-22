@@ -51,7 +51,7 @@ export class TwoTables {
 
     filter(f) {
         const firstPredicates = createColumnsFromMapping(0, this.firstMapping)
-        const secondPredicates = createColumnsFromMapping(2, this.secondMapping)
+        const secondPredicates = createColumnsFromMapping(1, this.secondMapping)
 
         return new TwoFilteredTables(
             this.firstName, this.firstMapping,

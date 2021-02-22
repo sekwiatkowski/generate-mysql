@@ -1,5 +1,5 @@
 import generateColumnExpression from './generate-column-expression'
-import {concat, isBoolean, isNumber, isString} from 'standard-functions'
+import {concat, isBoolean, isNull, isNumber, isString} from 'standard-functions'
 
 function generateValue(value) {
     return ['?', [value]]
@@ -11,7 +11,7 @@ function isValue(input) {
 
 function generateSide(useAlias) {
     return side =>
-        isValue(side)
+        isNull(side) || isValue(side)
             ? generateValue(side)
             : generateColumnExpression(useAlias) (side)
 }

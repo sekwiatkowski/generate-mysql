@@ -120,7 +120,7 @@ function generateJoin({ otherTable, predicate }) {
     return [sql, parameters]
 }
 
-function generateJoins(joins) {
+export function generateJoins(joins) {
     const pairs = map(generateJoin)(joins)
 
     const [ sqlFragments, parameterLists ] = unzip(pairs)
