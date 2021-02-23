@@ -15,8 +15,8 @@ import combineFragments from './combine-fragments'
 import {generateJoins} from '../generate-joins'
 import {generateWhere} from '../generate-where'
 
-function generateUpdateTable(tableName, tableIndex) {
-    return [`UPDATE ${generateTableAccess(tableName, tableIndex)}`, []]
+function generateUpdateTable(tableName) {
+    return [`UPDATE ${generateTableAccess(tableName, 0)}`, []]
 }
 
 function generateAssignment(tableIndex) {
@@ -42,7 +42,7 @@ function generateSet(mapping, tableIndex, partialObject) {
 export function generateUpdateStatement({ tableNames, mappings, joins, where, set }) {
     const { tableIndex, partialObject } = set
 
-    const updateTableFragment = generateUpdateTable(tableNames[tableIndex], tableIndex)
+    const updateTableFragment = generateUpdateTable(tableNames[0])
     const joinFragment = joins ? generateJoins(joins) : null
     const setFragment = generateSet(mappings[tableIndex], tableIndex, partialObject)
     const whereFragment = generateWhere(true) (where)
