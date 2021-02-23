@@ -33,3 +33,11 @@ export function isNotNull(column) {
         kind: 'is not null'
     }
 }
+
+export function isMemberOf(column, set) {
+    return {
+        column,
+        set,
+        kind: 'in'
+    }
+}

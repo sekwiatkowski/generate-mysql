@@ -1,5 +1,5 @@
 import {Table} from './table/one/table'
-import {and, equals, isNull, isNotNull, or} from './expressions/predicate'
+import {and, equals, isNull, isNotNull, or, isMemberOf} from './expressions/predicate'
 import {count} from './expressions/aggregation'
 import {set} from './expressions/update'
 
@@ -42,6 +42,7 @@ console.log(BlogTable
 
 console.log(BlogTable.filter(b => and(equals(b.authorId, 1), equals(b.categoryId, 2))).select().generate())
 console.log(BlogTable.filter(b => or(equals(b.categoryId, 1), equals(b.categoryId, 2))).select().generate())
+console.log(BlogTable.filter(b => isMemberOf(b.categoryId, [1, 2, 3])).select().generate())
 
 console.log(BlogTable.insert(firstPost))
 console.log(BlogTable.insertBatch([firstPost, secondPost]))

@@ -1,11 +1,14 @@
 import {generateComparison} from './generate-comparison'
 import {generateAnd, generateOr} from './generate-nary-predicate'
 import {generateIsNotNull, generateIsNull} from './generate-unary-predicate'
+import {generateIn} from './generate-in'
 
 function generateBooleanExpression(isRoot) {
     return useAlias =>
         expression => {
             switch (expression.kind) {
+                case 'in':
+                    return generateIn(useAlias) (expression)
                 case 'is null':
                     return generateIsNull(useAlias) (expression)
                 case 'is not null':

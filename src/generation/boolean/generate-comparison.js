@@ -1,19 +1,11 @@
 import generateColumnExpression from '../generate-column-expression'
-import {concat, isBoolean, isNull, isNumber, isString} from 'standard-functions'
-
-function generateValue(value) {
-    return ['?', [value]]
-}
-
-function isValue(input) {
-    return isString(input) || isNumber(input) || isBoolean(input) || input instanceof Date
-}
+import {concat} from 'standard-functions'
+import {generateValue, isNullableValue} from '../generate-value'
 
 function generateSide(useAlias) {
-    return side =>
-        isNull(side) || isValue(side)
-            ? generateValue(side)
-            : generateColumnExpression(useAlias) (side)
+    return side => isNullableValue(side)
+        ? generateValue(side)
+        : generateColumnExpression(useAlias) (side)
 }
 
 export function generateEquality(useAlias) {
