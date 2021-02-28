@@ -22,13 +22,27 @@ const AuthorTable = new Table(
         lastName: 'last_name'
     })
 
-
 const CategoryTable = new Table(
     'categories',
     {
         id: 'id',
         name: 'name'
     })
+
+const TagTable = new Table(
+    'tags',
+    {
+        id: 'id'
+    }
+)
+
+const BlogPostTags = new Table(
+    'blogposttags',
+    {
+        tagId: 'tag_id',
+        postId: 'post_id'
+    }
+)
 
 const firstPost = { id: 1, title: 'First title', teaser: 'First teaser', published: new Date(), authorId: 1, categoryId: 1 }
 const secondPost = { id: 2, title: 'Second title', teaser: 'Second teaser', published: new Date(), authorId: 1, categoryId: 2 }
@@ -178,5 +192,14 @@ console.log(
                 category: b.categoryId,
                 count: count(),
         }))
+        .generate()
+)
+
+console.log(
+    CategoryTable
+        .innerJoin(BlogTable, (c, b) => equals(c.id, b.categoryId))
+        .innerJoin(BlogPostTags, (c, b, bpt) => equals(b.id, bpt.postId))
+        .innerJoin(TagTable, (c, b, bpt, t) => equals(bpt.tagId, t.id))
+        .get((c, b, bpt, t) => t.id)
         .generate()
 )

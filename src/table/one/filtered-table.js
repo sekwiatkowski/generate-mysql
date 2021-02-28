@@ -32,20 +32,26 @@ export class FilteredTable {
         return new SortedTable(this.name, this.mapping, this.where, f(orders))
     }
 
-    select() {
-        return createQuery(this.generateSelectFromWhere('*'))
+    #createColumns() {
+        return createColumnsFromMapping(0, this.mapping)
+    }
+
+    #query(f) {
+        const columns = this.#createColumns()
+
+        return createQuery(this.generateSelectFromWhere(f(columns)))
     }
 
     map(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
-
-        return createQuery(this.generateSelectFromWhere(f(columns)))
+        return this.#query(f)
     }
 
     get(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
+        return this.#query(f)
+    }
 
-        return createQuery(this.generateSelectFromWhere(f(columns)))
+    select() {
+        return createQuery(this.generateSelectFromWhere('*'))
     }
 
     count() {

@@ -17,19 +17,25 @@ export class SortedTable {
         this.generateSelectFromWhereOrderBy = select => generateSelectStatement({ select, from: this.name, where: this.where, orderBy: this.orderBy })
     }
 
-    select() {
-        return createQuery(this.generateSelectFromWhereOrderBy('*'))
+    #createColumns() {
+        return createColumnsFromMapping(0, this.mapping)
+    }
+
+    #query(f) {
+        const columns = this.#createColumns()
+
+        return createQuery(this.generateSelectFromWhereOrderBy(f(columns)))
     }
 
     map(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
-
-        return createQuery(this.generateSelectFromWhereOrderBy(f(columns)))
+        return this.#query(f)
     }
 
     get(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
+        return this.#query(f)
+    }
 
-        return createQuery(this.generateSelectFromWhereOrderBy(f(columns)))
+    select() {
+        return createQuery(this.generateSelectFromWhereOrderBy('*'))
     }
 }

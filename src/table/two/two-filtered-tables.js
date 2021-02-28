@@ -32,18 +32,25 @@ export class TwoFilteredTables {
         })
     }
 
-    map(f) {
+    #createColumns() {
         const firstColumns = createColumnsFromMapping (0, this.firstMapping)
         const secondColumns = createColumnsFromMapping (1, this.secondMapping)
+
+        return [firstColumns, secondColumns]
+    }
+
+    #query(f) {
+        const [firstColumns, secondColumns] = this.#createColumns()
 
         return createQuery(this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
     }
 
-    get(f) {
-        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
-        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
+    map(f) {
+        return this.#query(f)
+    }
 
-        return createQuery(this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
+    get(f) {
+        return this.#query(f)
     }
 
     count() {

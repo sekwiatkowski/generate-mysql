@@ -30,12 +30,18 @@ export class TwoTables {
         })
     }
 
-    innerJoin(otherTable, f) {
-        const firstPredicates = createColumnsFromMapping(0, this.firstMapping)
-        const secondPredicates = createColumnsFromMapping(1, this.secondMapping)
-        const thirdPredicates = createColumnsFromMapping(2, otherTable.mapping)
+    #createColumns() {
+        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
 
-        const predicate = f(firstPredicates, secondPredicates, thirdPredicates)
+        return [firstColumns, secondColumns]
+    }
+
+    innerJoin(otherTable, f) {
+        const [firstColumns, secondColumns] = this.#createColumns()
+        const thirdColumns = createColumnsFromMapping(2, otherTable.mapping)
+
+        const predicate = f(firstColumns, secondColumns, thirdColumns)
         const secondJoin = createJoin(2, otherTable.name, predicate)
 
         return new ThreeTables(
@@ -50,27 +56,27 @@ export class TwoTables {
     }
 
     filter(f) {
-        const firstPredicates = createColumnsFromMapping(0, this.firstMapping)
-        const secondPredicates = createColumnsFromMapping(1, this.secondMapping)
+        const firstColumns = createColumnsFromMapping(0, this.firstMapping)
+        const secondColumns = createColumnsFromMapping(1, this.secondMapping)
 
         return new TwoFilteredTables(
             this.firstName, this.firstMapping,
             this.secondName, this.secondMapping,
             this.firstJoin,
-            f(firstPredicates, secondPredicates))
+            f(firstColumns, secondColumns))
+    }
+
+    #query(f) {
+        const [firstColumns, secondColumns] = this.#createColumns()
+
+        return createQuery(this.generateSelectFromJoins(f(firstColumns, secondColumns)))
     }
 
     map(f) {
-        const firstColumns = createColumnsFromMapping(0, this.firstMapping)
-        const secondColumns = createColumnsFromMapping(1, this.secondMapping)
-
-        return createQuery(this.generateSelectFromJoins(f(firstColumns, secondColumns)))
+        return this.#query(f)
     }
 
     get(f) {
-        const firstColumns = createColumnsFromMapping(0, this.firstMapping)
-        const secondColumns = createColumnsFromMapping(1, this.secondMapping)
-
-        return createQuery(this.generateSelectFromJoins(f(firstColumns, secondColumns)))
+        return this.#query(f)
     }
 }

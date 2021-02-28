@@ -24,7 +24,7 @@ export class Table {
 
     innerJoin(otherTable, f) {
         const predicate = f(
-            createColumnsFromMapping(0, this.mapping),
+            this.#createColumns(),
             createColumnsFromMapping(1, otherTable.mapping))
 
         const join = createJoin(1, otherTable.name, predicate)
@@ -33,15 +33,15 @@ export class Table {
     }
 
     groupBy(f) {
-        const key = f(createColumnsFromMapping(0, this.mapping))
+        const columns = this.#createColumns()
 
-        return new GroupedTable(this.name, this.mapping, key)
+        return new GroupedTable(this.name, this.mapping, f(columns))
     }
 
     filter(f) {
-        const predicate = f(createColumnsFromMapping(0, this.mapping))
+        const columns = this.#createColumns()
         
-        return new FilteredTable(this.name, this.mapping, predicate)
+        return new FilteredTable(this.name, this.mapping, f(columns))
     }
 
     sortBy(f) {
@@ -60,16 +60,22 @@ export class Table {
         return createQuery(this.generateSelectFrom('*'))
     }
 
-    map(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
+    #createColumns() {
+        return createColumnsFromMapping(0, this.mapping)
+    }
+
+    #query(f) {
+        const columns = this.#createColumns()
 
         return createQuery(this.generateSelectFrom(f(columns)))
     }
 
-    get(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
+    map(f) {
+        return this.#query(f)
+    }
 
-        return createQuery(this.generateSelectFrom(f(columns)))
+    get(f) {
+        return this.#query(f)
     }
 
     count() {

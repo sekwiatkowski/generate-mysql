@@ -16,21 +16,27 @@ export class GroupedTable {
         this.generateSelectFromGroupBy = select => generateSelectStatement({ select, from: this.name, groupBy: this.groupBy })
     }
 
-    filter(f) {
-        const predicate = f(createColumnsFromMapping(0, this.mapping))
+    #createColumns() {
+        return createColumnsFromMapping(0, this.mapping)
+    }
 
-        return new FilteredGroupedTable(this.name, this.mapping, this.groupBy, predicate)
+    filter(f) {
+        const columns = this.#createColumns()
+
+        return new FilteredGroupedTable(this.name, this.mapping, this.groupBy, f(columns))
+    }
+
+    #query(f) {
+        const columns = this.#createColumns()
+
+        return createQuery(this.generateSelectFromGroupBy(f(columns)))
     }
 
     map(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
-
-        return createQuery(this.generateSelectFromGroupBy(f(columns)))
+        return this.#query(f)
     }
 
     get(f) {
-        const columns = createColumnsFromMapping(0, this.mapping)
-
-        return createQuery(this.generateSelectFromGroupBy(f(columns)))
+        return this.#query(f)
     }
 }
