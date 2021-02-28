@@ -1,21 +1,16 @@
 import {mapValues} from 'standard-functions'
-import {createColumn} from './column'
 
 function createOrder(direction) {
-    return tableIndex => column => ({
-        expression: createColumn(tableIndex) (column),
+    return column => ({
+        expression: column,
         direction,
         kind: 'sort-expression'
     })
 }
 
-export const createAscendingOrder = createOrder('ASC')
-export const createDescendingOrder = createOrder('DESC')
-
-export function createAscendingOrdersFromMapping(tableIndex, mapping) {
-    return mapValues(createAscendingOrder(tableIndex)) (mapping)
+function createOrders(direction) {
+    return columns => mapValues(createOrder(direction)) (columns)
 }
 
-export function createDescendingOrdersFromMapping(tableIndex, mapping) {
-    return mapValues(createDescendingOrder(tableIndex)) (mapping)
-}
+export const createAscendingOrdersFromColumns = createOrders('ASC')
+export const createDescendingOrdersFromColumns = createOrders('DESC')

@@ -1,13 +1,14 @@
 import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
-import {createColumnsFromMapping} from '../../expressions/column'
 import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
 
 export class TwoFilteredTables {
     firstName
     firstMapping
-    secondName
+    firstColumns
+
     secondMapping
+    secondColumns
 
     firstJoin
 
@@ -15,11 +16,13 @@ export class TwoFilteredTables {
 
     generateSelectFromJoinsWhere
 
-    constructor(firstName, firstMapping, secondName, secondMapping, firstJoin, where) {
+    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, firstJoin, where) {
         this.firstName = firstName
         this.firstMapping = firstMapping
-        this.secondName = secondName
+        this.firstColumns = firstColumns
+
         this.secondMapping = secondMapping
+        this.secondColumns = secondColumns
 
         this.firstJoin = firstJoin
         this.where = where
@@ -32,17 +35,8 @@ export class TwoFilteredTables {
         })
     }
 
-    #createColumns() {
-        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
-        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
-
-        return [firstColumns, secondColumns]
-    }
-
     #query(f) {
-        const [firstColumns, secondColumns] = this.#createColumns()
-
-        return createQuery(this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns)))
+        return createQuery(this.generateSelectFromJoinsWhere(f(this.firstColumns, this.secondColumns)))
     }
 
     map(f) {
@@ -59,7 +53,7 @@ export class TwoFilteredTables {
 
     update(f) {
         return generateUpdateStatement({
-            tableNames: [this.firstName, this.secondName],
+            firstTableName: this.firstName,
             mappings: [this.firstMapping, this.secondMapping],
             joins: [this.firstJoin],
             where: this.where,

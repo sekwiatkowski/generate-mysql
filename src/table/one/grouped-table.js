@@ -1,35 +1,26 @@
 import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createQuery} from '../../query'
-import {createColumnsFromMapping} from '../../expressions/column'
 import {FilteredGroupedTable} from './filtered-grouped-table'
 
 export class GroupedTable {
     name
-    mapping
+    columns
     groupBy
     generateSelectFromGroupBy
 
-    constructor(name, mapping, groupBy) {
+    constructor(name, columns, groupBy) {
         this.name = name
-        this.mapping = mapping
+        this.columns = columns
         this.groupBy = groupBy
         this.generateSelectFromGroupBy = select => generateSelectStatement({ select, from: this.name, groupBy: this.groupBy })
     }
 
-    #createColumns() {
-        return createColumnsFromMapping(0, this.mapping)
-    }
-
     filter(f) {
-        const columns = this.#createColumns()
-
-        return new FilteredGroupedTable(this.name, this.mapping, this.groupBy, f(columns))
+        return new FilteredGroupedTable(this.name, this.columns, this.groupBy, f(this.columns))
     }
 
     #query(f) {
-        const columns = this.#createColumns()
-
-        return createQuery(this.generateSelectFromGroupBy(f(columns)))
+        return createQuery(this.generateSelectFromGroupBy(f(this.columns)))
     }
 
     map(f) {

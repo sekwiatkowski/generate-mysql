@@ -1,5 +1,5 @@
 import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
-import {createAscendingOrdersFromMapping, createDescendingOrdersFromMapping} from '../../expressions/order'
+import {createAscendingOrdersFromColumns, createDescendingOrdersFromColumns} from '../../expressions/order'
 import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
 import {FilteredTable} from './filtered-table'
@@ -15,59 +15,49 @@ export class Table {
     name
     mapping
     generateSelectFrom
+    columns
 
     constructor(name, mapping) {
         this.name = name
         this.mapping = mapping
         this.generateSelectFrom = select => generateSelectStatement({ select, from: this.name })
+        this.columns = createColumnsFromMapping(0, this.mapping)
     }
 
     innerJoin(otherTable, f) {
-        const predicate = f(
-            this.#createColumns(),
-            createColumnsFromMapping(1, otherTable.mapping))
+        const otherColumns = createColumnsFromMapping(1, otherTable.mapping)
 
-        const join = createJoin(1, otherTable.name, predicate)
+        const join = createJoin(1, otherTable.name, f(this.columns, otherColumns))
 
-        return new TwoTables(this.name, this.mapping, otherTable.name, otherTable.mapping, join)
+        return new TwoTables(this.name, this.mapping, this.columns, otherTable.mapping, otherColumns, join)
     }
 
     groupBy(f) {
-        const columns = this.#createColumns()
-
-        return new GroupedTable(this.name, this.mapping, f(columns))
+        return new GroupedTable(this.name, this.columns, f(this.columns))
     }
 
     filter(f) {
-        const columns = this.#createColumns()
-        
-        return new FilteredTable(this.name, this.mapping, f(columns))
+        return new FilteredTable(this.name, this.mapping, this.columns, f(this.columns))
     }
 
     sortBy(f) {
-        const orders = createAscendingOrdersFromMapping(0, this.mapping)
+        const orders = createAscendingOrdersFromColumns(this.columns)
 
-        return new SortedTable(this.name, this.mapping, null, f(orders))
+        return new SortedTable(this.name, this.columns, null, f(orders))
     }
 
     sortDescendinglyBy(f) {
-        const orders = createDescendingOrdersFromMapping(0, this.mapping)
+        const orders = createDescendingOrdersFromColumns(this.columns)
 
-        return new SortedTable(this.name, this.mapping, null, f(orders))
+        return new SortedTable(this.name, this.columns, null, f(orders))
     }
 
     select() {
         return createQuery(this.generateSelectFrom('*'))
     }
 
-    #createColumns() {
-        return createColumnsFromMapping(0, this.mapping)
-    }
-
     #query(f) {
-        const columns = this.#createColumns()
-
-        return createQuery(this.generateSelectFrom(f(columns)))
+        return createQuery(this.generateSelectFrom(f(this.columns)))
     }
 
     map(f) {

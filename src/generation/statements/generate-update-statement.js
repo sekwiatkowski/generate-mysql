@@ -39,10 +39,10 @@ function generateSet(mapping, tableIndex, partialObject) {
     return [setSql, flatten(setParameters)]
 }
 
-export function generateUpdateStatement({ tableNames, mappings, joins, where, set }) {
+export function generateUpdateStatement({ firstTableName, mappings, joins, where, set }) {
     const { tableIndex, partialObject } = set
 
-    const updateTableFragment = generateUpdateTable(tableNames[0])
+    const updateTableFragment = generateUpdateTable(firstTableName)
     const joinFragment = joins ? generateJoins(joins) : null
     const setFragment = generateSet(mappings[tableIndex], tableIndex, partialObject)
     const whereFragment = generateWhere(true) (where)

@@ -1,32 +1,38 @@
 import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createQuery} from '../../query'
-import {createColumnsFromMapping} from '../../expressions/column'
 import {FourFilteredTables} from './four-filtered-tables'
 
 export class FourTables {
     firstName
     firstMapping
-    secondName
+    firstColumns
+
     secondMapping
-    thirdName
+    secondColumns
+
     thirdMapping
-    fourthName
+    thirdColumns
+
     fourthMapping
+    fourthColumns
 
     firstJoin
     secondJoin
 
     generateSelectFromJoin
 
-    constructor(firstName, firstMapping, secondName, secondMapping, thirdName, thirdMapping, fourthName, fourthMapping, firstJoin, secondJoin, thirdJoin) {
+    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, fourthMapping, fourthColumns, firstJoin, secondJoin, thirdJoin) {
         this.firstName = firstName
         this.firstMapping = firstMapping
-        this.secondName = secondName
+
         this.secondMapping = secondMapping
-        this.thirdName = thirdName
+        this.secondColumns = secondColumns
+
         this.thirdMapping = thirdMapping
-        this.fourthName = fourthName
+        this.thirdColumns = thirdColumns
+
         this.fourthMapping = fourthMapping
+        this.fourthColumns = fourthColumns
 
         this.firstJoin = firstJoin
         this.secondJoin = secondJoin
@@ -35,31 +41,18 @@ export class FourTables {
         this.generateSelectFromJoin = select => generateSelectStatement({ select, from: this.firstName, joins: [ this.firstJoin, this.secondJoin, this.thirdJoin ] })
     }
 
-    #createColumns() {
-        return [
-            createColumnsFromMapping (0, this.firstMapping),
-            createColumnsFromMapping (1, this.secondMapping),
-            createColumnsFromMapping (2, this.thirdMapping),
-            createColumnsFromMapping (3, this.fourthMapping)
-        ]
-    }
-
     filter(f) {
-        const [firstColumns, secondColumns, thirdColumns, fourthColumns] = this.#createColumns()
-
         return new FourFilteredTables(
-            this.firstName, this.firstMapping,
-            this.secondName, this.secondMapping,
-            this.thirdName, this.thirdMapping,
-            this.fourthName, this.fourthMapping,
-            this.firstJoin, this.secondJoin,
-            f(firstColumns, secondColumns, thirdColumns, fourthColumns))
+            this.firstName, this.firstColumns, this.firstMapping,
+            this.secondMapping, this.secondColumns,
+            this.thirdMapping, this.thirdColumns,
+            this.fourthMapping, this.fourthColumns,
+            this.firstJoin, this.secondJoin, this.thirdJoin,
+            f(this.firstColumns, this.secondColumns, this.thirdColumns, this.fourthColumns))
     }
 
     #query(f) {
-        const [firstColumns, secondColumns, thirdColumns, fourthColumns] = this.#createColumns()
-
-        return createQuery(this.generateSelectFromJoin(f(firstColumns, secondColumns, thirdColumns, fourthColumns)))
+        return createQuery(this.generateSelectFromJoin(f(this.firstColumns, this.secondColumns, this.thirdColumns, this.fourthColumns)))
     }
 
     map(f) {

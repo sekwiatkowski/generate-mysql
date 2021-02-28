@@ -8,23 +8,28 @@ import {FourTables} from '../four/four-tables'
 export class ThreeTables {
     firstName
     firstMapping
-    secondName
+
     secondMapping
-    thirdName
+    secondColumns
+
     thirdMapping
+    thirdColumns
 
     firstJoin
     secondJoin
 
     generateSelectFromJoin
 
-    constructor(firstName, firstMapping, secondName, secondMapping, thirdName, thirdMapping, firstJoin, secondJoin) {
+    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, firstJoin, secondJoin) {
         this.firstName = firstName
         this.firstMapping = firstMapping
-        this.secondName = secondName
+        this.firstColumns = firstColumns
+
         this.secondMapping = secondMapping
-        this.thirdName = thirdName
+        this.secondColumns = secondColumns
+
         this.thirdMapping = thirdMapping
+        this.thirdColumns = thirdColumns
 
         this.firstJoin = firstJoin
         this.secondJoin = secondJoin
@@ -32,50 +37,42 @@ export class ThreeTables {
         this.generateSelectFromJoin = select => generateSelectStatement({ select, from: this.firstName, joins: [ this.firstJoin, this.secondJoin ] })
     }
 
-    #createColumns() {
-        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
-        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
-        const thirdColumns = createColumnsFromMapping (2, this.thirdMapping)
-
-        return [firstColumns, secondColumns, thirdColumns]
-    }
-
     innerJoin(otherTable, f) {
-        const [firstColumns, secondColumns, thirdColumns] = this.#createColumns()
         const fourthColumns = createColumnsFromMapping(3, otherTable.mapping)
 
-        const predicate = f(firstColumns, secondColumns, thirdColumns, fourthColumns)
+        const predicate = f(this.firstColumns, this.secondColumns, this.thirdColumns, fourthColumns)
         const thirdJoin = createJoin(3, otherTable.name, predicate)
 
         return new FourTables(
             this.firstName,
             this.firstMapping,
-            this.secondName,
+            this.firstColumns,
+
             this.secondMapping,
-            this.thirdName,
+            this.secondColumns,
+
             this.thirdMapping,
-            otherTable.name,
+            this.thirdColumns,
+
             otherTable.mapping,
+            fourthColumns,
+
             this.firstJoin,
             this.secondJoin,
             thirdJoin)
     }
 
     filter(f) {
-        const [firstColumns, secondColumns, thirdColumns] = this.#createColumns()
-
         return new ThreeFilteredTables(
-            this.firstName, this.firstMapping,
-            this.secondName, this.secondMapping,
-            this.thirdName, this.thirdMapping,
+            this.firstName, this.firstMapping, this.firstColumns,
+            this.secondMapping, this.secondColumns,
+            this.thirdMapping, this.thirdColumns,
             this.firstJoin, this.secondJoin,
-            f(firstColumns, secondColumns, thirdColumns))
+            f(this.firstColumns, this.secondColumns, this.thirdColumns))
     }
 
     #query(f) {
-        const [firstColumns, secondColumns, thirdColumns] = this.#createColumns()
-
-        return createQuery(this.generateSelectFromJoin(f(firstColumns, secondColumns, thirdColumns)))
+        return createQuery(this.generateSelectFromJoin(f(this.firstColumns, this.secondColumns, this.thirdColumns)))
     }
 
     map(f) {

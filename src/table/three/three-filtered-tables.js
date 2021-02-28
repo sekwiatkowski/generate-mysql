@@ -1,15 +1,17 @@
 import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
-import {createColumnsFromMapping} from '../../expressions/column'
 import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
 
 export class ThreeFilteredTables {
     firstName
     firstMapping
-    secondName
+    firstColumns
+
     secondMapping
-    thirdName
+    secondColumns
+
     thirdMapping
+    thirdColumns
 
     firstJoin
 
@@ -17,13 +19,16 @@ export class ThreeFilteredTables {
 
     generateSelectFromJoinsWhere
 
-    constructor(firstName, firstMapping, secondName, secondMapping, thirdName, thirdMapping, firstJoin, secondJoin, where) {
+    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, firstJoin, secondJoin, where) {
         this.firstName = firstName
         this.firstMapping = firstMapping
-        this.secondName = secondName
+        this.firstColumns = firstColumns
+
         this.secondMapping = secondMapping
-        this.thirdName = thirdName
+        this.secondColumns = secondColumns
+
         this.thirdMapping = thirdMapping
+        this.thirdColumns = thirdColumns
 
         this.firstJoin = firstJoin
         this.secondJoin = secondJoin
@@ -38,18 +43,8 @@ export class ThreeFilteredTables {
         })
     }
 
-    #createColumns() {
-        const firstColumns = createColumnsFromMapping (0, this.firstMapping)
-        const secondColumns = createColumnsFromMapping (1, this.secondMapping)
-        const thirdColumns = createColumnsFromMapping (2, this.thirdMapping)
-
-        return [firstColumns, secondColumns, thirdColumns]
-    }
-
     #query(f) {
-        const [firstColumns, secondColumns, thirdColumns] = this.#createColumns()
-
-        return createQuery(this.generateSelectFromJoinsWhere(f(firstColumns, secondColumns, thirdColumns)))
+        return createQuery(this.generateSelectFromJoinsWhere(f(this.firstColumns, this.secondColumns, this.thirdColumns)))
     }
 
     map(f) {
@@ -66,7 +61,7 @@ export class ThreeFilteredTables {
 
     update(f) {
         return generateUpdateStatement({
-            tableNames: [this.firstName, this.secondName, this.thirdName],
+            firstTableName: this.firstName,
             mappings: [this.firstMapping, this.secondMapping, this.thirdMapping],
             joins: [this.firstJoin, this.secondJoin],
             where: this.where,
