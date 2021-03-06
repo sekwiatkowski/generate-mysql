@@ -1,6 +1,5 @@
 import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
-import {createColumnsFromMapping} from '../../expressions/column'
 import {generateFilteredDelete} from '../../generation/statements/generate-delete-statement'
 import {createAscendingOrdersFromColumns, createDescendingOrdersFromColumns} from '../../expressions/order'
 import {SortedTable} from './sorted-table'

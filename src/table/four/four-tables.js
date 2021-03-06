@@ -23,6 +23,7 @@ export class FourTables {
 
     constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, fourthMapping, fourthColumns, firstJoin, secondJoin, thirdJoin) {
         this.firstName = firstName
+        this.firstColumns = firstColumns
         this.firstMapping = firstMapping
 
         this.secondMapping = secondMapping
