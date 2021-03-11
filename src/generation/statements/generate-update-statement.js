@@ -1,8 +1,9 @@
 import {
+    concat,
     filter,
-    flatten,
+    flatten, isArray,
     isNotNull,
-    joinWithCommaSpace,
+    joinWithCommaSpace, map,
     mapEntries,
     mapKeys,
     propertyOf,
@@ -28,23 +29,35 @@ function generateAssignment(tableIndex) {
     }
 }
 
-function generateSet(mapping, tableIndex, partialObject) {
+function generateAssignmentList(mapping, tableIndex, partialObject) {
     const partialRow = mapKeys(propertyOf(mapping)) (partialObject)
 
-    const [ generatedAssignments, setParameters ] = unzip(mapEntries(generateAssignment(tableIndex)) (partialRow))
+    const [ generatedAssignments, parameters ] = unzip(mapEntries(generateAssignment(tableIndex)) (partialRow))
 
-    const assignmentList = joinWithCommaSpace(generatedAssignments)
-    const setSql = `SET ${assignmentList}`
+    const assignmentSql = joinWithCommaSpace(generatedAssignments)
 
-    return [setSql, flatten(setParameters)]
+    return [assignmentSql, flatten(parameters)]
 }
 
-export function generateUpdateStatement({ firstTableName, mappings, joins, where, set }) {
-    const { tableIndex, partialObject } = set
+function generateSet(mappings, set) {
+    const assignmentFragments = map(({ tableIndex, partialObject }) =>
+        generateAssignmentList(mappings[tableIndex], tableIndex, partialObject)
+    ) (isArray(set) ? set : [set])
+    const [assignmentSqlFragments, assignmentParameterLists] = unzip(assignmentFragments)
+    const setSql = `SET ${joinWithCommaSpace(assignmentSqlFragments)}`
+    const setParameters = concat(assignmentParameterLists)
 
+    return [setSql, setParameters]
+}
+
+export function generateUpdateStatement({ firstTableName, joins, where, mappings, set }) {
+    //const { tableIndex, partialObject } = set
     const updateTableFragment = generateUpdateTable(firstTableName)
+
     const joinFragment = joins ? generateJoins(joins) : null
-    const setFragment = generateSet(mappings[tableIndex], tableIndex, partialObject)
+
+    const setFragment = generateSet(mappings, set)
+
     const whereFragment = generateWhere(true) (where)
 
     const fragments = [ updateTableFragment, joinFragment, setFragment, whereFragment ]

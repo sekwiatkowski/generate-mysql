@@ -54,6 +54,15 @@ console.log(BlogTable
     .filter((b, c) => equals(c.name, 'category name'))
     .update(b => set(b, {published: null})))
 
+console.log(BlogTable
+    .innerJoin(CategoryTable, (b, c) => equals(b.categoryId, c.id))
+    .filter((b, c) => equals(c.name, 'category name'))
+    .update((b, c) => [
+        set(b, {published: null}),
+        set(c, {name: 'unpublished'})
+    ])
+)
+
 console.log(BlogTable.filter(b => and(equals(b.authorId, 1), equals(b.categoryId, 2))).select().generate())
 console.log(BlogTable.filter(b => or(equals(b.categoryId, 1), equals(b.categoryId, 2))).select().generate())
 console.log(BlogTable.filter(b => isMemberOf(b.categoryId, [1, 2, 3])).select().generate())
