@@ -1,7 +1,7 @@
 import {generateComparison} from './generate-comparison'
 import {generateAnd, generateOr} from './generate-nary-predicate'
 import {generateIsNotNull, generateIsNull} from './generate-unary-predicate'
-import {generateIn} from './generate-in'
+import generateIn from './generate-in'
 
 function generateBooleanExpression(isRoot) {
     return useAlias =>

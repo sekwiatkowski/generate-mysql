@@ -2,6 +2,7 @@ import {Table} from './table/one/table'
 import {and, equals, isNull, isNotNull, or, isMemberOf} from './expressions/predicate'
 import {count} from './expressions/aggregation'
 import {set} from './expressions/update'
+import {add, increment} from './expressions/computation'
 
 const BlogTable = new Table(
     'blog',
@@ -11,7 +12,8 @@ const BlogTable = new Table(
         teaser: 'teaser',
         published: 'published',
         authorId: 'author_id',
-        categoryId: 'category_id'
+        categoryId: 'category_id',
+        views: 'views'
     })
 
 const AuthorTable = new Table(
@@ -211,4 +213,36 @@ console.log(
         .innerJoin(TagTable, (c, b, bpt, t) => equals(bpt.tagId, t.id))
         .get((c, b, bpt, t) => t.id)
         .generate()
+)
+
+const Migration = new Table(
+    'migration',
+    {
+        id: 'id',
+        oldColumn: 'old_column',
+        newColumn: 'new_column'
+    })
+
+console.log(
+    Migration
+        .filter(m => equals(m.id, 'id'))
+        .update(m => ({
+           newColumn: m.oldColumn
+        }))
+)
+
+console.log(
+    BlogTable
+        .filter(b => equals(b.id, 'id'))
+        .update(b => ({
+            views: add(b.views, 1)
+        }))
+)
+
+console.log(
+    BlogTable
+        .filter(b => equals(b.id, 'id'))
+        .update(b => ({
+            views: increment(b.views)
+        }))
 )

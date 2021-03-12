@@ -5,6 +5,7 @@ import {createAscendingOrdersFromColumns, createDescendingOrdersFromColumns} fro
 import {SortedTable} from './sorted-table'
 import {set} from '../../expressions/update'
 import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
+import {isObject} from 'standard-functions'
 
 export class FilteredTable {
     #name
@@ -53,12 +54,12 @@ export class FilteredTable {
         return createCountQuery(this.#generateSelectFromWhere)
     }
 
-    update(partialObject) {
+    update(assignment) {
         return generateUpdateStatement({
             firstTableName: this.#name,
             mappings: [this.#mapping],
             where: this.#where,
-            set: set(0, partialObject)
+            set: set(0, isObject(assignment) ? assignment : assignment(this.#columns))
         })
     }
 

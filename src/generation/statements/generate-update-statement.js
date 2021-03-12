@@ -29,8 +29,8 @@ function generateAssignment(tableIndex) {
     }
 }
 
-function generateAssignmentList(mapping, tableIndex, partialObject) {
-    const partialRow = mapKeys(propertyOf(mapping)) (partialObject)
+function generateAssignmentList(mapping, tableIndex, assignment) {
+    const partialRow = mapKeys(propertyOf(mapping)) (assignment)
 
     const [ generatedAssignments, parameters ] = unzip(mapEntries(generateAssignment(tableIndex)) (partialRow))
 
@@ -40,8 +40,8 @@ function generateAssignmentList(mapping, tableIndex, partialObject) {
 }
 
 function generateSet(mappings, set) {
-    const assignmentFragments = map(({ tableIndex, partialObject }) =>
-        generateAssignmentList(mappings[tableIndex], tableIndex, partialObject)
+    const assignmentFragments = map(({ tableIndex, assignment }) =>
+        generateAssignmentList(mappings[tableIndex], tableIndex, assignment)
     ) (isArray(set) ? set : [set])
     const [assignmentSqlFragments, assignmentParameterLists] = unzip(assignmentFragments)
     const setSql = `SET ${joinWithCommaSpace(assignmentSqlFragments)}`

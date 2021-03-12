@@ -1,7 +1,7 @@
-export function set(table, partialObject) {
+export function set(table, assignment) {
     return {
         tableIndex: table,
-        partialObject,
+        assignment,
         kind: 'set'
     }
 }
