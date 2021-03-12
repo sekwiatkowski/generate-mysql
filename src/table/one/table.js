@@ -14,50 +14,50 @@ import {GroupedTable} from './grouped-table'
 export class Table {
     name
     mapping
-    generateSelectFrom
-    columns
+    #generateSelectFrom
+    #columns
 
     constructor(name, mapping) {
         this.name = name
         this.mapping = mapping
-        this.generateSelectFrom = select => generateSelectStatement({ select, from: this.name })
-        this.columns = createColumnsFromMapping(0, this.mapping)
+        this.#generateSelectFrom = select => generateSelectStatement({ select, from: this.name })
+        this.#columns = createColumnsFromMapping(0, this.mapping)
     }
 
     innerJoin(otherTable, f) {
         const otherColumns = createColumnsFromMapping(1, otherTable.mapping)
 
-        const join = createJoin(1, otherTable.name, f(this.columns, otherColumns))
+        const join = createJoin(1, otherTable.name, f(this.#columns, otherColumns))
 
-        return new TwoTables(this.name, this.mapping, this.columns, otherTable.mapping, otherColumns, join)
+        return new TwoTables(this.name, this.mapping, this.#columns, otherTable.mapping, otherColumns, join)
     }
 
     groupBy(f) {
-        return new GroupedTable(this.name, this.columns, f(this.columns))
+        return new GroupedTable(this.name, this.#columns, f(this.#columns))
     }
 
     filter(f) {
-        return new FilteredTable(this.name, this.mapping, this.columns, f(this.columns))
+        return new FilteredTable(this.name, this.mapping, this.#columns, f(this.#columns))
     }
 
     sortBy(f) {
-        const orders = createAscendingOrdersFromColumns(this.columns)
+        const orders = createAscendingOrdersFromColumns(this.#columns)
 
-        return new SortedTable(this.name, this.columns, null, f(orders))
+        return new SortedTable(this.name, this.#columns, null, f(orders))
     }
 
     sortDescendinglyBy(f) {
-        const orders = createDescendingOrdersFromColumns(this.columns)
+        const orders = createDescendingOrdersFromColumns(this.#columns)
 
-        return new SortedTable(this.name, this.columns, null, f(orders))
+        return new SortedTable(this.name, this.#columns, null, f(orders))
     }
 
     select() {
-        return createQuery(this.generateSelectFrom('*'))
+        return createQuery(this.#generateSelectFrom('*'))
     }
 
     #query(f) {
-        return createQuery(this.generateSelectFrom(f(this.columns)))
+        return createQuery(this.#generateSelectFrom(f(this.#columns)))
     }
 
     map(f) {
@@ -69,7 +69,7 @@ export class Table {
     }
 
     count() {
-        return createCountQuery(this.generateSelectFrom)
+        return createCountQuery(this.#generateSelectFrom)
     }
 
     insert(obj) {

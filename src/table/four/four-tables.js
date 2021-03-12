@@ -3,57 +3,58 @@ import {createQuery} from '../../query'
 import {FourFilteredTables} from './four-filtered-tables'
 
 export class FourTables {
-    firstName
-    firstMapping
-    firstColumns
+    #firstName
+    #firstMapping
+    #firstColumns
 
-    secondMapping
-    secondColumns
+    #secondMapping
+    #secondColumns
 
-    thirdMapping
-    thirdColumns
+    #thirdMapping
+    #thirdColumns
 
-    fourthMapping
-    fourthColumns
+    #fourthMapping
+    #fourthColumns
 
-    firstJoin
-    secondJoin
+    #firstJoin
+    #secondJoin
+    #thirdJoin
 
-    generateSelectFromJoin
+    #generateSelectFromJoin
 
     constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, fourthMapping, fourthColumns, firstJoin, secondJoin, thirdJoin) {
-        this.firstName = firstName
-        this.firstColumns = firstColumns
-        this.firstMapping = firstMapping
+        this.#firstName = firstName
+        this.#firstMapping = firstMapping
+        this.#firstColumns = firstColumns
 
-        this.secondMapping = secondMapping
-        this.secondColumns = secondColumns
+        this.#secondMapping = secondMapping
+        this.#secondColumns = secondColumns
 
-        this.thirdMapping = thirdMapping
-        this.thirdColumns = thirdColumns
+        this.#thirdMapping = thirdMapping
+        this.#thirdColumns = thirdColumns
 
-        this.fourthMapping = fourthMapping
-        this.fourthColumns = fourthColumns
+        this.#fourthMapping = fourthMapping
+        this.#fourthColumns = fourthColumns
 
-        this.firstJoin = firstJoin
-        this.secondJoin = secondJoin
-        this.thirdJoin = thirdJoin
+        this.#firstJoin = firstJoin
+        this.#secondJoin = secondJoin
+        this.#thirdJoin = thirdJoin
 
-        this.generateSelectFromJoin = select => generateSelectStatement({ select, from: this.firstName, joins: [ this.firstJoin, this.secondJoin, this.thirdJoin ] })
+        this.#generateSelectFromJoin = select => generateSelectStatement({ select, from: this.#firstName, joins: [ this.#firstJoin, this.#secondJoin, this.#thirdJoin ] })
     }
 
     filter(f) {
         return new FourFilteredTables(
-            this.firstName, this.firstColumns, this.firstMapping,
-            this.secondMapping, this.secondColumns,
-            this.thirdMapping, this.thirdColumns,
-            this.fourthMapping, this.fourthColumns,
-            this.firstJoin, this.secondJoin, this.thirdJoin,
-            f(this.firstColumns, this.secondColumns, this.thirdColumns, this.fourthColumns))
+            this.#firstName, this.#firstColumns, this.#firstMapping,
+            this.#secondMapping, this.#secondColumns,
+            this.#thirdMapping, this.#thirdColumns,
+            this.#fourthMapping, this.#fourthColumns,
+            this.#firstJoin, this.#secondJoin, this.#thirdJoin,
+            f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#fourthColumns))
     }
 
     #query(f) {
-        return createQuery(this.generateSelectFromJoin(f(this.firstColumns, this.secondColumns, this.thirdColumns, this.fourthColumns)))
+        return createQuery(this.#generateSelectFromJoin(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#fourthColumns)))
     }
 
     map(f) {

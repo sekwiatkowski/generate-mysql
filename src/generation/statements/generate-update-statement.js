@@ -51,7 +51,6 @@ function generateSet(mappings, set) {
 }
 
 export function generateUpdateStatement({ firstTableName, joins, where, mappings, set }) {
-    //const { tableIndex, partialObject } = set
     const updateTableFragment = generateUpdateTable(firstTableName)
 
     const joinFragment = joins ? generateJoins(joins) : null

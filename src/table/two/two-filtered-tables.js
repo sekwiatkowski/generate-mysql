@@ -3,40 +3,40 @@ import {createCountQuery, createQuery} from '../../query'
 import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
 
 export class TwoFilteredTables {
-    firstName
-    firstMapping
-    firstColumns
+    #firstName
+    #firstMapping
+    #firstColumns
 
-    secondMapping
-    secondColumns
+    #secondMapping
+    #secondColumns
 
-    firstJoin
+    #firstJoin
 
-    where
+    #where
 
-    generateSelectFromJoinsWhere
+    #generateSelectFromJoinsWhere
 
     constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, firstJoin, where) {
-        this.firstName = firstName
-        this.firstMapping = firstMapping
-        this.firstColumns = firstColumns
+        this.#firstName = firstName
+        this.#firstMapping = firstMapping
+        this.#firstColumns = firstColumns
 
-        this.secondMapping = secondMapping
-        this.secondColumns = secondColumns
+        this.#secondMapping = secondMapping
+        this.#secondColumns = secondColumns
 
-        this.firstJoin = firstJoin
-        this.where = where
+        this.#firstJoin = firstJoin
+        this.#where = where
 
-        this.generateSelectFromJoinsWhere = select => generateSelectStatement({
+        this.#generateSelectFromJoinsWhere = select => generateSelectStatement({
             select,
-            from: this.firstName,
-            joins: [ this.firstJoin ],
-            where: this.where
+            from: this.#firstName,
+            joins: [ this.#firstJoin ],
+            where: this.#where
         })
     }
 
     #query(f) {
-        return createQuery(this.generateSelectFromJoinsWhere(f(this.firstColumns, this.secondColumns)))
+        return createQuery(this.#generateSelectFromJoinsWhere(f(this.#firstColumns, this.#secondColumns)))
     }
 
     map(f) {
@@ -48,15 +48,15 @@ export class TwoFilteredTables {
     }
 
     count() {
-        return createCountQuery(this.generateSelectFromJoinsWhere)
+        return createCountQuery(this.#generateSelectFromJoinsWhere)
     }
 
     update(f) {
         return generateUpdateStatement({
-            firstTableName: this.firstName,
-            mappings: [this.firstMapping, this.secondMapping],
-            joins: [this.firstJoin],
-            where: this.where,
+            firstTableName: this.#firstName,
+            mappings: [this.#firstMapping, this.#secondMapping],
+            joins: [this.#firstJoin],
+            where: this.#where,
             set: f(0, 1)
         })
     }
