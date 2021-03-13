@@ -7,22 +7,18 @@ import {createColumnsFromMapping} from '../../expressions/column'
 
 export class TwoTables {
     #firstName
-    #firstMapping
     #firstColumns
 
-    #secondMapping
     #secondColumns
 
     #firstJoin
 
     #generateSelectFromJoins
 
-    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, firstJoin) {
+    constructor(firstName, firstColumns, secondColumns, firstJoin) {
         this.#firstName = firstName
-        this.#firstMapping = firstMapping
         this.#firstColumns = firstColumns
 
-        this.#secondMapping = secondMapping
         this.#secondColumns = secondColumns
 
         this.#firstJoin = firstJoin
@@ -41,9 +37,9 @@ export class TwoTables {
         const secondJoin = createJoin(2, otherTable.name, predicate)
 
         return new ThreeTables(
-            this.#firstName, this.#firstMapping, this.#firstColumns,
-            this.#secondMapping, this.#secondColumns,
-            otherTable.mapping, thirdColumns,
+            this.#firstName, this.#firstColumns,
+            this.#secondColumns,
+            thirdColumns,
 
             this.#firstJoin,
             secondJoin)
@@ -51,8 +47,8 @@ export class TwoTables {
 
     filter(f) {
         return new TwoFilteredTables(
-            this.#firstName, this.#firstMapping, this.#firstColumns,
-            this.#secondMapping, this.#secondColumns,
+            this.#firstName, this.#firstColumns,
+            this.#secondColumns,
 
             this.#firstJoin,
             f(this.#firstColumns, this.#secondColumns))

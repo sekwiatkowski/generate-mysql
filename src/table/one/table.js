@@ -29,7 +29,7 @@ export class Table {
 
         const join = createJoin(1, otherTable.name, f(this.#columns, otherColumns))
 
-        return new TwoTables(this.name, this.mapping, this.#columns, otherTable.mapping, otherColumns, join)
+        return new TwoTables(this.name, this.#columns, otherColumns, join)
     }
 
     groupBy(f) {
@@ -37,7 +37,7 @@ export class Table {
     }
 
     filter(f) {
-        return new FilteredTable(this.name, this.mapping, this.#columns, f(this.#columns))
+        return new FilteredTable(this.name, this.#columns, f(this.#columns))
     }
 
     sortBy(f) {

@@ -4,10 +4,8 @@ import {generateUpdateStatement} from '../../generation/statements/generate-upda
 
 export class TwoFilteredTables {
     #firstName
-    #firstMapping
     #firstColumns
 
-    #secondMapping
     #secondColumns
 
     #firstJoin
@@ -16,12 +14,10 @@ export class TwoFilteredTables {
 
     #generateSelectFromJoinsWhere
 
-    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, firstJoin, where) {
+    constructor(firstName, firstColumns, secondColumns, firstJoin, where) {
         this.#firstName = firstName
-        this.#firstMapping = firstMapping
         this.#firstColumns = firstColumns
 
-        this.#secondMapping = secondMapping
         this.#secondColumns = secondColumns
 
         this.#firstJoin = firstJoin

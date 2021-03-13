@@ -7,12 +7,10 @@ import {FourTables} from '../four/four-tables'
 
 export class ThreeTables {
     #firstName
-    #firstMapping
+    #firstColumns
 
-    #secondMapping
     #secondColumns
 
-    #thirdMapping
     #thirdColumns
 
     #firstJoin
@@ -20,15 +18,12 @@ export class ThreeTables {
 
     #generateSelectFromJoin
 
-    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, firstJoin, secondJoin) {
+    constructor(firstName, firstColumns, secondColumns, thirdColumns, firstJoin, secondJoin) {
         this.#firstName = firstName
-        this.#firstMapping = firstMapping
-        this.firstColumns = firstColumns
+        this.#firstColumns = firstColumns
 
-        this.#secondMapping = secondMapping
         this.#secondColumns = secondColumns
 
-        this.#thirdMapping = thirdMapping
         this.#thirdColumns = thirdColumns
 
         this.#firstJoin = firstJoin
@@ -40,21 +35,17 @@ export class ThreeTables {
     innerJoin(otherTable, f) {
         const fourthColumns = createColumnsFromMapping(3, otherTable.mapping)
 
-        const predicate = f(this.firstColumns, this.#secondColumns, this.#thirdColumns, fourthColumns)
+        const predicate = f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, fourthColumns)
         const thirdJoin = createJoin(3, otherTable.name, predicate)
 
         return new FourTables(
             this.#firstName,
-            this.#firstMapping,
-            this.firstColumns,
+            this.#firstColumns,
 
-            this.#secondMapping,
             this.#secondColumns,
 
-            this.#thirdMapping,
             this.#thirdColumns,
 
-            otherTable.mapping,
             fourthColumns,
 
             this.#firstJoin,
@@ -64,15 +55,15 @@ export class ThreeTables {
 
     filter(f) {
         return new ThreeFilteredTables(
-            this.#firstName, this.#firstMapping, this.firstColumns,
-            this.#secondMapping, this.#secondColumns,
-            this.#thirdMapping, this.#thirdColumns,
+            this.#firstName, this.#firstColumns,
+            this.#secondColumns,
+            this.#thirdColumns,
             this.#firstJoin, this.#secondJoin,
-            f(this.firstColumns, this.#secondColumns, this.#thirdColumns))
+            f(this.#firstColumns, this.#secondColumns, this.#thirdColumns))
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromJoin(f(this.firstColumns, this.#secondColumns, this.#thirdColumns)))
+        return createQuery(this.#generateSelectFromJoin(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns)))
     }
 
     map(f) {

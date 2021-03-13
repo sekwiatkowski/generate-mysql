@@ -47,8 +47,8 @@ const BlogPostTags = new Table(
     }
 )
 
-const firstPost = { id: 1, title: 'First title', teaser: 'First teaser', published: new Date(), authorId: 1, categoryId: 1 }
-const secondPost = { id: 2, title: 'Second title', teaser: 'Second teaser', published: new Date(), authorId: 1, categoryId: 2 }
+const firstPost = { id: 1, title: 'First title', teaser: 'First teaser', published: new Date(), authorId: 1, categoryId: 1, views: 3 }
+const secondPost = { id: 2, title: 'Second title', teaser: 'Second teaser', published: new Date(), authorId: 1, categoryId: 2, views: 3 }
 
 console.log(BlogTable.filter(b => equals(b.id, 1)).update({ title: 'updated title', teaser: 'updated teaser' }))
 

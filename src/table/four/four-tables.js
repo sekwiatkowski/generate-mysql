@@ -4,16 +4,12 @@ import {FourFilteredTables} from './four-filtered-tables'
 
 export class FourTables {
     #firstName
-    #firstMapping
     #firstColumns
 
-    #secondMapping
     #secondColumns
 
-    #thirdMapping
     #thirdColumns
 
-    #fourthMapping
     #fourthColumns
 
     #firstJoin
@@ -22,18 +18,14 @@ export class FourTables {
 
     #generateSelectFromJoin
 
-    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, fourthMapping, fourthColumns, firstJoin, secondJoin, thirdJoin) {
+    constructor(firstName, firstColumns, secondColumns, thirdColumns, fourthColumns, firstJoin, secondJoin, thirdJoin) {
         this.#firstName = firstName
-        this.#firstMapping = firstMapping
         this.#firstColumns = firstColumns
 
-        this.#secondMapping = secondMapping
         this.#secondColumns = secondColumns
 
-        this.#thirdMapping = thirdMapping
         this.#thirdColumns = thirdColumns
 
-        this.#fourthMapping = fourthMapping
         this.#fourthColumns = fourthColumns
 
         this.#firstJoin = firstJoin
@@ -45,10 +37,10 @@ export class FourTables {
 
     filter(f) {
         return new FourFilteredTables(
-            this.#firstName, this.#firstColumns, this.#firstMapping,
-            this.#secondMapping, this.#secondColumns,
-            this.#thirdMapping, this.#thirdColumns,
-            this.#fourthMapping, this.#fourthColumns,
+            this.#firstName, this.#firstColumns,
+            this.#secondColumns,
+            this.#thirdColumns,
+            this.#fourthColumns,
             this.#firstJoin, this.#secondJoin, this.#thirdJoin,
             f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#fourthColumns))
     }

@@ -4,16 +4,12 @@ import {generateUpdateStatement} from '../../generation/statements/generate-upda
 
 export class FourFilteredTables {
     #firstName
-    #firstMapping
     #firstColumns
 
-    #secondMapping
     #secondColumns
 
-    #thirdMapping
     #thirdColumns
 
-    #fourthMapping
     #fourthColumns
 
     #firstJoin
@@ -22,18 +18,14 @@ export class FourFilteredTables {
 
     #generateSelectFromJoinsWhere
 
-    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, fourthMapping, fourthColumns, firstJoin, secondJoin, thirdJoin, where) {
+    constructor(firstName, firstColumns, secondColumns, thirdColumns, fourthColumns, firstJoin, secondJoin, thirdJoin, where) {
         this.#firstName = firstName
-        this.#firstMapping = firstMapping
         this.#firstColumns = firstColumns
 
-        this.#secondMapping = secondMapping
         this.#secondColumns = secondColumns
 
-        this.#thirdMapping = thirdMapping
         this.#thirdColumns = thirdColumns
 
-        this.#fourthMapping = fourthMapping
         this.#fourthColumns = fourthColumns
 
         this.#firstJoin = firstJoin
@@ -69,10 +61,9 @@ export class FourFilteredTables {
     update(f) {
         return generateUpdateStatement({
             firstTableName: this.#firstName,
-            mappings: [this.#firstMapping, this.#secondMapping, this.#thirdMapping, this.#fourthMapping],
-            joins: [this.#firstJoin, this.secondJoin, this.thirdJoin],
+            joins: [this.#firstJoin],
             where: this.#where,
-            set: f(0, 1, 2, 3)
+            set: f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#firstColumns)
         })
     }
 }

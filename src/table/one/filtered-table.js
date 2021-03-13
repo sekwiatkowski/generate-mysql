@@ -9,14 +9,12 @@ import {isObject} from 'standard-functions'
 
 export class FilteredTable {
     #name
-    #mapping
     #columns
     #where
     #generateSelectFromWhere
 
-    constructor(name, mapping, columns, where) {
+    constructor(name, columns, where) {
         this.#name = name
-        this.#mapping = mapping
         this.#columns = columns
         this.#where = where
         this.#generateSelectFromWhere = select => generateSelectStatement({ select, from: this.#name, where: this.#where })

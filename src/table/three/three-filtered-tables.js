@@ -4,13 +4,10 @@ import {generateUpdateStatement} from '../../generation/statements/generate-upda
 
 export class ThreeFilteredTables {
     #firstName
-    #firstMapping
     #firstColumns
 
-    #secondMapping
     #secondColumns
 
-    #thirdMapping
     #thirdColumns
 
     #firstJoin
@@ -19,15 +16,12 @@ export class ThreeFilteredTables {
 
     #generateSelectFromJoinsWhere
 
-    constructor(firstName, firstMapping, firstColumns, secondMapping, secondColumns, thirdMapping, thirdColumns, firstJoin, secondJoin, where) {
+    constructor(firstName, firstColumns, secondColumns, thirdColumns, firstJoin, secondJoin, where) {
         this.#firstName = firstName
-        this.#firstMapping = firstMapping
         this.#firstColumns = firstColumns
 
-        this.#secondMapping = secondMapping
         this.#secondColumns = secondColumns
 
-        this.#thirdMapping = thirdMapping
         this.#thirdColumns = thirdColumns
 
         this.#firstJoin = firstJoin
@@ -62,10 +56,9 @@ export class ThreeFilteredTables {
     update(f) {
         return generateUpdateStatement({
             firstTableName: this.#firstName,
-            mappings: [this.#firstMapping, this.#secondMapping, this.#thirdMapping],
-            joins: [this.#firstJoin, this.secondJoin],
+            joins: [this.#firstJoin],
             where: this.#where,
-            set: f(0, 1, 2)
+            set: f(this.#firstColumns, this.#secondColumns, this.#thirdColumns)
         })
     }
 }
