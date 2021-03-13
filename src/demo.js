@@ -3,6 +3,7 @@ import {and, equals, isNull, isNotNull, or, isMemberOf} from './expressions/pred
 import {count} from './expressions/aggregation'
 import {set} from './expressions/update'
 import {add, increment} from './expressions/computation'
+import ifElse from './expressions/if-else'
 
 const BlogTable = new Table(
     'blog',
@@ -243,6 +244,6 @@ console.log(
     BlogTable
         .filter(b => equals(b.id, 'id'))
         .update(b => ({
-            views: increment(b.views)
+            views: ifElse(equals(b.categoryId, 1), increment(b.views), b.views)
         }))
 )

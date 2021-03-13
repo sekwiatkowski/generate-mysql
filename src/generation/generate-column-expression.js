@@ -7,6 +7,7 @@ import {
     generateMultiplication,
     generateSubtraction
 } from './numeric/generate-computation'
+import generateIf from './condition/generate-if'
 
 
 export default function generateColumnExpression(useAlias) {
@@ -28,6 +29,9 @@ export default function generateColumnExpression(useAlias) {
                 return generateIsNull(useAlias) (expression)
             case 'is not null':
                 return generateIsNotNull(useAlias) (expression)
+
+            case 'if':
+                return generateIf(useAlias) (expression)
 
             case 'count':
                 return countExpression
