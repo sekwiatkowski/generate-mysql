@@ -3,4 +3,4 @@ export {equals, and, or, isNull, isNotNull, isMemberOf} from './expressions/pred
 export {add, increment, subtract, decrement, multiply, divide} from './expressions/computation'
 export {count} from './expressions/aggregation'
 export {set} from './expressions/update'
-export ifElse from './expressions/if-else'
+export {ifElse} from './expressions/if-else'

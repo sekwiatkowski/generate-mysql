@@ -3,7 +3,7 @@ import {and, equals, isNull, isNotNull, or, isMemberOf} from './expressions/pred
 import {count} from './expressions/aggregation'
 import {set} from './expressions/update'
 import {add, increment} from './expressions/computation'
-import ifElse from './expressions/if-else'
+import {ifElse} from './expressions/if-else'
 
 const BlogTable = new Table(
     'blog',
