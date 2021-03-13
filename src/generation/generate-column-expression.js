@@ -16,11 +16,11 @@ export default function generateColumnExpression(useAlias) {
             case 'add':
                 return generateAddition(useAlias) (expression)
             case 'subtract':
-                return generateSubtraction(expression)
+                return generateSubtraction(useAlias) (expression)
             case 'multiply':
-                return generateMultiplication(expression)
+                return generateMultiplication(useAlias) (expression)
             case 'divide':
-                return generateDivision(expression)
+                return generateDivision(useAlias) (expression)
 
             case 'column':
                 return generateColumnAccess(useAlias) (expression)
