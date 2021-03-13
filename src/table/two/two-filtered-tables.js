@@ -54,10 +54,9 @@ export class TwoFilteredTables {
     update(f) {
         return generateUpdateStatement({
             firstTableName: this.#firstName,
-            mappings: [this.#firstMapping, this.#secondMapping],
             joins: [this.#firstJoin],
             where: this.#where,
-            set: f(0, 1)
+            set: f(this.#firstColumns, this.#secondColumns)
         })
     }
 }

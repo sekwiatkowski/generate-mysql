@@ -1,6 +1,6 @@
-export function set(table, assignment) {
+export function set(columns, assignment) {
     return {
-        tableIndex: table,
+        columns,
         assignment,
         kind: 'set'
     }

@@ -57,9 +57,11 @@ export class FilteredTable {
     update(assignment) {
         return generateUpdateStatement({
             firstTableName: this.#name,
-            mappings: [this.#mapping],
             where: this.#where,
-            set: set(0, isObject(assignment) ? assignment : assignment(this.#columns))
+            set: set(
+                this.#columns,
+                isObject(assignment) ? assignment : assignment(this.#columns)
+            )
         })
     }
 
