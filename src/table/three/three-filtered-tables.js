@@ -57,7 +57,7 @@ export class ThreeFilteredTables {
     update(f) {
         return generateUpdateStatement({
             firstTableName: this.#firstName,
-            joins: [this.#firstJoin],
+            joins: [this.#firstJoin, this.#secondJoin],
             where: this.#where,
             set: f(this.#firstColumns, this.#secondColumns, this.#thirdColumns)
         })
