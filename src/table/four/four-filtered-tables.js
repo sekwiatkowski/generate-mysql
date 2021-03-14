@@ -13,6 +13,8 @@ export class FourFilteredTables {
     #fourthColumns
 
     #firstJoin
+    #secondJoin
+    #thirdJoin
 
     #where
 
@@ -29,15 +31,15 @@ export class FourFilteredTables {
         this.#fourthColumns = fourthColumns
 
         this.#firstJoin = firstJoin
-        this.secondJoin = secondJoin
-        this.thirdJoin = thirdJoin
+        this.#secondJoin = secondJoin
+        this.#thirdJoin = thirdJoin
 
         this.#where = where
 
         this.#generateSelectFromJoinsWhere = select => generateSelectStatement({
             select,
             from: this.#firstName,
-            joins: [ this.#firstJoin, this.secondJoin, this.thirdJoin ],
+            joins: [ this.#firstJoin, this.#secondJoin, this.#thirdJoin ],
             where: this.#where
         })
     }

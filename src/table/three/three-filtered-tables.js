@@ -11,6 +11,7 @@ export class ThreeFilteredTables {
     #thirdColumns
 
     #firstJoin
+    #secondJoin
 
     #where
 
@@ -25,14 +26,14 @@ export class ThreeFilteredTables {
         this.#thirdColumns = thirdColumns
 
         this.#firstJoin = firstJoin
-        this.secondJoin = secondJoin
+        this.#secondJoin = secondJoin
 
         this.#where = where
 
         this.#generateSelectFromJoinsWhere = select => generateSelectStatement({
             select,
             from: this.#firstName,
-            joins: [ this.#firstJoin, this.secondJoin ],
+            joins: [ this.#firstJoin, this.#secondJoin ],
             where: this.#where
         })
     }
