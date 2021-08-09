@@ -1,4 +1,3 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
 import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
 
@@ -12,7 +11,7 @@ export class TwoFilteredTables {
 
     #where
 
-    #generateSelectFromJoinsWhere
+    #selectFromJoinsWhere
 
     constructor(firstName, firstColumns, secondColumns, firstJoin, where) {
         this.#firstName = firstName
@@ -23,7 +22,7 @@ export class TwoFilteredTables {
         this.#firstJoin = firstJoin
         this.#where = where
 
-        this.#generateSelectFromJoinsWhere = select => generateSelectStatement({
+        this.#selectFromJoinsWhere = select => ({
             select,
             from: this.#firstName,
             joins: [ this.#firstJoin ],
@@ -32,7 +31,7 @@ export class TwoFilteredTables {
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromJoinsWhere(f(this.#firstColumns, this.#secondColumns)))
+        return createQuery(this.#selectFromJoinsWhere(f(this.#firstColumns, this.#secondColumns)))
     }
 
     map(f) {
@@ -44,7 +43,7 @@ export class TwoFilteredTables {
     }
 
     count() {
-        return createCountQuery(this.#generateSelectFromJoinsWhere)
+        return createCountQuery(this.#selectFromJoinsWhere)
     }
 
     update(f) {

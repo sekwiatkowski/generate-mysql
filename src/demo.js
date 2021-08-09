@@ -1,5 +1,5 @@
 import {Table} from './table/one/table'
-import {and, equals, isNull, isNotNull, or, isMemberOf} from './expressions/predicate'
+import {and, equals, isMemberOf, isNotNull, isNull, or} from './expressions/predicate'
 import {count} from './expressions/aggregation'
 import {set} from './expressions/update'
 import {add, increment} from './expressions/computation'
@@ -73,6 +73,19 @@ console.log(BlogTable.filter(b => isMemberOf(b.categoryId, [1, 2, 3])).select().
 console.log(BlogTable.insert(firstPost))
 console.log(BlogTable.insertBatch([firstPost, secondPost]))
 
+console.log(BlogTable.insertSelect(BlogTable
+    .filter(b => equals(b.id, 1))
+    .map(b => ({
+        id: 2,
+        title: b.title,
+        teaser: b.teaser,
+        published: b.published,
+        authorId: b.authorId,
+        categoryId: b.categoryId,
+        views: b.views
+    })))
+)
+
 console.log(BlogTable.replace(firstPost))
 
 console.log(BlogTable.truncate())
@@ -142,7 +155,7 @@ console.log(
 
 console.log(BlogTable.select().limit(1).generate())
 console.log(BlogTable.select().offset(1).generate())
-console.log(BlogTable.select().limit(1).offset(1).generate())
+console.log(BlogTable.select().limit(1).offset(2).generate())
 
 console.log(BlogTable.deleteAll())
 console.log(BlogTable.filter(b => equals(b.id, 1)).delete())

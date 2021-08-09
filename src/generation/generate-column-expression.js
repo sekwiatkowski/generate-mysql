@@ -8,33 +8,37 @@ import {
     generateSubtraction
 } from './numeric/generate-computation'
 import generateIf from './condition/generate-if'
+import {generateValue} from './generate-value'
 
 
-export default function generateColumnExpression(useAlias) {
+export default function generateColumnExpression(useTableAlias) {
     return expression => {
         switch (expression.kind) {
             case 'add':
-                return generateAddition(useAlias) (expression)
+                return generateAddition(useTableAlias) (expression)
             case 'subtract':
-                return generateSubtraction(useAlias) (expression)
+                return generateSubtraction(useTableAlias) (expression)
             case 'multiply':
-                return generateMultiplication(useAlias) (expression)
+                return generateMultiplication(useTableAlias) (expression)
             case 'divide':
-                return generateDivision(useAlias) (expression)
+                return generateDivision(useTableAlias) (expression)
 
             case 'column':
-                return generateColumnAccess(useAlias) (expression)
+                return generateColumnAccess(useTableAlias) (expression)
 
             case 'is null':
-                return generateIsNull(useAlias) (expression)
+                return generateIsNull(useTableAlias) (expression)
             case 'is not null':
-                return generateIsNotNull(useAlias) (expression)
+                return generateIsNotNull(useTableAlias) (expression)
 
             case 'if':
-                return generateIf(useAlias) (expression)
+                return generateIf(useTableAlias) (expression)
 
             case 'count':
                 return countExpression
+
+            case 'value':
+                return generateValue(expression.value)
 
             default:
                 throw Error(`Unsupported kind of column expression: ${expression.kind}`)

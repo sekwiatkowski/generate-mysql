@@ -1,6 +1,5 @@
 import createJoin from '../../expressions/join'
 import {TwoFilteredTables} from './two-filtered-tables'
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {ThreeTables} from '../three/three-tables'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
@@ -13,7 +12,7 @@ export class TwoTables {
 
     #firstJoin
 
-    #generateSelectFromJoins
+    #selectFromJoins
 
     constructor(firstName, firstColumns, secondColumns, firstJoin) {
         this.#firstName = firstName
@@ -23,7 +22,7 @@ export class TwoTables {
 
         this.#firstJoin = firstJoin
 
-        this.#generateSelectFromJoins = select => generateSelectStatement({
+        this.#selectFromJoins = select => ({
             select,
             from: this.#firstName,
             joins: [ this.#firstJoin ]
@@ -55,7 +54,7 @@ export class TwoTables {
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromJoins(f(this.#firstColumns, this.#secondColumns)))
+        return createQuery(this.#selectFromJoins(f(this.#firstColumns, this.#secondColumns)))
     }
 
     map(f) {

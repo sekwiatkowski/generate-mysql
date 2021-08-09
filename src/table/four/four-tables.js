@@ -1,4 +1,3 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createQuery} from '../../query'
 import {FourFilteredTables} from './four-filtered-tables'
 
@@ -16,7 +15,7 @@ export class FourTables {
     #secondJoin
     #thirdJoin
 
-    #generateSelectFromJoin
+    #selectFromJoin
 
     constructor(firstName, firstColumns, secondColumns, thirdColumns, fourthColumns, firstJoin, secondJoin, thirdJoin) {
         this.#firstName = firstName
@@ -32,7 +31,9 @@ export class FourTables {
         this.#secondJoin = secondJoin
         this.#thirdJoin = thirdJoin
 
-        this.#generateSelectFromJoin = select => generateSelectStatement({ select, from: this.#firstName, joins: [ this.#firstJoin, this.#secondJoin, this.#thirdJoin ] })
+        this.#selectFromJoin = select => ({
+            select, from: this.#firstName, joins: [ this.#firstJoin, this.#secondJoin, this.#thirdJoin ]
+        })
     }
 
     filter(f) {
@@ -46,7 +47,7 @@ export class FourTables {
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromJoin(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#fourthColumns)))
+        return createQuery(this.#selectFromJoin(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#fourthColumns)))
     }
 
     map(f) {

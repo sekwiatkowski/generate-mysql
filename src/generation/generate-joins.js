@@ -3,7 +3,7 @@ import {generateTableAccess} from './access/generate-table-access'
 import {flatten, joinWithNewline, joinWithSpace, map, unzip} from 'standard-functions'
 
 function generateJoin({otherTable, predicate}) {
-    const [comparisonSql, parameters] = generateRootBooleanExpression(true)(predicate)
+    const [comparisonSql, parameters] = generateRootBooleanExpression(true) (predicate)
 
     const sqlFragments = [
         'INNER JOIN',

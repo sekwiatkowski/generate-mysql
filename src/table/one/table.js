@@ -1,4 +1,3 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createAscendingOrdersFromColumns, createDescendingOrdersFromColumns} from '../../expressions/order'
 import createJoin from '../../expressions/join'
 import {TwoTables} from '../two/two-tables'
@@ -8,7 +7,11 @@ import generateTruncateStatement from '../../generation/statements/generate-trun
 import {createCountQuery, createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
 import {generateDeleteStatement} from '../../generation/statements/generate-delete-statement'
-import {generateInsert, generateReplace} from '../../generation/statements/generate-store-statements'
+import {
+    generateInsert,
+    generateInsertSelect,
+    generateReplace
+} from '../../generation/statements/generate-store-statements'
 import {GroupedTable} from './grouped-table'
 
 export class Table {
@@ -20,7 +23,7 @@ export class Table {
     constructor(name, mapping) {
         this.name = name
         this.mapping = mapping
-        this.#generateSelectFrom = select => generateSelectStatement({ select, from: this.name })
+        this.#generateSelectFrom = select => ({ select, from: this.name })
         this.#columns = createColumnsFromMapping(0, this.mapping)
     }
 
@@ -70,6 +73,10 @@ export class Table {
 
     count() {
         return createCountQuery(this.#generateSelectFrom)
+    }
+
+    insertSelect(select) {
+        return generateInsertSelect(this.name) (this.mapping) (select)
     }
 
     insert(obj) {

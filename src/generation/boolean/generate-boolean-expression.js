@@ -5,23 +5,23 @@ import generateIn from './generate-in'
 import generateColumnAccess from '../access/generate-column-access'
 
 function generateBooleanExpression(isRoot) {
-    return useAlias =>
+    return useTableAlias =>
         expression => {
             switch (expression.kind) {
                 case 'column':
-                    return generateColumnAccess(useAlias) (expression)
+                    return generateColumnAccess(useTableAlias) (expression)
                 case 'in':
-                    return generateIn(useAlias) (expression)
+                    return generateIn(useTableAlias) (expression)
                 case 'is null':
-                    return generateIsNull(useAlias) (expression)
+                    return generateIsNull(useTableAlias) (expression)
                 case 'is not null':
-                    return generateIsNotNull(useAlias) (expression)
+                    return generateIsNotNull(useTableAlias) (expression)
                 case 'equals':
-                    return generateComparison(useAlias) (expression)
+                    return generateComparison(useTableAlias) (expression)
                 case 'and':
-                    return generateAnd(isRoot) (useAlias) (expression)
+                    return generateAnd(isRoot) (useTableAlias) (expression)
                 case 'or':
-                    return generateOr(isRoot) (useAlias) (expression)
+                    return generateOr(isRoot) (useTableAlias) (expression)
             }
         }
 }

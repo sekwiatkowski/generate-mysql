@@ -1,4 +1,3 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
 import {generateFilteredDelete} from '../../generation/statements/generate-delete-statement'
 import {createAscendingOrdersFromColumns, createDescendingOrdersFromColumns} from '../../expressions/order'
@@ -11,13 +10,13 @@ export class FilteredTable {
     #name
     #columns
     #where
-    #generateSelectFromWhere
+    #selectFromWhere
 
     constructor(name, columns, where) {
         this.#name = name
         this.#columns = columns
         this.#where = where
-        this.#generateSelectFromWhere = select => generateSelectStatement({ select, from: this.#name, where: this.#where })
+        this.#selectFromWhere = select => ({ select, from: this.#name, where: this.#where })
     }
 
     sortBy(f) {
@@ -33,7 +32,7 @@ export class FilteredTable {
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromWhere(f(this.#columns)))
+        return createQuery(this.#selectFromWhere(f(this.#columns)))
     }
 
     map(f) {
@@ -45,11 +44,11 @@ export class FilteredTable {
     }
 
     select() {
-        return createQuery(this.#generateSelectFromWhere('*'))
+        return createQuery(this.#selectFromWhere('*'))
     }
 
     count() {
-        return createCountQuery(this.#generateSelectFromWhere)
+        return createCountQuery(this.#selectFromWhere)
     }
 
     update(assignment) {

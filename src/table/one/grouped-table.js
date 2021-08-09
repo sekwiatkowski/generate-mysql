@@ -1,4 +1,3 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createQuery} from '../../query'
 import {FilteredGroupedTable} from './filtered-grouped-table'
 
@@ -6,13 +5,13 @@ export class GroupedTable {
     name
     #columns
     #groupBy
-    #generateSelectFromGroupBy
+    #selectFromGroupBy
 
     constructor(name, columns, groupBy) {
         this.name = name
         this.#columns = columns
         this.#groupBy = groupBy
-        this.#generateSelectFromGroupBy = select => generateSelectStatement({ select, from: this.name, groupBy: this.#groupBy })
+        this.#selectFromGroupBy = select => ({ select, from: this.name, groupBy: this.#groupBy })
     }
 
     filter(f) {
@@ -20,7 +19,7 @@ export class GroupedTable {
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromGroupBy(f(this.#columns)))
+        return createQuery(this.#selectFromGroupBy(f(this.#columns)))
     }
 
     map(f) {

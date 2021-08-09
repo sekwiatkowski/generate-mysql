@@ -1,8 +1,8 @@
 import {generateTableAccess} from './access/generate-table-access'
 
-export function generateFrom(useAlias) {
+export function generateFrom(useTableAlias) {
     return name => [
-        `FROM ${useAlias ? generateTableAccess(name, 0) : name}`,
+        `FROM ${useTableAlias ? generateTableAccess(name, 0) : name}`,
         []
     ]
 }

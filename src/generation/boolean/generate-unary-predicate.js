@@ -2,7 +2,7 @@ import generateColumnAccess from '../access/generate-column-access'
 
 function generateUnaryPredicate(operator) {
     return useAlias => expression => {
-        const [accessSql, parameters] = generateColumnAccess(useAlias)(expression.column)
+        const [accessSql, parameters] = generateColumnAccess(useAlias) (expression.column)
         return [`${accessSql} ${operator}`, parameters]
     }
 }

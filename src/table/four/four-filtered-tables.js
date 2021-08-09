@@ -1,4 +1,3 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createCountQuery, createQuery} from '../../query'
 import {generateUpdateStatement} from '../../generation/statements/generate-update-statement'
 
@@ -18,7 +17,7 @@ export class FourFilteredTables {
 
     #where
 
-    #generateSelectFromJoinsWhere
+    #selectFromJoinsWhere
 
     constructor(firstName, firstColumns, secondColumns, thirdColumns, fourthColumns, firstJoin, secondJoin, thirdJoin, where) {
         this.#firstName = firstName
@@ -36,7 +35,7 @@ export class FourFilteredTables {
 
         this.#where = where
 
-        this.#generateSelectFromJoinsWhere = select => generateSelectStatement({
+        this.#selectFromJoinsWhere = select => ({
             select,
             from: this.#firstName,
             joins: [ this.#firstJoin, this.#secondJoin, this.#thirdJoin ],
@@ -45,7 +44,7 @@ export class FourFilteredTables {
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromJoinsWhere(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#fourthColumns)))
+        return createQuery(this.#selectFromJoinsWhere(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns, this.#fourthColumns)))
     }
 
     map(f) {
@@ -57,7 +56,7 @@ export class FourFilteredTables {
     }
 
     count() {
-        return createCountQuery(this.#generateSelectFromJoinsWhere)
+        return createCountQuery(this.#selectFromJoinsWhere)
     }
 
     update(f) {

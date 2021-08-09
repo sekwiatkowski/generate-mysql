@@ -1,14 +1,13 @@
 import {
     concat,
-    filter,
+    excludeNull,
     flattenObject,
     hasProperty,
+    isNumber,
     joinWithCommaSpace,
     joinWithSpace,
-    keys,
     mapEntries,
-    pick,
-    propertyOf,
+    mapValues,
     surroundWithDoubleQuotes,
     unzip
 } from 'standard-functions'
@@ -17,6 +16,7 @@ import combineFragments from './combine-fragments'
 import {generateJoins} from '../generate-joins'
 import {generateWhere} from '../generate-where'
 import {generateFrom} from '../generate-from'
+import {generateValue} from '../generate-value'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -29,44 +29,68 @@ import {generateFrom} from '../generate-from'
 
     [ 't1.some_column', 'AS', 'someProperty' ]
  */
-function generateColumnAlias([alias, column]) {
-    const [columnSql, parameters] = generateColumnExpression(true) (column)
+function generateColumnAlias(useTableAlias) {
+    return ([alias, column]) => {
+        const [columnSql, parameters] = generateColumnExpression(useTableAlias) (column)
 
-    const aliasedSql = joinWithSpace(columnSql, 'AS', surroundWithDoubleQuotes(alias))
+        const aliasedSql = joinWithSpace(columnSql, 'AS', surroundWithDoubleQuotes(alias))
 
-    return [aliasedSql, parameters]
+        return [aliasedSql, parameters]
+    }
 }
 
-function generateMap(obj) {
-    const columns = flattenObject(obj, hasProperty('kind'))
+function generateMap(useColumnAlias) {
+    return obj => {
+        const columns = flattenObject(obj, hasProperty('kind'))
 
-    const [columnSql, parameters] = unzip(mapEntries(generateColumnAlias) (columns))
+        const generate = useColumnAlias ? generateColumnAlias(true) : ([_, column]) => generateColumnExpression(true) (column)
 
-    const joinedSql = joinWithCommaSpace(columnSql)
-    const concatenatedParameters = concat(parameters)
+        const mappedEntries = mapEntries(generate) (columns)
 
-    return [joinedSql, concatenatedParameters]
+        const [columnSql, parameters] = unzip(mappedEntries)
+
+        const joinedSql = joinWithCommaSpace(columnSql)
+        const concatenatedParameters = concat(parameters)
+
+        return [joinedSql, concatenatedParameters]
+
+    }
 }
 
 function generateGet(column) {
     return generateColumnExpression(true) (column)
 }
 
-function generateSelectColumns(select) {
-    if (select === '*' || select === 'COUNT(*)') {
-        return [select, []]
-    }
-    else if(select.kind === 'column' || select.kind === 'is null' || select.kind === 'is not null') {
-        return generateGet(select)
-    }
-    else {
-        return generateMap(select)
+function generateSelectColumns(useColumnAlias) {
+    return select => {
+        if (select === '*' || select === 'COUNT(*)') {
+            return [select, []]
+        }
+        else if (select.kind === 'column' || select.kind === 'is null' || select.kind === 'is not null') {
+            return generateGet(select)
+        }
+        else {
+            const withObjectifiedConstants = mapValues(value => {
+                if (isNumber(value)) {
+                    return {
+                        kind: 'value',
+                        value
+                    }
+                } else {
+                    return value
+                }
+            })(select)
+
+            return generateMap(useColumnAlias) (withObjectifiedConstants)
+        }
     }
 }
 
-function generateSelect(select) {
-    const [columnsSql, parameters] = generateSelectColumns(select)
-    return [ `SELECT ${columnsSql}`, parameters]
+function generateSelect(useColumnAlias) {
+    return select => {
+        const [columnsSql, parameters] = generateSelectColumns(useColumnAlias) (select)
+        return [`SELECT ${columnsSql}`, parameters]
+    }
 }
 
 function generateSortExpression(sort) {
@@ -84,30 +108,39 @@ function generateGroupBy(expr) {
     return [`GROUP BY ${sql}`, parameters]
 }
 
-const queryGenerators = {
-    select: generateSelect,
-    from: generateFrom(true),
-    joins: generateJoins,
-    where: generateWhere(true),
-    orderBy: generateOrderBy,
-    groupBy: generateGroupBy
-}
-const queryFragments = keys(queryGenerators)
+function generateLimit(n) {
+    const [sql, parameters] = generateValue(n)
 
-function generateQueryFragments(query) {
-    const presentFragments = filter(propertyOf(query)) (queryFragments)
-
-    const relevantGenerators = pick(presentFragments) (queryGenerators)
-
-    const fragments = mapEntries(([fragment, generate]) =>
-        generate(query[fragment])
-    ) (relevantGenerators)
-
-    return fragments
+    return [`LIMIT ${sql}`, parameters]
 }
 
-export function generateSelectStatement(input) {
-    const fragments = generateQueryFragments(input)
+function generateOffset(n) {
+    const [sql, parameters] = generateValue(n)
 
-    return combineFragments(fragments)
+    return [`OFFSET ${sql}`, parameters]
+}
+
+export function generateSelectStatement(useColumnAlias) {
+    const fragmentGenerators = {
+        select: generateSelect(useColumnAlias),
+        from: generateFrom(true),
+        joins: generateJoins,
+        where: generateWhere(true),
+        groupBy: generateGroupBy,
+        orderBy: generateOrderBy,
+        limit: generateLimit,
+        offset: generateOffset
+    }
+
+    return input => {
+        const withoutNullValues = excludeNull(input)
+
+        const fragments = mapEntries(([key, value]) =>
+            fragmentGenerators[key](value)
+        ) (withoutNullValues)
+
+        const combined = combineFragments(fragments)
+
+        return combined
+    }
 }

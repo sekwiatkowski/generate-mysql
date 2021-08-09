@@ -1,4 +1,3 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {ThreeFilteredTables} from './three-filtered-tables'
 import {createQuery} from '../../query'
 import {createColumnsFromMapping} from '../../expressions/column'
@@ -16,7 +15,7 @@ export class ThreeTables {
     #firstJoin
     #secondJoin
 
-    #generateSelectFromJoin
+    #selectFromJoin
 
     constructor(firstName, firstColumns, secondColumns, thirdColumns, firstJoin, secondJoin) {
         this.#firstName = firstName
@@ -29,7 +28,7 @@ export class ThreeTables {
         this.#firstJoin = firstJoin
         this.#secondJoin = secondJoin
 
-        this.#generateSelectFromJoin = select => generateSelectStatement({ select, from: this.#firstName, joins: [ this.#firstJoin, this.#secondJoin ] })
+        this.#selectFromJoin = select => ({ select, from: this.#firstName, joins: [ this.#firstJoin, this.#secondJoin ] })
     }
 
     innerJoin(otherTable, f) {
@@ -63,7 +62,7 @@ export class ThreeTables {
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromJoin(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns)))
+        return createQuery(this.#selectFromJoin(f(this.#firstColumns, this.#secondColumns, this.#thirdColumns)))
     }
 
     map(f) {

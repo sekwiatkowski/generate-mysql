@@ -1,62 +1,62 @@
-import {isArray, mapFirst} from 'standard-functions'
+import {generateSelectStatement} from './generation/statements/generate-select-statement'
 
-function addToQuery(stringOrArray) {
-    return addToSql => isArray(stringOrArray)
-        ? mapFirst(addToSql)(stringOrArray)
-        : addToSql(stringOrArray)
+function addOffset(offset) {
+    return statement => ({
+        ...statement,
+        offset
+    })
 }
 
 function addLimit(limit) {
-    return sql => sql + '\n' + `LIMIT ${limit}`
-}
-
-function addOffset(offset) {
-    return sql => sql + '\n' + `OFFSET ${offset}`
-}
-
-function addLimitAndOffset(limit) {
-    return offset => sql => {
-        const addedLimit = addLimit(limit) (sql)
-
-        return addOffset(offset) (addedLimit)
-    }
+    return statement => ({
+        ...statement,
+        limit
+    })
 }
 
 export function createQuery(statement) {
     return {
         kind: 'query',
-        generate: () => statement,
+        statement,
+        generate: (useColumnAlias = true) => generateSelectStatement(useColumnAlias) (statement),
         limit: n => createLimitedQuery(statement, n),
         offset: n => createOffsetQuery(statement, n)
     }
 }
 
-export function createLimitedQuery(statement, limit) {
+function createLimitedQuery(statement, limit) {
+    const limitedStatement = addLimit(limit) (statement)
+
     return {
         kind: 'limited-query',
-        generate: () => addToQuery(statement) (addLimit(limit)),
-        offset: n => createLimitedOffsetQuery(statement, limit, n)
+        statement: limitedStatement,
+        generate: (useColumnAlias = true) => generateSelectStatement(useColumnAlias) (limitedStatement),
+        offset: offset => createLimitedOffsetQuery(statement, limit, offset)
     }
 }
 
-export function createLimitedOffsetQuery(statement, limit, offset) {
-    return {
-        kind: 'limited-query',
-        generate: () => addToQuery(statement) (addLimitAndOffset(limit) (offset))
-    }
-}
+function createOffsetQuery(statement, offset) {
+    const offsetStatement = addOffset(offset) (statement)
 
-export function createOffsetQuery(statement, offset) {
     return {
         kind: 'offset-query',
-        generate: () => addToQuery(statement) (addOffset(offset)),
-        offset
+        statement,
+        generate: (useColumnAlias = true) => generateSelectStatement(useColumnAlias) (offsetStatement),
+        limit: limit => createLimitedOffsetQuery(statement, limit, offset)
+    }
+}
+
+function createLimitedOffsetQuery(statement, limit, offset) {
+    return {
+        kind: 'limited-offset-query',
+        statement,
+        generate: (useColumnAlias = true) => generateSelectStatement(useColumnAlias) (addOffset(offset) (addLimit(limit) (statement)))
     }
 }
 
 export function createCountQuery(select) {
     return {
         kind: 'count-query',
-        generate: () => select('COUNT(*)')
+        generate: (useColumnAlias = true) => generateSelectStatement(useColumnAlias) (select('COUNT(*)'))
     }
 }

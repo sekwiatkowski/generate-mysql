@@ -1,17 +1,16 @@
-import {generateSelectStatement} from '../../generation/statements/generate-select-statement'
 import {createQuery} from '../../query'
 
 export class SortedTable {
     #columns
-    #generateSelectFromWhereOrderBy
+    #selectFromWhereOrderBy
 
     constructor(name, columns, where, orderBy) {
         this.#columns = columns
-        this.#generateSelectFromWhereOrderBy = select => generateSelectStatement({ select, from: name, where, orderBy })
+        this.#selectFromWhereOrderBy = select => ({ select, from: name, where, orderBy })
     }
 
     #query(f) {
-        return createQuery(this.#generateSelectFromWhereOrderBy(f(this.#columns)))
+        return createQuery(this.#selectFromWhereOrderBy(f(this.#columns)))
     }
 
     map(f) {
@@ -23,6 +22,6 @@ export class SortedTable {
     }
 
     select() {
-        return createQuery(this.#generateSelectFromWhereOrderBy('*'))
+        return createQuery(this.#selectFromWhereOrderBy('*'))
     }
 }

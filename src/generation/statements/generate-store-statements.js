@@ -1,9 +1,11 @@
 import {
     compose,
+    concat,
     fill,
     first,
     flatten,
     joinWithCommaSpace,
+    joinWithNewline,
     joinWithSpace,
     keys,
     length,
@@ -14,12 +16,42 @@ import {
 
 const generateList = compose(joinWithCommaSpace, surroundWithParentheses)
 
+function generateStoreColumns(statement) {
+    return tableName => columnNames => {
+        const columnList = generateList(columnNames)
+
+        return [
+            `${statement} INTO`,
+            tableName,
+            columnList
+        ]
+    }
+}
+
+const generateInsertColumns = generateStoreColumns('INSERT')
+
+export function generateInsertSelect(tableName) {
+    return mapping => query => {
+        const relevantProperties = keys(query.statement.select)
+        const getColumnNames = properties(relevantProperties)
+        const columnNames = getColumnNames(mapping)
+
+        const insertSql = generateInsertColumns(tableName) (columnNames)
+
+        const [selectSql, selectParameters] = query.generate(false)
+
+        return [joinWithNewline(insertSql, selectSql), selectParameters]
+
+    }
+}
+
 function generateStore(statement) {
     return tableName => propertyNamesToColumnNames => {
-        const getAllProperties = properties(keys(propertyNamesToColumnNames))
+        const allProperties = keys(propertyNamesToColumnNames)
+        const getAllProperties = properties(allProperties)
+        const columnNames = getAllProperties(propertyNamesToColumnNames)
 
-        const columnNames = getAllProperties (propertyNamesToColumnNames)
-        const columnList = generateList(columnNames)
+        const firstPart = generateStoreColumns(statement) (tableName) (columnNames)
 
         return objs => {
             const rows = map(getAllProperties) (objs)
@@ -33,15 +65,12 @@ function generateStore(statement) {
             const listOfQuestionMarkLists = fill(valuesExpression) (numberOfRows)
             const listOfValueExpressions = joinWithCommaSpace(listOfQuestionMarkLists)
 
-            const fragments = [
-                `${statement} INTO`,
-                tableName,
-                columnList,
+            const secondPart = [
                 'VALUES',
                 listOfValueExpressions
             ]
 
-            const sql = joinWithSpace(fragments)
+            const sql = joinWithSpace(concat(firstPart, secondPart))
 
             const parameters = flatten(rows)
 
