@@ -8,11 +8,15 @@ import {
     generateSubtraction
 } from './numeric/generate-computation'
 import generateIf from './condition/generate-if'
-import {generateValue} from './generate-value'
+import {generateValue, isNullableValue} from './generate-value'
 
 
 export default function generateColumnExpression(useTableAlias) {
     return expression => {
+        if (isNullableValue(expression)) {
+            return generateValue(expression)
+        }
+
         switch (expression.kind) {
             case 'add':
                 return generateAddition(useTableAlias) (expression)
@@ -36,9 +40,6 @@ export default function generateColumnExpression(useTableAlias) {
 
             case 'count':
                 return countExpression
-
-            case 'value':
-                return generateValue(expression.value)
 
             default:
                 throw Error(`Unsupported kind of column expression: ${expression.kind}`)

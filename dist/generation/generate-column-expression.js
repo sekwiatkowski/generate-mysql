@@ -21,6 +21,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function generateColumnExpression(useTableAlias) {
   return function (expression) {
+    if ((0, _generateValue.isNullableValue)(expression)) {
+      return (0, _generateValue.generateValue)(expression);
+    }
+
     switch (expression.kind) {
       case 'add':
         return (0, _generateComputation.generateAddition)(useTableAlias)(expression);
@@ -48,9 +52,6 @@ function generateColumnExpression(useTableAlias) {
 
       case 'count':
         return _generateAggregation.countExpression;
-
-      case 'value':
-        return (0, _generateValue.generateValue)(expression.value);
 
       default:
         throw Error("Unsupported kind of column expression: ".concat(expression.kind));

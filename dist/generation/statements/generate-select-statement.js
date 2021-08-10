@@ -62,7 +62,7 @@ function generateColumnAlias(useTableAlias) {
 
 function generateMap(useColumnAlias) {
   return function (obj) {
-    var columns = (0, _standardFunctions.flattenObject)(obj, (0, _standardFunctions.hasProperty)('kind'));
+    var columns = (0, _standardFunctions.flattenObject)(obj, (0, _standardFunctions.anyPass)(_generateValue5.isNullableValue, (0, _standardFunctions.hasProperty)('kind')));
     var generate = useColumnAlias ? generateColumnAlias(true) : function (_ref3) {
       var _ref4 = _slicedToArray(_ref3, 2),
           _ = _ref4[0],
@@ -94,17 +94,7 @@ function generateSelectColumns(useColumnAlias) {
     } else if (select.kind === 'column' || select.kind === 'is null' || select.kind === 'is not null') {
       return generateGet(select);
     } else {
-      var withObjectifiedConstants = (0, _standardFunctions.mapValues)(function (value) {
-        if ((0, _standardFunctions.isObject)(value)) {
-          return value;
-        } else {
-          return {
-            kind: 'value',
-            value: value
-          };
-        }
-      })(select);
-      return generateMap(useColumnAlias)(withObjectifiedConstants);
+      return generateMap(useColumnAlias)(select);
     }
   };
 }

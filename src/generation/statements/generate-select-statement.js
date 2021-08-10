@@ -1,13 +1,12 @@
 import {
+    anyPass,
     concat,
     excludeNull,
     flattenObject,
     hasProperty,
-    isObject,
     joinWithCommaSpace,
     joinWithSpace,
     mapEntries,
-    mapValues,
     surroundWithDoubleQuotes,
     unzip
 } from 'standard-functions'
@@ -16,7 +15,7 @@ import combineFragments from './combine-fragments'
 import {generateJoins} from '../generate-joins'
 import {generateWhere} from '../generate-where'
 import {generateFrom} from '../generate-from'
-import {generateValue} from '../generate-value'
+import {generateValue, isNullableValue} from '../generate-value'
 
 /*
     someProperty: { tableIndex: 0, column: 'some_column', kind: 'column' }
@@ -41,7 +40,7 @@ function generateColumnAlias(useTableAlias) {
 
 function generateMap(useColumnAlias) {
     return obj => {
-        const columns = flattenObject(obj, hasProperty('kind'))
+        const columns = flattenObject(obj, anyPass(isNullableValue, hasProperty('kind')))
 
         const generate = useColumnAlias ? generateColumnAlias(true) : ([_, column]) => generateColumnExpression(true) (column)
 
@@ -70,19 +69,7 @@ function generateSelectColumns(useColumnAlias) {
             return generateGet(select)
         }
         else {
-            const withObjectifiedConstants = mapValues(value => {
-                if (isObject(value)) {
-                    return value
-                }
-                else {
-                    return {
-                        kind: 'value',
-                        value
-                    }
-                }
-            }) (select)
-
-            return generateMap(useColumnAlias) (withObjectifiedConstants)
+            return generateMap(useColumnAlias) (select)
         }
     }
 }
