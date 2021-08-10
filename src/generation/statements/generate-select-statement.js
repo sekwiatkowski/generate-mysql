@@ -3,7 +3,7 @@ import {
     excludeNull,
     flattenObject,
     hasProperty,
-    isNumber,
+    isObject,
     joinWithCommaSpace,
     joinWithSpace,
     mapEntries,
@@ -71,15 +71,16 @@ function generateSelectColumns(useColumnAlias) {
         }
         else {
             const withObjectifiedConstants = mapValues(value => {
-                if (isNumber(value)) {
+                if (isObject(value)) {
+                    return value
+                }
+                else {
                     return {
                         kind: 'value',
                         value
                     }
-                } else {
-                    return value
                 }
-            })(select)
+            }) (select)
 
             return generateMap(useColumnAlias) (withObjectifiedConstants)
         }

@@ -95,13 +95,13 @@ function generateSelectColumns(useColumnAlias) {
       return generateGet(select);
     } else {
       var withObjectifiedConstants = (0, _standardFunctions.mapValues)(function (value) {
-        if ((0, _standardFunctions.isNumber)(value)) {
+        if ((0, _standardFunctions.isObject)(value)) {
+          return value;
+        } else {
           return {
             kind: 'value',
             value: value
           };
-        } else {
-          return value;
         }
       })(select);
       return generateMap(useColumnAlias)(withObjectifiedConstants);

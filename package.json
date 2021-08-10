@@ -1,6 +1,6 @@
 {
     "name": "generate-mysql",
-    "version": "0.23.1",
+    "version": "0.23.2",
     "main": "dist/index.js",
     "module": "src/index.js",
     "scripts": {
