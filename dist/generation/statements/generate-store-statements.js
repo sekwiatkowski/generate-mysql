@@ -26,7 +26,7 @@ function generateStoreColumns(statement) {
   return function (tableName) {
     return function (columnNames) {
       var columnList = generateList(columnNames);
-      return ["".concat(statement, " INTO"), tableName, columnList];
+      return (0, _standardFunctions.joinWithSpace)("".concat(statement, " INTO"), tableName, columnList);
     };
   };
 }
@@ -67,8 +67,8 @@ function generateStore(statement) {
         var valuesExpression = generateList(questionMarks);
         var listOfQuestionMarkLists = (0, _standardFunctions.fill)(valuesExpression)(numberOfRows);
         var listOfValueExpressions = (0, _standardFunctions.joinWithCommaSpace)(listOfQuestionMarkLists);
-        var secondPart = ['VALUES', listOfValueExpressions];
-        var sql = (0, _standardFunctions.joinWithSpace)((0, _standardFunctions.concat)(firstPart, secondPart));
+        var secondPart = (0, _standardFunctions.joinWithSpace)('VALUES', listOfValueExpressions);
+        var sql = (0, _standardFunctions.joinWithNewline)(firstPart, secondPart);
         var parameters = (0, _standardFunctions.flatten)(rows);
         return [sql, parameters];
       };
