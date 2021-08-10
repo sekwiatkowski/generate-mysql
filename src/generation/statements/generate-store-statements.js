@@ -1,6 +1,5 @@
 import {
     compose,
-    concat,
     fill,
     first,
     flatten,
@@ -20,11 +19,11 @@ function generateStoreColumns(statement) {
     return tableName => columnNames => {
         const columnList = generateList(columnNames)
 
-        return [
+        return joinWithSpace(
             `${statement} INTO`,
             tableName,
             columnList
-        ]
+        )
     }
 }
 
@@ -65,12 +64,12 @@ function generateStore(statement) {
             const listOfQuestionMarkLists = fill(valuesExpression) (numberOfRows)
             const listOfValueExpressions = joinWithCommaSpace(listOfQuestionMarkLists)
 
-            const secondPart = [
+            const secondPart = joinWithSpace(
                 'VALUES',
                 listOfValueExpressions
-            ]
+            )
 
-            const sql = joinWithSpace(concat(firstPart, secondPart))
+            const sql = joinWithNewline(firstPart, secondPart)
 
             const parameters = flatten(rows)
 
