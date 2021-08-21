@@ -1,13 +1,13 @@
 {
     "name": "generate-mysql",
-    "version": "0.23.6",
+    "version": "0.23.7",
     "main": "dist/index.js",
     "module": "src/index.js",
     "scripts": {
         "build": "babel src -d dist"
     },
     "dependencies": {
-        "standard-functions": "github:sekwiatkowski/standard-functions#v0.32.5"
+        "standard-functions": "github:sekwiatkowski/standard-functions#v0.32.7"
     },
     "devDependencies": {
         "@babel/cli": "^7.14.8",
