@@ -9,19 +9,25 @@ import {
     mapEntries,
     unzip
 } from 'standard-functions'
-import {generateEquality} from '../boolean/generate-comparison'
 import {generateTableAccess} from '../access/generate-table-access'
 import combineFragments from './combine-fragments'
 import {generateJoins} from '../generate-joins'
 import {generateWhere} from '../generate-where'
+import generateExpression from '../generate-expression'
 
 function generateUpdateTable(tableName) {
     return [`UPDATE ${generateTableAccess(tableName, 0)}`, []]
 }
 
+export function generateAssignment({left, right}) {
+    const [leftSql, leftParameters] = generateExpression(true) (left)
+    const [rightSql, rightParameters] = generateExpression(true) (right)
+    return [`${leftSql} = ${rightSql}`, concat(leftParameters, rightParameters)]
+}
+
 function generateAssignmentList({ columns, assignment }) {
     const items = mapEntries(([ property, expression ]) =>
-        generateEquality(true) ({
+        generateAssignment({
             left: columns[property],
             right: expression
         })

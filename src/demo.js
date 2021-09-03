@@ -1,5 +1,5 @@
 import {Table} from './table/one/table'
-import {and, equals, isMemberOf, isNotNull, isNull, or} from './expressions/predicate'
+import {and, equals, greaterThan, isMemberOf, isNotNull, isNull, lessThan, or} from './expressions/predicate'
 import {count} from './expressions/aggregation'
 import {set} from './expressions/update'
 import {add, increment} from './expressions/computation'
@@ -260,3 +260,6 @@ console.log(
             views: ifElse(equals(b.categoryId, 1), increment(b.views), b.views)
         }))
 )
+
+console.log(BlogTable.filter(b => greaterThan(new Date(), b.published)).delete())
+console.log(BlogTable.filter(b => lessThan(new Date(), b.published)).delete())

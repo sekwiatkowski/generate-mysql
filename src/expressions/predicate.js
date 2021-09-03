@@ -20,6 +20,22 @@ export function equals(left, right) {
     }
 }
 
+export function lessThan(left, right) {
+    return {
+        kind: 'less than',
+        left,
+        right
+    }
+}
+
+export function greaterThan(left, right) {
+    return {
+        kind: 'greater than',
+        left,
+        right
+    }
+}
+
 export function isNull(column) {
     return {
         column,
