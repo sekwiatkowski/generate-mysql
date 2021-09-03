@@ -272,3 +272,9 @@ console.log(BlogTable.filter(function (b) {
     views: (0, _ifElse.ifElse)((0, _predicate.equals)(b.categoryId, 1), (0, _computation.increment)(b.views), b.views)
   };
 }));
+console.log(BlogTable.filter(function (b) {
+  return (0, _predicate.greaterThan)(new Date(), b.published);
+})["delete"]());
+console.log(BlogTable.filter(function (b) {
+  return (0, _predicate.lessThan)(new Date(), b.published);
+})["delete"]());

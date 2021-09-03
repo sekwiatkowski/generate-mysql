@@ -25,6 +25,12 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+
 function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
@@ -53,24 +59,24 @@ var FilteredTable = /*#__PURE__*/function () {
 
     _classCallCheck(this, FilteredTable);
 
-    _query.add(this);
+    _classPrivateMethodInitSpec(this, _query);
 
-    _name.set(this, {
+    _classPrivateFieldInitSpec(this, _name, {
       writable: true,
       value: void 0
     });
 
-    _columns.set(this, {
+    _classPrivateFieldInitSpec(this, _columns, {
       writable: true,
       value: void 0
     });
 
-    _where.set(this, {
+    _classPrivateFieldInitSpec(this, _where, {
       writable: true,
       value: void 0
     });
 
-    _selectFromWhere.set(this, {
+    _classPrivateFieldInitSpec(this, _selectFromWhere, {
       writable: true,
       value: void 0
     });

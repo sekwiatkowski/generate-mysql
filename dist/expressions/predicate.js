@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.and = and;
 exports.or = or;
 exports.equals = equals;
+exports.lessThan = lessThan;
+exports.greaterThan = greaterThan;
 exports.isNull = isNull;
 exports.isNotNull = isNotNull;
 exports.isMemberOf = isMemberOf;
@@ -35,6 +37,22 @@ function or() {
 function equals(left, right) {
   return {
     kind: 'equals',
+    left: left,
+    right: right
+  };
+}
+
+function lessThan(left, right) {
+  return {
+    kind: 'less than',
+    left: left,
+    right: right
+  };
+}
+
+function greaterThan(left, right) {
+  return {
+    kind: 'greater than',
     left: left,
     right: right
   };
