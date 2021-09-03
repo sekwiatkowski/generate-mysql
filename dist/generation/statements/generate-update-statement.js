@@ -3,11 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.generateAssignment = generateAssignment;
 exports.generateUpdateStatement = generateUpdateStatement;
 
 var _standardFunctions = require("standard-functions");
-
-var _generateComparison = require("../boolean/generate-comparison");
 
 var _generateTableAccess = require("../access/generate-table-access");
 
@@ -16,6 +15,8 @@ var _combineFragments = _interopRequireDefault(require("./combine-fragments"));
 var _generateJoins = require("../generate-joins");
 
 var _generateWhere = require("../generate-where");
+
+var _generateExpression5 = _interopRequireDefault(require("../generate-expression"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -35,15 +36,32 @@ function generateUpdateTable(tableName) {
   return ["UPDATE ".concat((0, _generateTableAccess.generateTableAccess)(tableName, 0)), []];
 }
 
-function generateAssignmentList(_ref) {
-  var columns = _ref.columns,
-      assignment = _ref.assignment;
-  var items = (0, _standardFunctions.mapEntries)(function (_ref2) {
-    var _ref3 = _slicedToArray(_ref2, 2),
-        property = _ref3[0],
-        expression = _ref3[1];
+function generateAssignment(_ref) {
+  var left = _ref.left,
+      right = _ref.right;
 
-    return (0, _generateComparison.generateEquality)(true)({
+  var _generateExpression = (0, _generateExpression5["default"])(true)(left),
+      _generateExpression2 = _slicedToArray(_generateExpression, 2),
+      leftSql = _generateExpression2[0],
+      leftParameters = _generateExpression2[1];
+
+  var _generateExpression3 = (0, _generateExpression5["default"])(true)(right),
+      _generateExpression4 = _slicedToArray(_generateExpression3, 2),
+      rightSql = _generateExpression4[0],
+      rightParameters = _generateExpression4[1];
+
+  return ["".concat(leftSql, " = ").concat(rightSql), (0, _standardFunctions.concat)(leftParameters, rightParameters)];
+}
+
+function generateAssignmentList(_ref2) {
+  var columns = _ref2.columns,
+      assignment = _ref2.assignment;
+  var items = (0, _standardFunctions.mapEntries)(function (_ref3) {
+    var _ref4 = _slicedToArray(_ref3, 2),
+        property = _ref4[0],
+        expression = _ref4[1];
+
+    return generateAssignment({
       left: columns[property],
       right: expression
     });
@@ -71,11 +89,11 @@ function generateSet(arr) {
   return [setSql, setParameters];
 }
 
-function generateUpdateStatement(_ref4) {
-  var firstTableName = _ref4.firstTableName,
-      joins = _ref4.joins,
-      where = _ref4.where,
-      set = _ref4.set;
+function generateUpdateStatement(_ref5) {
+  var firstTableName = _ref5.firstTableName,
+      joins = _ref5.joins,
+      where = _ref5.where,
+      set = _ref5.set;
   var updateTableFragment = generateUpdateTable(firstTableName);
   var joinFragment = joins ? (0, _generateJoins.generateJoins)(joins) : null;
   var setFragment = generateSet((0, _standardFunctions.isArray)(set) ? set : [set]);

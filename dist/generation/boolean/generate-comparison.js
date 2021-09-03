@@ -28,26 +28,35 @@ function generateEquality(useAlias) {
   return function (_ref) {
     var left = _ref.left,
         right = _ref.right;
+    return function (sign) {
+      var _generateExpression = (0, _generateExpression5["default"])(useAlias)(left),
+          _generateExpression2 = _slicedToArray(_generateExpression, 2),
+          leftSql = _generateExpression2[0],
+          leftParameters = _generateExpression2[1];
 
-    var _generateExpression = (0, _generateExpression5["default"])(useAlias)(left),
-        _generateExpression2 = _slicedToArray(_generateExpression, 2),
-        leftSql = _generateExpression2[0],
-        leftParameters = _generateExpression2[1];
+      var _generateExpression3 = (0, _generateExpression5["default"])(useAlias)(right),
+          _generateExpression4 = _slicedToArray(_generateExpression3, 2),
+          rightSql = _generateExpression4[0],
+          rightParameters = _generateExpression4[1];
 
-    var _generateExpression3 = (0, _generateExpression5["default"])(useAlias)(right),
-        _generateExpression4 = _slicedToArray(_generateExpression3, 2),
-        rightSql = _generateExpression4[0],
-        rightParameters = _generateExpression4[1];
-
-    return ["".concat(leftSql, " = ").concat(rightSql), (0, _standardFunctions.concat)(leftParameters, rightParameters)];
+      return ["".concat(leftSql, " ").concat(sign, " ").concat(rightSql), (0, _standardFunctions.concat)(leftParameters, rightParameters)];
+    };
   };
 }
 
 function generateComparison(useAlias) {
   return function (comparison) {
+    var generateWithSign = generateEquality(useAlias)(comparison);
+
     switch (comparison.kind) {
       case 'equals':
-        return generateEquality(useAlias)(comparison);
+        return generateWithSign('=');
+
+      case 'greater than':
+        return generateWithSign('>');
+
+      case 'less than':
+        return generateWithSign('<');
 
       default:
         throw Error('Unsupported kind of comparison.');

@@ -16,7 +16,7 @@ export function generateComparison(useAlias) {
 
         switch (comparison.kind) {
             case 'equals':
-                return generateWithSign(')')
+                return generateWithSign('=')
             case 'greater than':
                 return generateWithSign('>')
             case 'less than':
