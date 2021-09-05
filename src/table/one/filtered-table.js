@@ -1,5 +1,5 @@
 import {createCountQuery, createQuery} from '../../query'
-import {generateFilteredDelete} from '../../generation/statements/generate-delete-statement'
+import {generateFilteredDeleteStatement} from '../../generation/statements/generate-delete-statement'
 import {createAscendingOrdersFromColumns, createDescendingOrdersFromColumns} from '../../expressions/order'
 import {SortedTable} from './sorted-table'
 import {set} from '../../expressions/update'
@@ -63,6 +63,6 @@ export class FilteredTable {
     }
 
     delete() {
-        return generateFilteredDelete(this.#name) (this.#where)
+        return generateFilteredDeleteStatement(this.#name) (this.#where)
     }
 }

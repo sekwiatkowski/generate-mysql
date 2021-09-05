@@ -140,7 +140,7 @@ var FilteredTable = /*#__PURE__*/function () {
   }, {
     key: "delete",
     value: function _delete() {
-      return (0, _generateDeleteStatement.generateFilteredDelete)(_classPrivateFieldGet(this, _name))(_classPrivateFieldGet(this, _where));
+      return (0, _generateDeleteStatement.generateFilteredDeleteStatement)(_classPrivateFieldGet(this, _name))(_classPrivateFieldGet(this, _where));
     }
   }]);
 
