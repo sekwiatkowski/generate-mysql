@@ -34,8 +34,10 @@ function generateBooleanExpression(isRoot) {
           return (0, _generateUnaryPredicate.generateIsNotNull)(useTableAlias)(expression);
 
         case 'equals':
-        case 'greater than':
-        case 'less than':
+        case 'gt':
+        case 'gte':
+        case 'lt':
+        case 'lte':
           return (0, _generateComparison.generateComparison)(useTableAlias)(expression);
 
         case 'and':

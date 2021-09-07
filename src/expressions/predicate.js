@@ -20,17 +20,33 @@ export function equals(left, right) {
     }
 }
 
-export function lessThan(left, right) {
+export function lt(left, right) {
     return {
-        kind: 'less than',
+        kind: 'lt',
         left,
         right
     }
 }
 
-export function greaterThan(left, right) {
+export function lte(left, right) {
     return {
-        kind: 'greater than',
+        kind: 'lte',
+        left,
+        right
+    }
+}
+
+export function gt(left, right) {
+    return {
+        kind: 'gt',
+        left,
+        right
+    }
+}
+
+export function gte(left, right) {
+    return {
+        kind: 'gte',
         left,
         right
     }

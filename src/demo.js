@@ -1,5 +1,5 @@
 import {Table} from './table/one/table'
-import {and, equals, greaterThan, isMemberOf, isNotNull, isNull, lessThan, or} from './expressions/predicate'
+import {and, equals, gt, gte, isMemberOf, isNotNull, isNull, lt, lte, or} from './expressions/predicate'
 import {count} from './expressions/aggregation'
 import {set} from './expressions/update'
 import {add, increment} from './expressions/computation'
@@ -261,5 +261,7 @@ console.log(
         }))
 )
 
-console.log(BlogTable.filter(b => greaterThan(new Date(), b.published)).delete())
-console.log(BlogTable.filter(b => lessThan(new Date(), b.published)).delete())
+console.log(BlogTable.filter(b => gt(new Date(), b.published)).delete())
+console.log(BlogTable.filter(b => gte(new Date(), b.published)).delete())
+console.log(BlogTable.filter(b => lt(new Date(), b.published)).delete())
+console.log(BlogTable.filter(b => lte(new Date(), b.published)).delete())

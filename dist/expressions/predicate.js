@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.and = and;
 exports.or = or;
 exports.equals = equals;
-exports.lessThan = lessThan;
-exports.greaterThan = greaterThan;
+exports.lt = lt;
+exports.lte = lte;
+exports.gt = gt;
+exports.gte = gte;
 exports.isNull = isNull;
 exports.isNotNull = isNotNull;
 exports.isMemberOf = isMemberOf;
@@ -42,17 +44,33 @@ function equals(left, right) {
   };
 }
 
-function lessThan(left, right) {
+function lt(left, right) {
   return {
-    kind: 'less than',
+    kind: 'lt',
     left: left,
     right: right
   };
 }
 
-function greaterThan(left, right) {
+function lte(left, right) {
   return {
-    kind: 'greater than',
+    kind: 'lte',
+    left: left,
+    right: right
+  };
+}
+
+function gt(left, right) {
+  return {
+    kind: 'gt',
+    left: left,
+    right: right
+  };
+}
+
+function gte(left, right) {
+  return {
+    kind: 'gte',
     left: left,
     right: right
   };

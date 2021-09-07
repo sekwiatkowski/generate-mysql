@@ -17,8 +17,10 @@ function generateBooleanExpression(isRoot) {
                 case 'is not null':
                     return generateIsNotNull(useTableAlias) (expression)
                 case 'equals':
-                case 'greater than':
-                case 'less than':
+                case 'gt':
+                case 'gte':
+                case 'lt':
+                case 'lte':
                     return generateComparison(useTableAlias) (expression)
                 case 'and':
                     return generateAnd(isRoot) (useTableAlias) (expression)

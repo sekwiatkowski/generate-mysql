@@ -52,11 +52,17 @@ function generateComparison(useAlias) {
       case 'equals':
         return generateWithSign('=');
 
-      case 'greater than':
+      case 'gt':
         return generateWithSign('>');
 
-      case 'less than':
+      case 'gte':
+        return generateWithSign('>=');
+
+      case 'lt':
         return generateWithSign('<');
+
+      case 'lte':
+        return generateWithSign('<=');
 
       default:
         throw Error('Unsupported kind of comparison.');

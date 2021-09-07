@@ -273,8 +273,14 @@ console.log(BlogTable.filter(function (b) {
   };
 }));
 console.log(BlogTable.filter(function (b) {
-  return (0, _predicate.greaterThan)(new Date(), b.published);
+  return (0, _predicate.gt)(new Date(), b.published);
 })["delete"]());
 console.log(BlogTable.filter(function (b) {
-  return (0, _predicate.lessThan)(new Date(), b.published);
+  return (0, _predicate.gte)(new Date(), b.published);
+})["delete"]());
+console.log(BlogTable.filter(function (b) {
+  return (0, _predicate.lt)(new Date(), b.published);
+})["delete"]());
+console.log(BlogTable.filter(function (b) {
+  return (0, _predicate.lte)(new Date(), b.published);
 })["delete"]());
