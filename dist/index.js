@@ -15,16 +15,28 @@ Object.defineProperty(exports, "equals", {
     return _predicate.equals;
   }
 });
-Object.defineProperty(exports, "lessThan", {
+Object.defineProperty(exports, "lt", {
   enumerable: true,
   get: function get() {
-    return _predicate.lessThan;
+    return _predicate.lt;
   }
 });
-Object.defineProperty(exports, "greaterThan", {
+Object.defineProperty(exports, "lte", {
   enumerable: true,
   get: function get() {
-    return _predicate.greaterThan;
+    return _predicate.lte;
+  }
+});
+Object.defineProperty(exports, "gt", {
+  enumerable: true,
+  get: function get() {
+    return _predicate.gt;
+  }
+});
+Object.defineProperty(exports, "gte", {
+  enumerable: true,
+  get: function get() {
+    return _predicate.gte;
   }
 });
 Object.defineProperty(exports, "and", {
